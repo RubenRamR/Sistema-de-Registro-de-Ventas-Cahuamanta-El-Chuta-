@@ -4,6 +4,9 @@
  */
 package Componentes;
 
+import GestionarVentas.MetodoEfectivoFrm;
+import GestionarVentas.MetodoPagoFrm;
+import GestionarVentas.ResumenVentaFrm;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
@@ -56,8 +59,23 @@ public class TarjetaPago extends JPanel {
             public void mousePressed(MouseEvent e) {
                 // Aquí disparas la lógica de pago
                 System.out.println("Seleccionado: " + texto);
+                MetodoPagoFrm mpf = new MetodoPagoFrm();
+                mpf.dispose();
+                if (texto.equalsIgnoreCase("Efectivo"))
+                {
+                    MetodoEfectivoFrm mef = new MetodoEfectivoFrm();
+
+                    mef.setVisible(true);
+                } else
+                {
+                    ResumenVentaFrm rvf = new ResumenVentaFrm();
+                    mpf.dispose();
+                    rvf.setVisible(true);
+                }
+
             }
         });
+
     }
 
     @Override

@@ -6,6 +6,7 @@ package GestionarVentas;
 
 import Componentes.TarjetaCategoria;
 import Componentes.TarjetaProducto;
+import javax.swing.BorderFactory;
 
 /**
  *
@@ -18,7 +19,12 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
      */
     public PuntoVentaFrm() {
         initComponents();
+        configurarEstiloFrm();
         setExtendedState(PuntoVentaFrm.MAXIMIZED_BOTH);
+    }
+
+    public void configurarEstiloFrm() {
+        aplicarEstilosPanelDerecho();
         configurarCategorias();
         configurarCatalogo();
     }
@@ -59,14 +65,20 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
 
     public void configurarCatalogo() {
 
+        ScrollCatalogo.setBorder(null);
+
+        ScrollCatalogo.setViewportBorder(null);
+
+        ScrollCatalogo.setBackground(java.awt.Color.WHITE);
+        ScrollCatalogo.getViewport().setBackground(java.awt.Color.WHITE);
+
         ScrollCatalogo.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        ScrollCatalogo.setOpaque(false);
+        ScrollCatalogo.getViewport().setBackground(java.awt.Color.WHITE);
         ScrollCatalogo.getViewport().setOpaque(false);
 
         ScrollCatalogo.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         ScrollCatalogo.getVerticalScrollBar().setUnitIncrement(16);
-
 
         PnlCatalogo.setOpaque(false);
         PnlCatalogo.removeAll();
@@ -93,7 +105,61 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         ScrollCatalogo.repaint();
     }
 
-    
+    private void aplicarEstilosPanelDerecho() {
+        PnlCardSeleccionado.setBackground(new java.awt.Color(245, 245, 245));
+
+        PnlAgrupadorCantidad.setOpaque(false);
+
+        BoxCantidad.setModel(new javax.swing.SpinnerNumberModel(1, 1, 50, 1));
+        BoxCantidad.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14));
+        BoxCantidad.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+        BtnAgregar.setFocusPainted(false);
+        BtnAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        //Estilo panel resumen
+        PnlCardResumen.setBackground(new java.awt.Color(245, 245, 245));
+
+        ScrollResumen.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        ScrollResumen.setOpaque(false);
+        ScrollResumen.getViewport().setOpaque(false);
+
+        TblResumen.setShowGrid(false);
+        TblResumen.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        TblResumen.setRowHeight(40);
+        TblResumen.setBackground(new java.awt.Color(245, 245, 245));
+
+        TblResumen.setTableHeader(null);
+        ScrollResumen.setBorder(BorderFactory.createEmptyBorder());
+
+        //Estilos panel totales
+        PnlCardTotales.setBackground(new java.awt.Color(245, 245, 245));
+        BtnCobrar.setFocusPainted(false);
+        BtnCobrar.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 0, 15, 0));
+
+        //Scroll bordes
+        ScrollResumen.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        ScrollResumen.setOpaque(false);
+        ScrollResumen.getViewport().setOpaque(false);
+        TblResumen.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+        //Tabla resuemen detalles
+        javax.swing.table.DefaultTableCellRenderer alineacionDerecha = new javax.swing.table.DefaultTableCellRenderer();
+        alineacionDerecha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        TblResumen.getColumnModel().getColumn(1).setCellRenderer(alineacionDerecha);
+        alineacionDerecha.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));
+
+        BtnAgregar.setContentAreaFilled(false);
+        BtnAgregar.setOpaque(true);
+        BtnAgregar.setBackground(new java.awt.Color(0, 51, 255));
+        BtnAgregar.repaint();
+        BtnCobrar.setContentAreaFilled(false);
+        BtnCobrar.setOpaque(true);
+        BtnCobrar.setBackground(new java.awt.Color(0, 51, 255));
+        BtnCobrar.repaint();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,12 +176,99 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         ScrollCatalogo = new javax.swing.JScrollPane();
         PnlWrraper = new javax.swing.JPanel();
         PnlCatalogo = new javax.swing.JPanel();
-        PnlResumen = new javax.swing.JPanel();
-        PnlCardSeleccionado = new javax.swing.JPanel();
-        LblnombreProducto = new javax.swing.JLabel();
+        PnlDerecho = new javax.swing.JPanel();
+        LblTituloSeleccionado = new javax.swing.JLabel();
+        PnlCardSeleccionado = new javax.swing.JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Color colorFondo = getBackground();
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int radius = 25; 
+
+                g2.setColor(colorFondo);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.setColor(new java.awt.Color(230, 230, 230)); 
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.dispose();
+            }
+        };
+        LblNombreProducto = new javax.swing.JLabel();
+        BtnAgregar = new javax.swing.JButton();
+        PnlAgrupadorCantidad = new javax.swing.JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Color colorFondo = getBackground();
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int radius = 25; 
+
+                g2.setColor(colorFondo);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.setColor(new java.awt.Color(230, 230, 230)); 
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.dispose();
+            }
+        };
         LblCantidad = new javax.swing.JLabel();
         BoxCantidad = new javax.swing.JSpinner();
-        BtnAgregar = new javax.swing.JButton();
+        LblTituloResumen = new javax.swing.JLabel();
+        PnlCardResumen = new javax.swing.JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Color colorFondo = getBackground();
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int radius = 25; 
+
+                g2.setColor(colorFondo);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.setColor(new java.awt.Color(230, 230, 230)); 
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.dispose();
+            }
+        }
+        ;
+        ScrollResumen = new javax.swing.JScrollPane();
+        TblResumen = new javax.swing.JTable();
+        TblResumen.setTableHeader(null);
+        PnlCardTotales = new javax.swing.JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Color colorFondo = getBackground();
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int radius = 25; 
+
+                g2.setColor(colorFondo);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.setColor(new java.awt.Color(230, 230, 230)); 
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
+
+                g2.dispose();
+            }
+        };
+        LblSubtotalTexto = new javax.swing.JLabel();
+        LblSubtotalMonto = new javax.swing.JLabel();
+        LblSeparador = new javax.swing.JLabel();
+        LblTotalTexto = new javax.swing.JLabel();
+        LblTotalMonto = new javax.swing.JLabel();
+        BtnCobrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -132,6 +285,7 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         PnlIzquierdo.add(PnlCategorias, java.awt.BorderLayout.NORTH);
 
         ScrollCatalogo.setBorder(null);
+        ScrollCatalogo.setOpaque(false);
 
         PnlWrraper.setLayout(new java.awt.BorderLayout());
 
@@ -151,53 +305,210 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(20, 20, 20, 10);
         PnlContenido.add(PnlIzquierdo, gridBagConstraints);
 
-        PnlResumen.setBackground(new java.awt.Color(255, 255, 255));
-        PnlResumen.setLayout(new java.awt.GridBagLayout());
+        PnlDerecho.setBackground(new java.awt.Color(255, 255, 255));
+        PnlDerecho.setLayout(new java.awt.GridBagLayout());
 
-        PnlCardSeleccionado.setLayout(new java.awt.GridBagLayout());
-        PnlResumen.add(PnlCardSeleccionado, new java.awt.GridBagConstraints());
-
-        LblnombreProducto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        LblnombreProducto.setForeground(new java.awt.Color(0, 0, 0));
-        LblnombreProducto.setText("Taco de Cahuamanta");
+        LblTituloSeleccionado.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblTituloSeleccionado.setForeground(new java.awt.Color(0, 0, 0));
+        LblTituloSeleccionado.setText("Seleccionado");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 15, 5, 10);
-        PnlResumen.add(LblnombreProducto, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(20, 20, 5, 20);
+        PnlDerecho.add(LblTituloSeleccionado, gridBagConstraints);
 
-        LblCantidad.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        LblCantidad.setForeground(new java.awt.Color(0, 0, 0));
-        LblCantidad.setText("Cantidad: ");
+        PnlCardSeleccionado.setForeground(new java.awt.Color(229, 229, 229));
+        PnlCardSeleccionado.setOpaque(false);
+        PnlCardSeleccionado.setLayout(new java.awt.GridBagLayout());
+
+        LblNombreProducto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblNombreProducto.setForeground(new java.awt.Color(0, 0, 0));
+        LblNombreProducto.setText("Taco de Cahuamanta");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(5, 15, 15, 5);
-        PnlResumen.add(LblCantidad, gridBagConstraints);
-
-        BoxCantidad.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        BoxCantidad.setBorder(null);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 15, 10);
-        PnlResumen.add(BoxCantidad, gridBagConstraints);
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(15, 15, 5, 0);
+        PnlCardSeleccionado.add(LblNombreProducto, gridBagConstraints);
 
         BtnAgregar.setBackground(new java.awt.Color(0, 17, 255));
         BtnAgregar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         BtnAgregar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnAgregar.setText("Argegar");
+        BtnAgregar.setText("Agregar");
         BtnAgregar.setBorder(null);
         BtnAgregar.setPreferredSize(new java.awt.Dimension(100, 40));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 2;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 15);
-        PnlResumen.add(BtnAgregar, gridBagConstraints);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(15, 10, 15, 15);
+        PnlCardSeleccionado.add(BtnAgregar, gridBagConstraints);
+
+        PnlAgrupadorCantidad.setForeground(new java.awt.Color(229, 229, 229));
+        PnlAgrupadorCantidad.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+
+        LblCantidad.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblCantidad.setForeground(new java.awt.Color(0, 0, 0));
+        LblCantidad.setText("Cantidad: ");
+        PnlAgrupadorCantidad.add(LblCantidad);
+
+        BoxCantidad.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        BoxCantidad.setBorder(null);
+        PnlAgrupadorCantidad.add(BoxCantidad);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 15, 15, 10);
+        PnlCardSeleccionado.add(PnlAgrupadorCantidad, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 0, 20);
+        PnlDerecho.add(PnlCardSeleccionado, gridBagConstraints);
+
+        LblTituloResumen.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblTituloResumen.setForeground(new java.awt.Color(0, 0, 0));
+        LblTituloResumen.setText("Resumen");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(15, 20, 5, 20);
+        PnlDerecho.add(LblTituloResumen, gridBagConstraints);
+
+        PnlCardResumen.setForeground(new java.awt.Color(229, 229, 229));
+        PnlCardResumen.setLayout(new java.awt.BorderLayout());
+
+        ScrollResumen.setBorder(null);
+        ScrollResumen.setForeground(new java.awt.Color(229, 229, 229));
+
+        TblResumen.setBackground(new java.awt.Color(229, 229, 229));
+        TblResumen.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        TblResumen.setForeground(new java.awt.Color(0, 0, 0));
+        TblResumen.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Taco de Cahuamanta", "$35"},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Producto", "Precio"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        ScrollResumen.setViewportView(TblResumen);
+
+        PnlCardResumen.add(ScrollResumen, java.awt.BorderLayout.CENTER);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 20, 15, 20);
+        PnlDerecho.add(PnlCardResumen, gridBagConstraints);
+
+        PnlCardTotales.setForeground(new java.awt.Color(229, 229, 229));
+        PnlCardTotales.setLayout(new java.awt.GridBagLayout());
+
+        LblSubtotalTexto.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        LblSubtotalTexto.setText("Subtotal");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(15, 15, 5, 5);
+        PnlCardTotales.add(LblSubtotalTexto, gridBagConstraints);
+
+        LblSubtotalMonto.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        LblSubtotalMonto.setText("$35");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(15, 5, 5, 15);
+        PnlCardTotales.add(LblSubtotalMonto, gridBagConstraints);
+
+        LblSeparador.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblSeparador.setText("...");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 5, 0);
+        PnlCardTotales.add(LblSeparador, gridBagConstraints);
+
+        LblTotalTexto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblTotalTexto.setText("Total");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 15, 15, 5);
+        PnlCardTotales.add(LblTotalTexto, gridBagConstraints);
+
+        LblTotalMonto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        LblTotalMonto.setText("$35");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 15, 15);
+        PnlCardTotales.add(LblTotalMonto, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(15, 20, 15, 20);
+        PnlDerecho.add(PnlCardTotales, gridBagConstraints);
+
+        BtnCobrar.setBackground(new java.awt.Color(0, 17, 255));
+        BtnCobrar.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        BtnCobrar.setForeground(new java.awt.Color(255, 255, 255));
+        BtnCobrar.setText("Cobrar");
+        BtnCobrar.setBorder(null);
+        BtnCobrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnCobrar.setPreferredSize(new java.awt.Dimension(100, 50));
+        BtnCobrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCobrarActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 50, 10, 50);
+        PnlDerecho.add(BtnCobrar, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -206,12 +517,19 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         gridBagConstraints.weightx = 0.4;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(20, 10, 20, 20);
-        PnlContenido.add(PnlResumen, gridBagConstraints);
+        PnlContenido.add(PnlDerecho, gridBagConstraints);
 
         getContentPane().add(PnlContenido, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void BtnCobrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCobrarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        MetodoPagoFrm mpf = new MetodoPagoFrm();
+        mpf.setVisible(true);
+    }//GEN-LAST:event_BtnCobrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -258,15 +576,28 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner BoxCantidad;
     private javax.swing.JButton BtnAgregar;
+    private javax.swing.JButton BtnCobrar;
     private javax.swing.JLabel LblCantidad;
-    private javax.swing.JLabel LblnombreProducto;
+    private javax.swing.JLabel LblNombreProducto;
+    private javax.swing.JLabel LblSeparador;
+    private javax.swing.JLabel LblSubtotalMonto;
+    private javax.swing.JLabel LblSubtotalTexto;
+    private javax.swing.JLabel LblTituloResumen;
+    private javax.swing.JLabel LblTituloSeleccionado;
+    private javax.swing.JLabel LblTotalMonto;
+    private javax.swing.JLabel LblTotalTexto;
+    private javax.swing.JPanel PnlAgrupadorCantidad;
+    private javax.swing.JPanel PnlCardResumen;
     private javax.swing.JPanel PnlCardSeleccionado;
+    private javax.swing.JPanel PnlCardTotales;
     private javax.swing.JPanel PnlCatalogo;
     private javax.swing.JPanel PnlCategorias;
     private javax.swing.JPanel PnlContenido;
+    private javax.swing.JPanel PnlDerecho;
     private javax.swing.JPanel PnlIzquierdo;
-    private javax.swing.JPanel PnlResumen;
     private javax.swing.JPanel PnlWrraper;
     private javax.swing.JScrollPane ScrollCatalogo;
+    private javax.swing.JScrollPane ScrollResumen;
+    private javax.swing.JTable TblResumen;
     // End of variables declaration//GEN-END:variables
 }

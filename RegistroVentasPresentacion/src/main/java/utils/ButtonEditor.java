@@ -4,6 +4,9 @@
  */
 package utils;
 
+import GestionarVentas.DetalleVentaFrm;
+import GestionarVentas.GestionarVentaFrm;
+
 /**
  *
  * @author rramirez
@@ -44,7 +47,10 @@ public class ButtonEditor extends javax.swing.DefaultCellEditor {
     public Object getCellEditorValue() {
         if (isPushed)
         {
-            javax.swing.JOptionPane.showMessageDialog(button, "Clic en Ver Detalle. Fila: " + label);
+            DetalleVentaFrm dvf = new DetalleVentaFrm();
+            dvf.setVisible(true);
+            GestionarVentaFrm gvf = new GestionarVentaFrm();
+            gvf.dispose();
         }
         isPushed = false;
         return label;

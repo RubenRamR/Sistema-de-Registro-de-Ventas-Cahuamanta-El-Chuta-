@@ -18,9 +18,9 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
      */
     public GestionarVentaFrm() {
         initComponents();
+        configurarTabla();
         setExtendedState(GestionarVentaFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        configurarTabla();
     }
 
     public void configurarTabla() {
@@ -191,6 +191,9 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
     private void BtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarActionPerformed
         // TODO add your handling code here:
+        PuntoVentaFrm pvf = new PuntoVentaFrm();
+        pvf.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_BtnAgregarActionPerformed
 
     /**

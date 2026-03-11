@@ -137,6 +137,9 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
 
     private void BtnGestionarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGestionarVentasActionPerformed
         // TODO add your handling code here:
+        GestionarVentaFrm gvf = new GestionarVentaFrm();
+        gvf.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_BtnGestionarVentasActionPerformed
 
     /**

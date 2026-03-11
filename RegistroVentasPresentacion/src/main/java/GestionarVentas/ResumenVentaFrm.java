@@ -12,15 +12,46 @@ import java.awt.Insets;
  *
  * @author rramirez
  */
-public class MetodoEfectivoFrm extends javax.swing.JFrame {
+public class ResumenVentaFrm extends javax.swing.JFrame {
 
     /**
      * Creates new form MenuFrm
      */
-    public MetodoEfectivoFrm() {
+    public ResumenVentaFrm() {
         initComponents();
-        setExtendedState(MetodoEfectivoFrm.MAXIMIZED_BOTH);
+        setExtendedState(ResumenVentaFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        aplicarEstilosResumenVenta();
+
+    }
+
+    private void aplicarEstilosResumenVenta() {
+        ScrollListaProductos.setBorder(null);
+        ScrollListaProductos.setViewportBorder(null);
+        ScrollListaProductos.setBackground(java.awt.Color.WHITE);
+        ScrollListaProductos.getViewport().setBackground(java.awt.Color.WHITE);
+
+        TblListaProductos.setBackground(java.awt.Color.WHITE);
+        TblListaProductos.setShowGrid(false);
+        TblListaProductos.setRowHeight(35);
+
+        javax.swing.table.DefaultTableCellRenderer alignRight = new javax.swing.table.DefaultTableCellRenderer();
+        alignRight.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        alignRight.setBackground(java.awt.Color.WHITE); // Evita que se ponga gris
+        TblListaProductos.getColumnModel().getColumn(1).setCellRenderer(alignRight);
+
+        PnlAgrupadorTotal.setOpaque(false);
+
+        //Btn
+        BtnAceptar.setForeground(java.awt.Color.WHITE);
+        BtnAceptar.setFocusPainted(false);
+        BtnAceptar.setPreferredSize(new java.awt.Dimension(220, 55));
+        BtnAceptar.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnAceptar.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        java.awt.Dimension dimensionBoton = new java.awt.Dimension(220, 75);
+        BtnAceptar.setMinimumSize(dimensionBoton);
+        BtnAceptar.setMaximumSize(dimensionBoton);
+        BtnAceptar.setPreferredSize(dimensionBoton);
     }
 
     /**
@@ -38,12 +69,14 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         BtnBack = new javax.swing.JButton();
         PnlContenido = new javax.swing.JPanel();
         LblTitulo = new javax.swing.JLabel();
+        LblHeaderProductos = new javax.swing.JLabel();
+        LblHeaderSubtotal = new javax.swing.JLabel();
+        ScrollListaProductos = new javax.swing.JScrollPane();
+        TblListaProductos = new javax.swing.JTable();
+        TblListaProductos.setTableHeader(null);
+        PnlAgrupadorTotal = new javax.swing.JPanel();
         LblTotalEtiqueta = new javax.swing.JLabel();
-        LblPagoEtiqueta = new javax.swing.JLabel();
-        LblCambioEtiqueta = new javax.swing.JLabel();
         LblTotalMonto = new javax.swing.JLabel();
-        TxtPago = new javax.swing.JTextField();
-        LblCambioMonto = new javax.swing.JLabel();
         BtnAceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -105,7 +138,7 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         LblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 80)); // NOI18N
         LblTitulo.setForeground(new java.awt.Color(3, 4, 94));
         LblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblTitulo.setText("Efectivo");
+        LblTitulo.setText("Resumen de Venta");
         LblTitulo.setAlignmentY(0.0F);
         LblTitulo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -114,118 +147,110 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipady = 24;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(30, 0, 40, 0);
         PnlContenido.add(LblTitulo, gridBagConstraints);
 
-        LblTotalEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
+        LblHeaderProductos.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        LblHeaderProductos.setForeground(new java.awt.Color(3, 4, 94));
+        LblHeaderProductos.setText("Productos");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 400, 10, 0);
+        PnlContenido.add(LblHeaderProductos, gridBagConstraints);
+
+        LblHeaderSubtotal.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        LblHeaderSubtotal.setForeground(new java.awt.Color(3, 4, 94));
+        LblHeaderSubtotal.setText("Subtotal");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 400);
+        PnlContenido.add(LblHeaderSubtotal, gridBagConstraints);
+
+        ScrollListaProductos.setBorder(null);
+        ScrollListaProductos.setForeground(new java.awt.Color(229, 229, 229));
+
+        TblListaProductos.setBackground(new java.awt.Color(229, 229, 229));
+        TblListaProductos.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        TblListaProductos.setForeground(new java.awt.Color(0, 0, 0));
+        TblListaProductos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Taco de Cahuamanta", "$35"},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Producto", "Precio"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        ScrollListaProductos.setViewportView(TblListaProductos);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 400, 10, 400);
+        PnlContenido.add(ScrollListaProductos, gridBagConstraints);
+
+        PnlAgrupadorTotal.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         LblTotalEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         LblTotalEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblTotalEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LblTotalEtiqueta.setText("Total: ");
-        LblTotalEtiqueta.setAlignmentY(0.0F);
-        LblTotalEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblTotalEtiqueta.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
-        PnlContenido.add(LblTotalEtiqueta, gridBagConstraints);
+        PnlAgrupadorTotal.add(LblTotalEtiqueta);
 
-        LblPagoEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
-        LblPagoEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblPagoEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblPagoEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblPagoEtiqueta.setText("Pago: ");
-        LblPagoEtiqueta.setAlignmentY(0.0F);
-        LblPagoEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblPagoEtiqueta.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-        PnlContenido.add(LblPagoEtiqueta, gridBagConstraints);
-
-        LblCambioEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
-        LblCambioEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblCambioEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblCambioEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblCambioEtiqueta.setText("Cambio: ");
-        LblCambioEtiqueta.setAlignmentY(0.0F);
-        LblCambioEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblCambioEtiqueta.setPreferredSize(new java.awt.Dimension(150, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-        PnlContenido.add(LblCambioEtiqueta, gridBagConstraints);
-
-        LblTotalMonto.setBackground(new java.awt.Color(255, 255, 255));
-        LblTotalMonto.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        LblTotalMonto.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         LblTotalMonto.setForeground(new java.awt.Color(3, 4, 94));
-        LblTotalMonto.setText("100$");
-        LblTotalMonto.setAlignmentY(0.0F);
-        LblTotalMonto.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblTotalMonto.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
-        PnlContenido.add(LblTotalMonto, gridBagConstraints);
+        LblTotalMonto.setText("$35");
+        PnlAgrupadorTotal.add(LblTotalMonto);
 
-        TxtPago.setBackground(new java.awt.Color(255, 255, 255));
-        TxtPago.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        TxtPago.setForeground(new java.awt.Color(3, 4, 94));
-        TxtPago.setText("0");
-        TxtPago.setPreferredSize(new java.awt.Dimension(150, 50));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-        PnlContenido.add(TxtPago, gridBagConstraints);
-
-        LblCambioMonto.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblCambioMonto.setForeground(new java.awt.Color(3, 4, 94));
-        LblCambioMonto.setText("$");
-        LblCambioMonto.setPreferredSize(new java.awt.Dimension(150, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-        PnlContenido.add(LblCambioMonto, gridBagConstraints);
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 40, 400);
+        PnlContenido.add(PnlAgrupadorTotal, gridBagConstraints);
 
         BtnAceptar.setBackground(new java.awt.Color(0, 119, 182));
         BtnAceptar.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         BtnAceptar.setForeground(new java.awt.Color(255, 255, 255));
         BtnAceptar.setText("Aceptar");
         BtnAceptar.setBorder(null);
+        BtnAceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         BtnAceptar.setPreferredSize(new java.awt.Dimension(230, 75));
-        BtnAceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAceptarActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(40, 0, 40, 0);
         PnlContenido.add(BtnAceptar, gridBagConstraints);
 
@@ -237,13 +262,6 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnBackActionPerformed
-
-    private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
-        // TODO add your handling code here:
-        ResumenVentaFrm rvf = new ResumenVentaFrm();
-        rvf.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_BtnAceptarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -266,17 +284,81 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
             }
         } catch (ClassNotFoundException ex)
         {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ResumenVentaFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex)
         {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ResumenVentaFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex)
         {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ResumenVentaFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex)
         {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ResumenVentaFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -345,7 +427,7 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MetodoEfectivoFrm().setVisible(true);
+                new ResumenVentaFrm().setVisible(true);
             }
         });
     }
@@ -353,15 +435,16 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAceptar;
     private javax.swing.JButton BtnBack;
-    private javax.swing.JLabel LblCambioEtiqueta;
-    private javax.swing.JLabel LblCambioMonto;
-    private javax.swing.JLabel LblPagoEtiqueta;
+    private javax.swing.JLabel LblHeaderProductos;
+    private javax.swing.JLabel LblHeaderSubtotal;
     private javax.swing.JLabel LblTitulo;
     private javax.swing.JLabel LblTotalEtiqueta;
     private javax.swing.JLabel LblTotalMonto;
+    private javax.swing.JPanel PnlAgrupadorTotal;
     private javax.swing.JPanel PnlContenido;
     private javax.swing.JPanel PnlFooter;
     private javax.swing.JPanel PnlHeader;
-    private javax.swing.JTextField TxtPago;
+    private javax.swing.JScrollPane ScrollListaProductos;
+    private javax.swing.JTable TblListaProductos;
     // End of variables declaration//GEN-END:variables
 }
