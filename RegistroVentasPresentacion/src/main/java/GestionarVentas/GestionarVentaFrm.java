@@ -187,6 +187,9 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
         // TODO add your handling code here:
+        MenuCajeroFrm mcf = new MenuCajeroFrm();
+        mcf.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_BtnBackActionPerformed
 
     private void BtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarActionPerformed
