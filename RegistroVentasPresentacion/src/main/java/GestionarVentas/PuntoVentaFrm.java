@@ -30,41 +30,17 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         PnlContenido = new javax.swing.JPanel();
-        BtnCaldosPlatos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
         PnlContenido.setBackground(new java.awt.Color(255, 255, 255));
+        PnlContenido.setForeground(new java.awt.Color(255, 255, 255));
         PnlContenido.setLayout(new java.awt.GridBagLayout());
-
-        BtnCaldosPlatos.setBackground(new java.awt.Color(250, 52, 52));
-        BtnCaldosPlatos.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        BtnCaldosPlatos.setForeground(new java.awt.Color(255, 255, 255));
-        BtnCaldosPlatos.setText("Caldos y Platos");
-        BtnCaldosPlatos.setPreferredSize(new java.awt.Dimension(250, 150));
-        BtnCaldosPlatos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnCaldosPlatosActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
-        PnlContenido.add(BtnCaldosPlatos, gridBagConstraints);
-
         getContentPane().add(PnlContenido, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void BtnCaldosPlatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCaldosPlatosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnCaldosPlatosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,7 +116,6 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnCaldosPlatos;
     private javax.swing.JPanel PnlContenido;
     // End of variables declaration//GEN-END:variables
 }
