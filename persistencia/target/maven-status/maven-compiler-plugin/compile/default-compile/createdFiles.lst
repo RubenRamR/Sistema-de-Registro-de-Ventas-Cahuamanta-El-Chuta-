@@ -1,0 +1,8 @@
+repositorios\PruebaPersistencia.class
+entidades\Venta.class
+entidades\Producto.class
+entidades\DetalleVenta.class
+daos\ProductoDAO.class
+entidades\Usuario.class
+conexion\ConexionBD.class
+entidades\Tipo.class
