@@ -1,0 +1,13 @@
+interfaces\IUsuarioBO.class
+interfaces\IProductoBO.class
+dtos\VentaDTO.class
+prueba\Test.class
+bos\UsuarioBO.class
+mappers\ProductoMapper.class
+dtos\UsuarioDTO.class
+dtos\ProductoDTO.class
+bos\ProductoBO.class
+bos\VentaBO.class
+mappers\UsuarioMapper.class
+interfaces\IVentaBO.class
+mappers\VentaMapper.class
