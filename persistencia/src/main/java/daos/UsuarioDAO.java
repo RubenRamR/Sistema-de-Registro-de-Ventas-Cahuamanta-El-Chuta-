@@ -65,6 +65,5 @@ public class UsuarioDAO implements IUsuarioDAO {
         } catch(Exception e) {
             throw new PersistenciaException("Usuario no encontrado.");
         }
-        
     }
 }

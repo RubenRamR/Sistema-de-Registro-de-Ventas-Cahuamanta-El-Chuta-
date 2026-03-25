@@ -1,6 +1,8 @@
 package Control;
 
+import GestionarVentas.GestionarVentaFrm;
 import GestionarVentas.MenuCajeroFrm;
+import GestionarVentas.PuntoVentaFrm;
 import IniciarSesion.PantallaLogin;
 import excepciones.NegocioException;
 import fachada.INegocio;
@@ -25,7 +27,7 @@ public class ControlVista {
         frameActual = new PantallaLogin((usuario, contrasenia) -> {
             try {
                 negocio.iniciarSesion(usuario, contrasenia);
-                mostrarPnlMenuCajero();
+                mostrarMenuCajeroFrm();
             } catch(NegocioException e) {
                 JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
@@ -33,8 +35,22 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarPnlMenuCajero() {
-        frameActual = new MenuCajeroFrm();
+    public void mostrarMenuCajeroFrm() {
+        frameActual = new MenuCajeroFrm(() -> {
+            mostrarGestionarVentaFrm();
+        });
+        frameActual.setVisible(true);
+    }
+    
+    public void mostrarGestionarVentaFrm() {
+        frameActual = new GestionarVentaFrm(() -> {
+            mostrarPuntoVentaFrm();
+        });
+        frameActual.setVisible(true);
+    }
+    
+    public void mostrarPuntoVentaFrm() {
+        frameActual = new PuntoVentaFrm();
         frameActual.setVisible(true);
     }
 }

@@ -10,13 +10,17 @@ package GestionarVentas;
  */
 public class MenuCajeroFrm extends javax.swing.JFrame {
 
+    private Runnable onGestionarVentas;
+    
     /**
      * Creates new form MenuFrm
      */
-    public MenuCajeroFrm() {
+    public MenuCajeroFrm(Runnable onGestionarVentas) {
         initComponents();
         setExtendedState(MenuCajeroFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        
+        this.onGestionarVentas = onGestionarVentas;
     }
 
     /**
@@ -137,6 +141,7 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
 
     private void BtnGestionarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGestionarVentasActionPerformed
         // TODO add your handling code here:
+        onGestionarVentas.run();
     }//GEN-LAST:event_BtnGestionarVentasActionPerformed
 
     /**
@@ -191,7 +196,7 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MenuCajeroFrm().setVisible(true);
+                new MenuCajeroFrm(() -> {}).setVisible(true);
             }
         });
     }
