@@ -5,6 +5,7 @@
 package interfaces;
 
 import entidades.Usuario;
+import excepciones.PersistenciaException;
 import java.util.List;
 
 /**
@@ -22,4 +23,6 @@ public interface IUsuarioDAO {
     void actualizar(Usuario usuario);
 
     void eliminar(Long id);
+    
+    Usuario obtener(String nombre, String contrasenia) throws PersistenciaException;
 }

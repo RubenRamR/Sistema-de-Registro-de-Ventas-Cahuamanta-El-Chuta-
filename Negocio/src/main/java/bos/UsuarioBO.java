@@ -6,6 +6,8 @@ package bos;
 
 import dtos.UsuarioDTO;
 import entidades.Usuario;
+import excepciones.NegocioException;
+import excepciones.PersistenciaException;
 import interfaces.IUsuarioDAO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,9 @@ import mappers.UsuarioMapper;
 public class UsuarioBO {
 
     private IUsuarioDAO usuarioDAO;
+    
+    // Atributo para iniciar sesión
+    private Usuario sesion;
 
     // Inyección de dependencia a través del constructor
     public UsuarioBO(IUsuarioDAO usuarioDAO) {
@@ -55,5 +60,13 @@ public class UsuarioBO {
         return usuarios.stream()
                         .map(UsuarioMapper::toDTO)  // Convertimos cada entidad a DTO
                         .collect(Collectors.toList());
+    }
+    
+    public void iniciarSesion(String nombre, String contrasenia) throws NegocioException {
+        try {
+            sesion = usuarioDAO.obtener(nombre, contrasenia);
+        } catch(PersistenciaException e) {
+            throw new NegocioException("Usuario o contraseña incorrectos.");
+        }
     }
 }

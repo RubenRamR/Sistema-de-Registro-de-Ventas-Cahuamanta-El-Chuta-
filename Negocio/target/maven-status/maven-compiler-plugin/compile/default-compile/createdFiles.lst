@@ -5,9 +5,12 @@ prueba\Test.class
 bos\UsuarioBO.class
 mappers\ProductoMapper.class
 dtos\UsuarioDTO.class
+excepciones\NegocioException.class
 dtos\ProductoDTO.class
 bos\ProductoBO.class
+fachada\Negocio.class
 bos\VentaBO.class
+fachada\INegocio.class
 mappers\UsuarioMapper.class
 interfaces\IVentaBO.class
 mappers\VentaMapper.class

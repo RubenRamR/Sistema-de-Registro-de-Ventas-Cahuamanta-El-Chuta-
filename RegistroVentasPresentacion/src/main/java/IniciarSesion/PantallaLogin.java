@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.function.BiConsumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +24,7 @@ import javax.swing.SwingUtilities;
  */
 public class PantallaLogin extends JFrame {
 
-    public PantallaLogin() {
+    public PantallaLogin(BiConsumer<String, String> onIniciarSesion) {
         setTitle("Iniciar Sesión");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,6 +117,12 @@ public class PantallaLogin extends JFrame {
         btnIniciarSesion.setFocusPainted(false);
         btnIniciarSesion.setBounds(180, 230, 200, 40);
         btnIniciarSesion.setBorder(BorderFactory.createEmptyBorder()); 
+        btnIniciarSesion.addActionListener(e -> {
+            onIniciarSesion.accept(
+                    txtUsuario.getText(), 
+                    new String(txtContrasena.getPassword())
+            );
+        });
         panelFormulario.add(btnIniciarSesion);
 
         // Añadir el recuadro beige al panel central en la fila 1
@@ -129,7 +136,7 @@ public class PantallaLogin extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            PantallaLogin ventana = new PantallaLogin();
+            PantallaLogin ventana = new PantallaLogin((a, b) -> {});
             ventana.setVisible(true);
         });
     }

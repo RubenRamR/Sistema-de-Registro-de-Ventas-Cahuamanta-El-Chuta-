@@ -2,6 +2,7 @@ package daos;
 
 import conexion.ConexionBD;
 import entidades.Usuario;
+import excepciones.PersistenciaException;
 import interfaces.IUsuarioDAO;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -51,5 +52,19 @@ public class UsuarioDAO implements IUsuarioDAO {
             em.remove(usuario);
             em.getTransaction().commit();
         }
+    }
+    
+    @Override
+    public Usuario obtener(String nombre, String contrasenia) throws PersistenciaException {
+        try {
+            return em.createQuery(
+                "SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.contrasenia = :contrasenia", Usuario.class)
+                .setParameter("nombre", nombre)
+                .setParameter("contrasenia", contrasenia)
+                .getSingleResult();
+        } catch(Exception e) {
+            throw new PersistenciaException("Usuario no encontrado.");
+        }
+        
     }
 }

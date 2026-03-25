@@ -1,5 +1,6 @@
 daos\TipoDAO.class
 entidades\Venta.class
+excepciones\PersistenciaException.class
 interfaces\IDetalleVentaDAO.class
 interfaces\IProductoDAO.class
 entidades\DetalleVenta.class

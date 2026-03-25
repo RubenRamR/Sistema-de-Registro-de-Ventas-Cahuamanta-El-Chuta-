@@ -83,7 +83,7 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
         BtnBack.setText("←");
         BtnBack.setAlignmentY(0.0F);
         BtnBack.setBorder(null);
-        BtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BtnBack.setFocusPainted(false);
         BtnBack.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnBack.setInheritsPopupMenu(true);
@@ -104,9 +104,7 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
         SPVentas.setPreferredSize(new java.awt.Dimension(1000, 350));
 
-        TblVentas.setBackground(new java.awt.Color(255, 255, 255));
         TblVentas.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        TblVentas.setForeground(new java.awt.Color(0, 0, 0));
         TblVentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 { new Integer(101), "25/12/2024",  new Float(200.5), "Pagado", "Cajero", "Ver Detalle"}
@@ -164,7 +162,7 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
         BtnAgregar.setText("Agregar");
         BtnAgregar.setAlignmentY(0.0F);
         BtnAgregar.setBorder(null);
-        BtnAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BtnAgregar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnAgregar.setPreferredSize(new java.awt.Dimension(1000, 75));
         BtnAgregar.addActionListener(new java.awt.event.ActionListener() {
