@@ -30,6 +30,14 @@ public class DetalleVentaDTO {
         this.producto = producto;
     }
 
+    public DetalleVentaDTO(Long id, int cantidad, BigDecimal precioUnitario, BigDecimal subtotal, ProductoDTO producto) {
+        this.id = id;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.subtotal = subtotal;
+        this.producto = producto;
+    }
+
     public Long getId() {
         return id;
     }

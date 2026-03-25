@@ -1,6 +1,8 @@
 package fachada;
 
 import dtos.DetalleVentaDTO;
+import dtos.ProductoDTO;
+import dtos.VentaDTO;
 import excepciones.NegocioException;
 import java.util.List;
 
@@ -12,5 +14,9 @@ public interface INegocio {
     
     public void iniciarSesion(String nombre, String contrasenia) throws NegocioException;
     public void addProductosVenta(List<DetalleVentaDTO> detalles) throws NegocioException;
-    public void getVentaActual();
+    public VentaDTO getVentaActual();
+    public void setMetodoPagoVentaActual(String metodoPago);
+    public List<DetalleVentaDTO> getProductosVenta();
+    public void registrarVentaActual();
+    public List<ProductoDTO> obtenerProductos();
 }

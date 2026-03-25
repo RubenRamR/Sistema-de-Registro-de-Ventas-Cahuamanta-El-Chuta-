@@ -16,7 +16,7 @@ public class TarjetaPago extends JPanel {
     private Color colorActual = colorBase;
     private Image icono;
 
-    public TarjetaPago(String texto, String rutaIcono) {
+    public TarjetaPago(String texto, String rutaIcono, Runnable onClick) {
         setPreferredSize(new Dimension(250, 180));
         setOpaque(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -56,6 +56,7 @@ public class TarjetaPago extends JPanel {
             public void mousePressed(MouseEvent e) {
                 // Aquí disparas la lógica de pago
                 System.out.println("Seleccionado: " + texto);
+                onClick.run();
             }
         });
     }

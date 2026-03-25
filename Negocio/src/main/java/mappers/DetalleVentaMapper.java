@@ -19,4 +19,15 @@ public class DetalleVentaMapper {
         
         return detalle;
     }
+    
+    public static DetalleVentaDTO toDTO(DetalleVenta detalle) {
+        DetalleVentaDTO detalleDTO = new DetalleVentaDTO();
+        
+        detalleDTO.setCantidad(detalle.getCantidad());
+        detalleDTO.setProducto(ProductoMapper.toDTO(detalle.getProducto()));
+        detalleDTO.setPrecioUnitario(detalle.getPrecioUnitario());
+        detalleDTO.setId(detalle.getIdDetalleVenta());
+        
+        return detalleDTO;
+    }
 }

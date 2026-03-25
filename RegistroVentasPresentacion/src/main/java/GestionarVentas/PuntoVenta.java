@@ -58,10 +58,12 @@ public class PuntoVenta extends JFrame {
 
     public PuntoVenta(
             Consumer<List<DetalleVentaDTO>> onRegistrarVenta,
-            Supplier<List<ProductoDTO>> onCategoriaSeleccionada
+            Supplier<List<ProductoDTO>> onCategoriaSeleccionada,
+            List<ProductoDTO> inventario
     ) {
         this.onRegistrarVenta = onRegistrarVenta;
         this.onCategoriaSeleccionada = onCategoriaSeleccionada;
+        this.inventario = inventario;
         
         setTitle("Punto Venta");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +71,7 @@ public class PuntoVenta extends JFrame {
         setLocationRelativeTo(null);
         
         carritoCompras = new ArrayList<>();
-        cargarDatosSimulados();
+        //cargarDatosSimulados();
         
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -331,7 +333,8 @@ public class PuntoVenta extends JFrame {
 
         SwingUtilities.invokeLater(() -> new PuntoVenta(
                 a -> {},
-                () -> new ArrayList<>()
+                () -> new ArrayList<>(),
+                null
         ).setVisible(true));
     }
 }

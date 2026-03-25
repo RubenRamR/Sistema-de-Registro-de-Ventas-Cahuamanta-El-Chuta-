@@ -3,8 +3,11 @@ package Control;
 import GestionarVentas.GestionarVentaFrm;
 import GestionarVentas.MenuCajeroFrm;
 import GestionarVentas.MetodoEfectivoFrm;
+import GestionarVentas.MetodoPagoFrm;
+import GestionarVentas.PantallaResumen;
 import GestionarVentas.PuntoVenta;
 import IniciarSesion.PantallaLogin;
+import dtos.VentaDTO;
 import excepciones.NegocioException;
 import fachada.INegocio;
 import fachada.Negocio;
@@ -64,13 +67,59 @@ public class ControlVista {
                 JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         },
-                () -> new ArrayList<>()
+                () -> new ArrayList<>(),
+                negocio.obtenerProductos()
         );
         frameActual.setVisible(true);
     }
     
     public void mostrarMetodoPagoFrm() {
-        frameActual = new MetodoEfectivoFrm();
+        frameActual = new MetodoPagoFrm(
+                () -> {
+                    frameActual.dispose();
+                    mostrarPagoEfectivoFrm();
+                },
+                () -> {
+                    negocio.setMetodoPagoVentaActual("TARJETA");
+                    
+                    frameActual.dispose();
+                    mostrarPantallaResumen();
+                },
+                () -> {
+                    negocio.setMetodoPagoVentaActual("TRANSFERENCIA");
+                    
+                    frameActual.dispose();
+                    mostrarPantallaResumen();
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    public void mostrarPagoEfectivoFrm() {
+        VentaDTO venta = negocio.getVentaActual();
+        System.out.println(venta);
+        frameActual = new MetodoEfectivoFrm(
+                venta.getTotal(),
+                () -> {
+                    negocio.setMetodoPagoVentaActual("EFECTIVO");
+                    frameActual.dispose();
+                    mostrarPantallaResumen();
+                            }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    public void mostrarPantallaResumen() {
+        frameActual = new PantallaResumen(
+                negocio.getProductosVenta(),
+                () -> {
+                    negocio.registrarVentaActual();
+                    JOptionPane.showMessageDialog(frameActual, "Venta registrada.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    frameActual.dispose();
+                    mostrarMenuCajeroFrm();
+                }
+        );
         frameActual.setVisible(true);
     }
 }

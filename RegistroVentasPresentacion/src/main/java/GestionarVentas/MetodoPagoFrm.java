@@ -14,10 +14,22 @@ import java.awt.Insets;
  */
 public class MetodoPagoFrm extends javax.swing.JFrame {
 
+    private Runnable onPagoEfectivo;
+    private Runnable onPagoTarjeta;
+    private Runnable onPagoTransferencia;
+    
     /**
      * Creates new form MenuFrm
      */
-    public MetodoPagoFrm() {
+    public MetodoPagoFrm(
+            Runnable onPagoEfectivo,
+            Runnable onPagoTarjeta,
+            Runnable onPagoTransferencia
+    ) {
+        this.onPagoEfectivo = onPagoEfectivo;
+        this.onPagoTarjeta = onPagoTarjeta;
+        this.onPagoTransferencia = this.onPagoTransferencia;
+        
         initComponents();
         setExtendedState(MetodoPagoFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
@@ -35,17 +47,17 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        PnlContenido.add(new TarjetaPago("Efectivo", "efectivo.png"), gbc);
+        PnlContenido.add(new TarjetaPago("Efectivo", "efectivo.png", onPagoEfectivo), gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        PnlContenido.add(new TarjetaPago("Tarjeta", "tarjeta.png"), gbc);
+        PnlContenido.add(new TarjetaPago("Tarjeta", "tarjeta.png", onPagoTarjeta), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.insets = new java.awt.Insets(10, 20, 40, 20);
-        PnlContenido.add(new TarjetaPago("Transferencia", "transferencia.png"), gbc);
+        PnlContenido.add(new TarjetaPago("Transferencia", "transferencia.png", onPagoTransferencia), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -226,7 +238,11 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MetodoPagoFrm().setVisible(true);
+                new MetodoPagoFrm(
+                        () -> {},
+                        () -> {},
+                        () -> {}
+                ).setVisible(true);
             }
         });
     }

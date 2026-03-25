@@ -7,9 +7,11 @@ package bos;
 import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
 import entidades.DetalleVenta;
+import entidades.Usuario;
 import entidades.Venta;
 import excepciones.NegocioException;
 import interfaces.IVentaDAO;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,12 +56,39 @@ public class VentaBO {
         venta.setDetallesVenta(entitys);
         venta.setFechaHora(LocalDateTime.now());
         
+        BigDecimal bD = BigDecimal.ZERO;
+        for (DetalleVenta entity : entitys) {
+            bD = bD.add(entity.getPrecioUnitario());
+        }
+        
+        System.out.println(entitys.getFirst().getPrecioUnitario());
+        System.out.println(detalles);
+        System.out.println(bD);
+        
+        venta.setTotal(bD);
+        System.out.println(venta.getTotal());
+        
         this.venta = venta;
-        System.out.println(venta);
+    }
+    
+    public void crearVenta(Usuario sesion) {
+        venta.setUsuario(sesion);
+        ventaDAO.crear(venta);
+        venta = null;
     }
     
     public VentaDTO obtenerVentaActual() {
         return VentaMapper.toDTO(venta);
+    }
+    
+    public void setMetodoPago(String metodoPago) {
+        venta.setMetodoPago(metodoPago);
+    }
+    
+    public List<DetalleVentaDTO> getProductosVenta() {
+        return venta.getDetallesVenta().stream()
+                .map(DetalleVentaMapper::toDTO)
+                .toList();
     }
 
     // Obtener una venta por su ID

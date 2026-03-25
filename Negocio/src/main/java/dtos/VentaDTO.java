@@ -60,4 +60,10 @@ public class VentaDTO {
     public void setMetodoPago(String metodoPago) {
         this.metodoPago = metodoPago;
     }
+
+    @Override
+    public String toString() {
+        return "VentaDTO{" + "idVenta=" + idVenta + ", total=" + total + ", fechaHora=" + fechaHora + ", folio=" + folio + ", metodoPago=" + metodoPago + '}';
+    }
+    
 }

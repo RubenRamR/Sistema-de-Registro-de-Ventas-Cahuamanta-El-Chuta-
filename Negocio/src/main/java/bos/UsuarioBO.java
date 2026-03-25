@@ -69,4 +69,8 @@ public class UsuarioBO {
             throw new NegocioException("Usuario o contraseña incorrectos.");
         }
     }
+    
+    public Usuario obtenerSesion() {
+        return sesion;
+    }
 }

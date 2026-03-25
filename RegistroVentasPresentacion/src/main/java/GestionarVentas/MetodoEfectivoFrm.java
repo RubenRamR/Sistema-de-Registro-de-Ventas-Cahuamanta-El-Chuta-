@@ -7,6 +7,7 @@ package GestionarVentas;
 import Componentes.TarjetaPago;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.math.BigDecimal;
 
 /**
  *
@@ -14,13 +15,23 @@ import java.awt.Insets;
  */
 public class MetodoEfectivoFrm extends javax.swing.JFrame {
 
+    private Runnable onAceptar;
+    
     /**
      * Creates new form MenuFrm
+     * @param total
      */
-    public MetodoEfectivoFrm() {
+    public MetodoEfectivoFrm(
+            BigDecimal total,
+            Runnable onAceptar
+    ) {
+        this.onAceptar = onAceptar;
+        
         initComponents();
         setExtendedState(MetodoEfectivoFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        
+        LblTotalMonto.setText(total.toString());
     }
 
     /**
@@ -75,7 +86,7 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         BtnBack.setText("←");
         BtnBack.setAlignmentY(0.0F);
         BtnBack.setBorder(null);
-        BtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BtnBack.setFocusPainted(false);
         BtnBack.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnBack.setInheritsPopupMenu(true);
@@ -188,7 +199,6 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
         PnlContenido.add(LblTotalMonto, gridBagConstraints);
 
-        TxtPago.setBackground(new java.awt.Color(255, 255, 255));
         TxtPago.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         TxtPago.setForeground(new java.awt.Color(3, 4, 94));
         TxtPago.setText("0");
@@ -217,6 +227,11 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         BtnAceptar.setText("Aceptar");
         BtnAceptar.setBorder(null);
         BtnAceptar.setPreferredSize(new java.awt.Dimension(230, 75));
+        BtnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAceptarActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -232,6 +247,10 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnBackActionPerformed
+
+    private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
+        onAceptar.run();
+    }//GEN-LAST:event_BtnAceptarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -333,7 +352,7 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MetodoEfectivoFrm().setVisible(true);
+                new MetodoEfectivoFrm(BigDecimal.ZERO, () -> {}).setVisible(true);
             }
         });
     }
