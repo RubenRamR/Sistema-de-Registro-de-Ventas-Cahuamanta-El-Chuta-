@@ -6,13 +6,9 @@ import interfaces.IUsuarioDAO;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-/**
- *
- * @author chris
- */
 public class UsuarioDAO implements IUsuarioDAO {
 
-    private EntityManager em;
+    private final EntityManager em;
 
     public UsuarioDAO() {
         this.em = ConexionBD.getEntityManager();
@@ -22,13 +18,25 @@ public class UsuarioDAO implements IUsuarioDAO {
     public void crear(Usuario usuario) {
         em.getTransaction().begin();
         em.persist(usuario);
-        em.flush(); // Forzar commit inmediato
+        em.flush();
         em.getTransaction().commit();
     }
 
     @Override
     public Usuario obtener(Long id) {
         return em.find(Usuario.class, id);
+    }
+
+    @Override
+    public Usuario obtenerPorCredenciales(String nombre, String contrasenia) {
+        List<Usuario> usuarios = em.createQuery(
+                "SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.contrasenia = :contrasenia",
+                Usuario.class)
+                .setParameter("nombre", nombre)
+                .setParameter("contrasenia", contrasenia)
+                .setMaxResults(1)
+                .getResultList();
+        return usuarios.isEmpty() ? null : usuarios.get(0);
     }
 
     @Override

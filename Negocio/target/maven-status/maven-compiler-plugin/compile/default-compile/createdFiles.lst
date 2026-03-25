@@ -5,6 +5,7 @@ prueba\Test.class
 bos\UsuarioBO.class
 mappers\ProductoMapper.class
 dtos\UsuarioDTO.class
+dtos\DetalleVentaDTO.class
 dtos\ProductoDTO.class
 bos\ProductoBO.class
 bos\VentaBO.class

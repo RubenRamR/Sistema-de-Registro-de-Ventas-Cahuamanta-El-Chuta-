@@ -1,60 +1,48 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package bos;
 
 import dtos.ProductoDTO;
 import entidades.Producto;
+import interfaces.IProductoBO;
 import interfaces.IProductoDAO;
 import java.util.List;
 import java.util.stream.Collectors;
 import mappers.ProductoMapper;
 
-/**
- *
- * @author luise
- */
+public class ProductoBO implements IProductoBO {
 
-public class ProductoBO {
+    private final IProductoDAO productoDAO;
 
-    private IProductoDAO productoDAO;
-
-    // Inyección de dependencia a través del constructor
     public ProductoBO(IProductoDAO productoDAO) {
         this.productoDAO = productoDAO;
     }
 
-    // Crear un producto en la base de datos
+    @Override
     public void crearProducto(ProductoDTO productoDTO) {
-        // Convertimos el DTO a entidad usando el mapper
         Producto producto = ProductoMapper.toEntity(productoDTO);
-        productoDAO.crear(producto);  // Llamamos al DAO para persistir la entidad
+        productoDAO.crear(producto);
     }
 
-    // Obtener un producto por su ID
+    @Override
     public ProductoDTO obtenerProducto(Long id) {
-        Producto producto = productoDAO.obtener(id);  // El DAO obtiene la entidad directamente
-        return ProductoMapper.toDTO(producto);  // Convertimos la entidad a DTO
+        Producto producto = productoDAO.obtener(id);
+        return producto == null ? null : ProductoMapper.toDTO(producto);
     }
 
-    // Actualizar un producto
+    @Override
     public void actualizarProducto(ProductoDTO productoDTO) {
-        // Convertimos el DTO a entidad
         Producto producto = ProductoMapper.toEntity(productoDTO);
-        productoDAO.actualizar(producto);  // Llamamos al DAO para actualizar la entidad
+        productoDAO.actualizar(producto);
     }
 
-    // Eliminar un producto
+    @Override
     public void eliminarProducto(Long id) {
-        productoDAO.eliminar(id);  // Llamada al DAO para eliminar la venta
+        productoDAO.eliminar(id);
     }
 
-    // Obtener todos los productos
+    @Override
     public List<ProductoDTO> obtenerTodosLosProductos() {
-        List<Producto> productos = productoDAO.obtenerTodos();  // El DAO obtiene las entidades directamente
-        return productos.stream()
-                        .map(ProductoMapper::toDTO)  // Convertimos cada entidad a DTO
-                        .collect(Collectors.toList());
+        return productoDAO.obtenerTodos().stream()
+                .map(ProductoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

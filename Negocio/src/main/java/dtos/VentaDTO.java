@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dtos;
-
-/**
- *
- * @author luise
- */
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VentaDTO {
 
@@ -19,8 +12,10 @@ public class VentaDTO {
     private LocalDateTime fechaHora;
     private String folio;
     private String metodoPago;
+    private Long idUsuario;
+    private String nombreUsuario;
+    private List<DetalleVentaDTO> detalles = new ArrayList<>();
 
-    // Getters y Setters
     public Long getIdVenta() {
         return idVenta;
     }
@@ -59,5 +54,29 @@ public class VentaDTO {
 
     public void setMetodoPago(String metodoPago) {
         this.metodoPago = metodoPago;
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public List<DetalleVentaDTO> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleVentaDTO> detalles) {
+        this.detalles = detalles;
     }
 }

@@ -1,21 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dtos;
-
-/**
- *
- * @author luise
- */
 
 public class UsuarioDTO {
 
     private Long idUsuario;
     private String nombre;
     private String contrasenia;
+    private Long idTipo;
+    private String tipoNombre;
 
-    // Getters y Setters
     public Long getIdUsuario() {
         return idUsuario;
     }
@@ -38,5 +30,21 @@ public class UsuarioDTO {
 
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
+    }
+
+    public Long getIdTipo() {
+        return idTipo;
+    }
+
+    public void setIdTipo(Long idTipo) {
+        this.idTipo = idTipo;
+    }
+
+    public String getTipoNombre() {
+        return tipoNombre;
+    }
+
+    public void setTipoNombre(String tipoNombre) {
+        this.tipoNombre = tipoNombre;
     }
 }
