@@ -6,10 +6,12 @@ bos\UsuarioBO.class
 mappers\ProductoMapper.class
 dtos\UsuarioDTO.class
 excepciones\NegocioException.class
+dtos\DetalleVentaDTO.class
 dtos\ProductoDTO.class
 bos\ProductoBO.class
 fachada\Negocio.class
 bos\VentaBO.class
+mappers\DetalleVentaMapper.class
 fachada\INegocio.class
 mappers\UsuarioMapper.class
 interfaces\IVentaBO.class

@@ -15,6 +15,20 @@ public class ProductoDTO {
     private String nombre;
     private BigDecimal precio;
 
+    public ProductoDTO() {
+    }
+
+    public ProductoDTO(Long idProducto, String nombre, BigDecimal precio) {
+        this.idProducto = idProducto;
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public ProductoDTO(String nombre, BigDecimal precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
     // Getters y Setters
     public Long getIdProducto() {
         return idProducto;

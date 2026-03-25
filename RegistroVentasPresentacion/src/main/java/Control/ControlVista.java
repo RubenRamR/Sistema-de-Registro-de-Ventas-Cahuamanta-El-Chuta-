@@ -2,11 +2,13 @@ package Control;
 
 import GestionarVentas.GestionarVentaFrm;
 import GestionarVentas.MenuCajeroFrm;
-import GestionarVentas.PuntoVentaFrm;
+import GestionarVentas.MetodoEfectivoFrm;
+import GestionarVentas.PuntoVenta;
 import IniciarSesion.PantallaLogin;
 import excepciones.NegocioException;
 import fachada.INegocio;
 import fachada.Negocio;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -27,6 +29,7 @@ public class ControlVista {
         frameActual = new PantallaLogin((usuario, contrasenia) -> {
             try {
                 negocio.iniciarSesion(usuario, contrasenia);
+                frameActual.dispose();
                 mostrarMenuCajeroFrm();
             } catch(NegocioException e) {
                 JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
@@ -37,6 +40,7 @@ public class ControlVista {
     
     public void mostrarMenuCajeroFrm() {
         frameActual = new MenuCajeroFrm(() -> {
+            frameActual.dispose();
             mostrarGestionarVentaFrm();
         });
         frameActual.setVisible(true);
@@ -44,13 +48,29 @@ public class ControlVista {
     
     public void mostrarGestionarVentaFrm() {
         frameActual = new GestionarVentaFrm(() -> {
+            frameActual.dispose();
             mostrarPuntoVentaFrm();
         });
         frameActual.setVisible(true);
     }
     
     public void mostrarPuntoVentaFrm() {
-        frameActual = new PuntoVentaFrm();
+        frameActual = new PuntoVenta(detalles -> {
+            try {
+                negocio.addProductosVenta(detalles);
+                frameActual.dispose();
+                mostrarMetodoPagoFrm();
+            } catch (NegocioException e) {
+                JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        },
+                () -> new ArrayList<>()
+        );
+        frameActual.setVisible(true);
+    }
+    
+    public void mostrarMetodoPagoFrm() {
+        frameActual = new MetodoEfectivoFrm();
         frameActual.setVisible(true);
     }
 }

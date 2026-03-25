@@ -4,11 +4,16 @@
  */
 package bos;
 
+import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
+import entidades.DetalleVenta;
 import entidades.Venta;
+import excepciones.NegocioException;
 import interfaces.IVentaDAO;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import mappers.DetalleVentaMapper;
 import mappers.VentaMapper;
 
 /**
@@ -19,6 +24,7 @@ import mappers.VentaMapper;
 public class VentaBO {
 
     private IVentaDAO ventaDAO;  // Usamos la interfaz IVentaDAO
+    private Venta venta;
 
     // Inyección de dependencia a través del constructor
     public VentaBO(IVentaDAO ventaDAO) {
@@ -30,6 +36,30 @@ public class VentaBO {
         // Convertimos el DTO a entidad usando el mapper
         Venta venta = VentaMapper.toEntity(ventaDTO);
         ventaDAO.crear(venta);  // Llamamos al DAO para persistir la entidad
+    }
+    
+    public void crearVenta(List<DetalleVentaDTO> detalles) throws NegocioException {
+        if (detalles.isEmpty()) {
+            throw new NegocioException("Sin productos.");
+        }
+        boolean menorIgual0 = detalles.stream()
+                .anyMatch(p -> p.getCantidad() <= 0);
+        if (menorIgual0) throw new NegocioException("Cantidades no seleccionadas.");
+        
+        List<DetalleVenta> entitys = detalles.stream()
+                .map(DetalleVentaMapper::toEntity)
+                .toList();
+        
+        Venta venta = new Venta();
+        venta.setDetallesVenta(entitys);
+        venta.setFechaHora(LocalDateTime.now());
+        
+        this.venta = venta;
+        System.out.println(venta);
+    }
+    
+    public VentaDTO obtenerVentaActual() {
+        return VentaMapper.toDTO(venta);
     }
 
     // Obtener una venta por su ID

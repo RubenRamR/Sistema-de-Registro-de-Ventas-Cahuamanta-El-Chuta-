@@ -1,6 +1,7 @@
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\bos\ProductoBO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\bos\UsuarioBO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\bos\VentaBO.java
+C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\dtos\DetalleVentaDTO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\dtos\ProductoDTO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\dtos\UsuarioDTO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\dtos\VentaDTO.java
@@ -10,6 +11,7 @@ C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-C
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\interfaces\IProductoBO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\interfaces\IUsuarioBO.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\interfaces\IVentaBO.java
+C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\mappers\DetalleVentaMapper.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\mappers\ProductoMapper.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\mappers\UsuarioMapper.java
 C:\Users\MiCuenta\Documents\GitHub\Sistema-de-Registro-de-Ventas-Cahuamanta-El-Chuta-\Negocio\src\main\java\mappers\VentaMapper.java
