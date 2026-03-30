@@ -67,7 +67,7 @@ public class ControlVista {
                 JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         },
-                () -> new ArrayList<>(),
+                e -> new ArrayList<>(),
                 negocio.obtenerProductos()
         );
         frameActual.setVisible(true);

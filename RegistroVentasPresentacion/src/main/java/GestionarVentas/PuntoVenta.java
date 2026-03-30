@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -52,13 +52,15 @@ public class PuntoVenta extends JFrame {
     private JLabel lblSubtotal;
     private JLabel lblTotal;
     
+    private JPanel panelProductos;
+    
     // Acciones de ControlVista
-    Consumer<List<DetalleVentaDTO>> onRegistrarVenta;
-    Supplier<List<ProductoDTO>> onCategoriaSeleccionada;
+    private Consumer<List<DetalleVentaDTO>> onRegistrarVenta;
+    private Function<String, List<ProductoDTO>> onCategoriaSeleccionada;
 
     public PuntoVenta(
             Consumer<List<DetalleVentaDTO>> onRegistrarVenta,
-            Supplier<List<ProductoDTO>> onCategoriaSeleccionada,
+            Function<String, List<ProductoDTO>> onCategoriaSeleccionada,
             List<ProductoDTO> inventario
     ) {
         this.onRegistrarVenta = onRegistrarVenta;
@@ -71,7 +73,6 @@ public class PuntoVenta extends JFrame {
         setLocationRelativeTo(null);
         
         carritoCompras = new ArrayList<>();
-        //cargarDatosSimulados();
         
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -84,19 +85,17 @@ public class PuntoVenta extends JFrame {
         
         add(panelPrincipal);
     }
-
-    private void cargarDatosSimulados() {
-        inventario = new ArrayList<>();
-        inventario.add(new ProductoDTO("Taco de Cahuamanta", new BigDecimal("35.00")));
-        inventario.add(new ProductoDTO("Taco de Moronga", new BigDecimal("35.00")));
-        inventario.add(new ProductoDTO("Taco de Cahuamanta\ncon Camaron", new BigDecimal("50.00")));
-        inventario.add(new ProductoDTO("Taco de Aleta", new BigDecimal("90.00")));
-        inventario.add(new ProductoDTO("Taco de Camaron\nEmpanizado", new BigDecimal("55.00")));
-        inventario.add(new ProductoDTO("Taco de Camaron\nCocido", new BigDecimal("80.00")));
-        inventario.add(new ProductoDTO("Taco de Aleta y\nCamaron", new BigDecimal("110.00")));
-        inventario.add(new ProductoDTO("Taco de Pescado\nFrito", new BigDecimal("50.00")));
+    
+    private void actualizarInventario() {
+        panelProductos.removeAll();
+        for (ProductoDTO producto : inventario) {
+            panelProductos.add(crearBotonProducto(producto));
+        }
+        
+        panelProductos.revalidate();
+        panelProductos.repaint();
     }
-
+    
     private JPanel crearPanelIzquierdo() {
         JPanel panelIzquierdo = new JPanel(new BorderLayout(10, 10));
 
@@ -107,7 +106,7 @@ public class PuntoVenta extends JFrame {
         panelCategorias.add(crearBotonCategoria("TACOS", "8", new Color(255, 152, 0)));
         panelCategorias.add(crearBotonCategoria("BEBIDAS", "6", new Color(33, 33, 255)));
 
-        JPanel panelProductos = new JPanel(new GridLayout(0, 3, 15, 15));
+        panelProductos = new JPanel(new GridLayout(0, 3, 15, 15));
         
         for (ProductoDTO producto : inventario) {
             panelProductos.add(crearBotonProducto(producto));
@@ -234,6 +233,12 @@ public class PuntoVenta extends JFrame {
         // ¡CORRECCIÓN VISUAL!: Forzar color en categorías
         btn.setOpaque(true);
         btn.setBorderPainted(false);
+        
+        btn.addActionListener(e -> {
+            inventario = onCategoriaSeleccionada.apply(titulo);
+            actualizarInventario();
+        });
+        
         return btn;
     }
 
@@ -333,7 +338,7 @@ public class PuntoVenta extends JFrame {
 
         SwingUtilities.invokeLater(() -> new PuntoVenta(
                 a -> {},
-                () -> new ArrayList<>(),
+                e -> new ArrayList<>(),
                 null
         ).setVisible(true));
     }
