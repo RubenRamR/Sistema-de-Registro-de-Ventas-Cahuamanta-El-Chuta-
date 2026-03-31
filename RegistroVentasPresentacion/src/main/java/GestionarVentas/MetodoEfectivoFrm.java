@@ -7,7 +7,15 @@ package GestionarVentas;
 import Componentes.TarjetaPago;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -32,6 +40,32 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         LblTotalMonto.setText(total.toString());
+        
+        AbstractDocument doc = (AbstractDocument) TxtPago.getDocument();
+        doc.setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string.matches("\\d+")) { // Solo números
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text != null && text.matches("\\d+")) { // Solo números
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
+        
+        TxtPago.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { calcularPago(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { calcularPago(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) {}
+        });
     }
 
     /**
@@ -252,6 +286,22 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         onAceptar.run();
     }//GEN-LAST:event_BtnAceptarActionPerformed
 
+    private void calcularPago() {
+        if (TxtPago.getText().isEmpty()) {
+            return;
+        }
+        double total = Double.parseDouble(LblTotalMonto.getText());
+        double efectivo = Double.parseDouble(TxtPago.getText());
+        double cambio = efectivo - total;
+        
+        if (cambio < 0) {
+            LblCambioMonto.setText("");
+            return;
+        }
+        
+        LblCambioMonto.setText(String.valueOf(cambio));
+    }
+    
     /**
      * @param args the command line arguments
      */
