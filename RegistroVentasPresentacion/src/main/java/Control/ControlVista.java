@@ -21,8 +21,8 @@ import javax.swing.JOptionPane;
  */
 public class ControlVista {
     
-    INegocio negocio;
-    JFrame frameActual;
+    private INegocio negocio;
+    private JFrame frameActual;
 
     public ControlVista() {
         this.negocio = new Negocio();
@@ -41,15 +41,34 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarMenuCajeroFrm() {
-        frameActual = new MenuCajeroFrm(() -> {
+    private void mostrarMenuCajeroFrm() {
+        Runnable onGestionarVentas = () -> {
             frameActual.dispose();
             mostrarGestionarVentaFrm();
-        });
+        };
+        
+        Runnable onBack = () -> {
+            int seleccion = JOptionPane.showConfirmDialog(
+                    frameActual, // Componente padre (null para centrar en pantalla)
+                    "¿Desea cerrar la sesión actual?", // Mensaje
+                    "¡Cuidado!", // Título de la ventana
+                    JOptionPane.YES_NO_OPTION, // Tipo de botones (Sí/No)
+                    JOptionPane.WARNING_MESSAGE // Tipo de icono (Triángulo de advertencia)
+            );
+            if (seleccion == JOptionPane.YES_OPTION) {
+                frameActual.dispose();
+                mostrarPantallaLogin();
+            }
+        };
+        
+        frameActual = new MenuCajeroFrm(
+                onGestionarVentas,
+                onBack
+        );
         frameActual.setVisible(true);
     }
     
-    public void mostrarGestionarVentaFrm() {
+    private void mostrarGestionarVentaFrm() {
         frameActual = new GestionarVentaFrm(() -> {
             frameActual.dispose();
             mostrarPuntoVentaFrm();
@@ -57,7 +76,7 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarPuntoVentaFrm() {
+    private void mostrarPuntoVentaFrm() {
         frameActual = new PuntoVenta(detalles -> {
             try {
                 negocio.addProductosVenta(detalles);
@@ -73,7 +92,7 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarMetodoPagoFrm() {
+    private void mostrarMetodoPagoFrm() {
         frameActual = new MetodoPagoFrm(
                 () -> {
                     frameActual.dispose();
@@ -95,7 +114,7 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarPagoEfectivoFrm() {
+    private void mostrarPagoEfectivoFrm() {
         VentaDTO venta = negocio.getVentaActual();
         System.out.println(venta);
         frameActual = new MetodoEfectivoFrm(
@@ -109,7 +128,7 @@ public class ControlVista {
         frameActual.setVisible(true);
     }
     
-    public void mostrarPantallaResumen() {
+    private void mostrarPantallaResumen() {
         frameActual = new PantallaResumen(
                 negocio.getProductosVenta(),
                 () -> {

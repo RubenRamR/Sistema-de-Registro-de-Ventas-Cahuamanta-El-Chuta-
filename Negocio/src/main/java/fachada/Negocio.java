@@ -32,6 +32,11 @@ public class Negocio implements INegocio {
     public void iniciarSesion(String nombre, String contrasenia) throws NegocioException {
         usuarioBO.iniciarSesion(nombre, contrasenia);
     }
+    
+    @Override
+    public void cerrarSesionActual() {
+        
+    }
 
     @Override
     public void addProductosVenta(List<DetalleVentaDTO> detalles) throws NegocioException {

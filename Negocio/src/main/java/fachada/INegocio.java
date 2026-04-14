@@ -13,6 +13,7 @@ import java.util.List;
 public interface INegocio {
     
     public void iniciarSesion(String nombre, String contrasenia) throws NegocioException;
+    public void cerrarSesionActual();
     public void addProductosVenta(List<DetalleVentaDTO> detalles) throws NegocioException;
     public VentaDTO getVentaActual();
     public void setMetodoPagoVentaActual(String metodoPago);

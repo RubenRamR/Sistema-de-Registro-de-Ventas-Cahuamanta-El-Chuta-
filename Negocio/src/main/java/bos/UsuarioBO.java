@@ -73,4 +73,8 @@ public class UsuarioBO {
     public Usuario obtenerSesion() {
         return sesion;
     }
+    
+    public void cerrarSesion() {
+        sesion = null;
+    }
 }
