@@ -30,7 +30,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
     ) {
         this.onPagoEfectivo = onPagoEfectivo;
         this.onPagoTarjeta = onPagoTarjeta;
-        this.onPagoTransferencia = this.onPagoTransferencia;
+        this.onPagoTransferencia = onPagoTransferencia;
         this.onBack = onBack;
         
         initComponents();
