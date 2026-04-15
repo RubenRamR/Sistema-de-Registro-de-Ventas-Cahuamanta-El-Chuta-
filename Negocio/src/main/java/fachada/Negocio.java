@@ -35,7 +35,7 @@ public class Negocio implements INegocio {
     
     @Override
     public void cerrarSesionActual() {
-        
+        usuarioBO.cerrarSesion();
     }
 
     @Override

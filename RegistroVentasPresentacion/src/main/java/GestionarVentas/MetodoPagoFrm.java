@@ -17,6 +17,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
     private Runnable onPagoEfectivo;
     private Runnable onPagoTarjeta;
     private Runnable onPagoTransferencia;
+    private Runnable onBack;
     
     /**
      * Creates new form MenuFrm
@@ -24,11 +25,13 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
     public MetodoPagoFrm(
             Runnable onPagoEfectivo,
             Runnable onPagoTarjeta,
-            Runnable onPagoTransferencia
+            Runnable onPagoTransferencia,
+            Runnable onBack
     ) {
         this.onPagoEfectivo = onPagoEfectivo;
         this.onPagoTarjeta = onPagoTarjeta;
         this.onPagoTransferencia = this.onPagoTransferencia;
+        this.onBack = onBack;
         
         initComponents();
         setExtendedState(MetodoPagoFrm.MAXIMIZED_BOTH);
@@ -167,7 +170,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
-        // TODO add your handling code here:
+        onBack.run();
     }//GEN-LAST:event_BtnBackActionPerformed
 
     /**
@@ -239,6 +242,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MetodoPagoFrm(
+                        () -> {},
                         () -> {},
                         () -> {},
                         () -> {}

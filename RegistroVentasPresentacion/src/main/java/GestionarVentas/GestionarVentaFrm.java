@@ -14,17 +14,22 @@ import utils.ButtonRenderer;
 public class GestionarVentaFrm extends javax.swing.JFrame {
 
     private Runnable onAgregarVenta;
+    private Runnable onBack;
     
     /**
      * Creates new form MenuFrm
      */
-    public GestionarVentaFrm(Runnable onAgregarVenta) {
+    public GestionarVentaFrm(
+            Runnable onAgregarVenta,
+            Runnable onBack
+    ) {
         initComponents();
         setExtendedState(GestionarVentaFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         configurarTabla();
         
         this.onAgregarVenta = onAgregarVenta;
+        this.onBack = onBack;
     }
 
     public void configurarTabla() {
@@ -188,7 +193,7 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
-        // TODO add your handling code here:
+        onBack.run();
     }//GEN-LAST:event_BtnBackActionPerformed
 
     private void BtnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAgregarActionPerformed
@@ -236,7 +241,10 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GestionarVentaFrm(() -> {}).setVisible(true);
+                new GestionarVentaFrm(
+                        () -> {},
+                        () -> {}
+                ).setVisible(true);
             }
         });
     }

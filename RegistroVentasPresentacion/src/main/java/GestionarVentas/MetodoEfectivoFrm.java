@@ -24,6 +24,7 @@ import javax.swing.text.DocumentFilter;
 public class MetodoEfectivoFrm extends javax.swing.JFrame {
 
     private Runnable onAceptar;
+    private Runnable onBack;
     
     /**
      * Creates new form MenuFrm
@@ -31,9 +32,11 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
      */
     public MetodoEfectivoFrm(
             BigDecimal total,
-            Runnable onAceptar
+            Runnable onAceptar,
+            Runnable onBack
     ) {
         this.onAceptar = onAceptar;
+        this.onBack = onBack;
         
         initComponents();
         setExtendedState(MetodoEfectivoFrm.MAXIMIZED_BOTH);
@@ -279,7 +282,7 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
-        // TODO add your handling code here:
+        onBack.run();
     }//GEN-LAST:event_BtnBackActionPerformed
 
     private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
@@ -402,7 +405,11 @@ public class MetodoEfectivoFrm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MetodoEfectivoFrm(BigDecimal.ZERO, () -> {}).setVisible(true);
+                new MetodoEfectivoFrm(
+                        BigDecimal.ZERO, 
+                        () -> {},
+                        () -> {}
+                ).setVisible(true);
             }
         });
     }

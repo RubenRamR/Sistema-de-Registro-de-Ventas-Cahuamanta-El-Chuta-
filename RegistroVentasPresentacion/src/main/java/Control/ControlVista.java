@@ -69,10 +69,16 @@ public class ControlVista {
     }
     
     private void mostrarGestionarVentaFrm() {
-        frameActual = new GestionarVentaFrm(() -> {
-            frameActual.dispose();
-            mostrarPuntoVentaFrm();
-        });
+        frameActual = new GestionarVentaFrm(
+                () -> {
+                    frameActual.dispose();
+                    mostrarPuntoVentaFrm();
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarMenuCajeroFrm();
+                }
+        );
         frameActual.setVisible(true);
     }
     
@@ -109,6 +115,10 @@ public class ControlVista {
                     
                     frameActual.dispose();
                     mostrarPantallaResumen();
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarPuntoVentaFrm();
                 }
         );
         frameActual.setVisible(true);
@@ -123,7 +133,11 @@ public class ControlVista {
                     negocio.setMetodoPagoVentaActual("EFECTIVO");
                     frameActual.dispose();
                     mostrarPantallaResumen();
-                            }
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarMetodoPagoFrm();
+                }
         );
         frameActual.setVisible(true);
     }
