@@ -22,4 +22,6 @@ public interface IProductoDAO {
     void actualizar(Producto producto);
 
     void eliminar(Long id);
+    
+    List<Producto> obtener(String categoria);
 }

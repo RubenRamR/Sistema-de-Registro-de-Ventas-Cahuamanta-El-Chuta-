@@ -14,6 +14,7 @@ public class ProductoDTO {
     private Long idProducto;
     private String nombre;
     private BigDecimal precio;
+    private String categoria;
 
     public ProductoDTO() {
     }
@@ -53,4 +54,13 @@ public class ProductoDTO {
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+    
 }

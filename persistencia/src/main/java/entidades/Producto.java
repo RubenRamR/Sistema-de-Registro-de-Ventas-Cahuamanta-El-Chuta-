@@ -26,6 +26,7 @@ public class Producto implements Serializable {
 
     private String nombre;
     private BigDecimal precio;
+    private String categoria;
 
     // Getters y Setters
     public Long getIdProducto() {
@@ -50,6 +51,14 @@ public class Producto implements Serializable {
 
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     // hashCode y equals

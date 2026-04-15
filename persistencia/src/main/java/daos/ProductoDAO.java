@@ -64,4 +64,11 @@ public class ProductoDAO implements IProductoDAO{
             em.getTransaction().commit();
         }
     }
+
+    @Override
+    public List<Producto> obtener(String categoria) {
+        return em.createQuery("SELECT p FROM Producto p WHERE p.categoria = :cat", Producto.class)
+             .setParameter("cat", categoria)
+             .getResultList();
+    }
 }

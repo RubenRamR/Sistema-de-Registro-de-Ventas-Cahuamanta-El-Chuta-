@@ -67,4 +67,9 @@ public class Negocio implements INegocio {
     public List<ProductoDTO> obtenerProductos() {
         return productoBO.obtenerTodosLosProductos();
     }
+
+    @Override
+    public List<ProductoDTO> obtenerProductos(String categoria) {
+        return productoBO.obtenerProducto(categoria);
+    }
 }

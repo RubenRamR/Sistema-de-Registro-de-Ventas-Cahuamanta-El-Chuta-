@@ -168,9 +168,9 @@ public class PuntoVenta extends JFrame {
         panelCategorias.setPreferredSize(new Dimension(0, 100));
         panelCategorias.setBackground(Color.WHITE);
 
-        panelCategorias.add(crearBotonCategoria("CALDOS Y PLATOS", "5", new Color(244, 67, 54)));
-        panelCategorias.add(crearBotonCategoria("TACOS", "8", new Color(255, 152, 0)));
-        panelCategorias.add(crearBotonCategoria("BEBIDAS", "6", new Color(33, 33, 255)));
+        panelCategorias.add(crearBotonCategoria("CALDOS Y PLATOS", "5", new Color(244, 67, 54), "CALDOS_Y_PLATOS"));
+        panelCategorias.add(crearBotonCategoria("TACOS", "8", new Color(255, 152, 0), "TACOS"));
+        panelCategorias.add(crearBotonCategoria("BEBIDAS", "6", new Color(33, 33, 255), "BEBIDAS"));
 
         panelProductos = new JPanel(new GridLayout(0, 3, 15, 15));
         panelProductos.setBackground(Color.WHITE);
@@ -289,7 +289,7 @@ public class PuntoVenta extends JFrame {
         return panelDerecho;
     }
 
-    private JButton crearBotonCategoria(String titulo, String cantidad, Color color) {
+    private JButton crearBotonCategoria(String titulo, String cantidad, Color color, String categoria) {
         String html = "<html><center><b>" + titulo + "</b><br><br><br>" + cantidad + "</center></html>";
         JButton btn = new JButton(html);
         btn.setBackground(color);
@@ -299,7 +299,7 @@ public class PuntoVenta extends JFrame {
         btn.setBorderPainted(false);
         
         btn.addActionListener(e -> {
-            inventario = onCategoriaSeleccionada.apply(titulo);
+            inventario = onCategoriaSeleccionada.apply(categoria);
             actualizarInventario();
         });
         
