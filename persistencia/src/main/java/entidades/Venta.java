@@ -111,4 +111,9 @@ public class Venta implements Serializable {
         Venta venta = (Venta) obj;
         return idVenta != null ? idVenta.equals(venta.idVenta) : venta.idVenta == null;
     }
+
+    @Override
+    public String toString() {
+        return "Venta{" + "idVenta=" + idVenta + ", total=" + total + ", fechaHora=" + fechaHora + ", folio=" + folio + ", metodoPago=" + metodoPago + ", usuario=" + usuario + '}';
+    }
 }

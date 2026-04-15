@@ -22,4 +22,6 @@ public interface IDetalleVentaDAO {
     void actualizar(DetalleVenta detalleVenta);
 
     void eliminar(Long id);
+    
+    public List<DetalleVenta> obtenerPorIdVenta(Long id);
 }

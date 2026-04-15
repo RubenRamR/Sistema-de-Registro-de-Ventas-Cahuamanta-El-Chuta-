@@ -58,6 +58,7 @@ public class VentaBO {
         
         BigDecimal bD = BigDecimal.ZERO;
         for (DetalleVenta entity : entitys) {
+            entity.setVenta(venta);
             bD = bD.add(entity.getPrecioUnitario().multiply(BigDecimal.valueOf(entity.getCantidad())));
         }
         
@@ -112,6 +113,7 @@ public class VentaBO {
     // Obtener todas las ventas
     public List<VentaDTO> obtenerTodasLasVentas() {
         List<Venta> ventas = ventaDAO.obtenerTodos();  // El DAO obtiene las entidades directamente
+        System.out.println(ventas);
         return ventas.stream()
                      .map(VentaMapper::toDTO)  // Convertimos cada entidad a DTO
                      .collect(Collectors.toList());

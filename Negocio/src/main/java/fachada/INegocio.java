@@ -21,4 +21,6 @@ public interface INegocio {
     public void registrarVentaActual();
     public List<ProductoDTO> obtenerProductos();
     public List<ProductoDTO> obtenerProductos(String categoria);
+    public List<VentaDTO> obtenerVentasDelDia();
+    public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id);
 }

@@ -23,6 +23,7 @@ public class VentaMapper {
         venta.setFechaHora(ventaDTO.getFechaHora());
         venta.setFolio(ventaDTO.getFolio());
         venta.setMetodoPago(ventaDTO.getMetodoPago());
+        venta.setUsuario(UsuarioMapper.toEntity(ventaDTO.getUsuario()));
         return venta;
     }
 
@@ -39,6 +40,9 @@ public class VentaMapper {
                         .map(DetalleVentaMapper::toDTO)
                         .collect(Collectors.toList())
         );
+        if (venta.getUsuario() != null) {
+            ventaDTO.setUsuario(UsuarioMapper.toDTO(venta.getUsuario()));
+        }
         return ventaDTO;
     }
 }

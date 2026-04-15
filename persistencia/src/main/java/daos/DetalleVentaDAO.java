@@ -53,5 +53,12 @@ public class DetalleVentaDAO implements IDetalleVentaDAO {
         // Devuelve todos los registros de DetalleVenta en la base de datos
         return em.createQuery("SELECT d FROM DetalleVenta d", DetalleVenta.class).getResultList();
     }
+    
+    @Override
+    public List<DetalleVenta> obtenerPorIdVenta(Long id) {
+        return em.createQuery("SELECT d FROM DetalleVenta d WHERE d.venta.idVenta = :idBuscado", DetalleVenta.class)
+             .setParameter("idBuscado", id)
+             .getResultList();
+    }
 
 }

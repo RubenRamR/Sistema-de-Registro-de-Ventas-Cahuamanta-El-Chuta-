@@ -3,6 +3,7 @@ package fachada;
 import bos.ProductoBO;
 import bos.UsuarioBO;
 import bos.VentaBO;
+import daos.DetalleVentaDAO;
 import daos.ProductoDAO;
 import daos.UsuarioDAO;
 import daos.VentaDAO;
@@ -25,7 +26,7 @@ public class Negocio implements INegocio {
     public Negocio() {
         usuarioBO = new UsuarioBO(new UsuarioDAO());
         ventaBO = new VentaBO(new VentaDAO());
-        productoBO = new ProductoBO(new ProductoDAO());
+        productoBO = new ProductoBO(new ProductoDAO(), new DetalleVentaDAO());
     }
 
     @Override
@@ -71,5 +72,16 @@ public class Negocio implements INegocio {
     @Override
     public List<ProductoDTO> obtenerProductos(String categoria) {
         return productoBO.obtenerProducto(categoria);
+    }
+
+    @Override
+    public List<VentaDTO> obtenerVentasDelDia() {
+        System.out.println(ventaBO.obtenerTodasLasVentas());
+        return ventaBO.obtenerTodasLasVentas();
+    }
+    
+    @Override
+    public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id) {
+        return productoBO.obtenerDetallesVentaPorIdVenta(id);
     }
 }

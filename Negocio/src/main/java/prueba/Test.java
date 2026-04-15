@@ -1,6 +1,7 @@
 package prueba;
 
 import bos.ProductoBO;
+import daos.DetalleVentaDAO;
 import daos.ProductoDAO;
 import dtos.ProductoDTO;
 import interfaces.IProductoDAO;
@@ -16,7 +17,7 @@ public class Test {
 
         // Paso 2: Crear la instancia del DAO y BO
         IProductoDAO productoDAO = new ProductoDAO();  // Usamos la implementación concreta del DAO
-        ProductoBO productoBO = new ProductoBO(productoDAO);
+        ProductoBO productoBO = new ProductoBO(productoDAO, new DetalleVentaDAO());
 
         // Paso 3: Crear el producto
         System.out.println("Creando producto...");

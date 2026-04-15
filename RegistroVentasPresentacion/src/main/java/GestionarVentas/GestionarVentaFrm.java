@@ -51,7 +51,6 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
         TblVentas.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         TblVentas.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new javax.swing.JCheckBox()));
-
     }
 
     /**

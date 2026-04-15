@@ -21,6 +21,7 @@ public class VentaDTO {
     private String folio;
     private String metodoPago;
     private List<DetalleVentaDTO> detallesVenta;
+    private UsuarioDTO usuario;
 
     // Getters y Setters
     public Long getIdVenta() {
@@ -71,9 +72,16 @@ public class VentaDTO {
         this.detallesVenta = detallesVenta;
     }
 
+    public UsuarioDTO getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
+    }
+
     @Override
     public String toString() {
-        return "VentaDTO{" + "idVenta=" + idVenta + ", total=" + total + ", fechaHora=" + fechaHora + ", folio=" + folio + ", metodoPago=" + metodoPago + '}';
+        return "VentaDTO{" + "idVenta=" + idVenta + ", total=" + total + ", fechaHora=" + fechaHora + ", folio=" + folio + ", metodoPago=" + metodoPago + ", usuario=" + usuario + '}';
     }
-    
 }

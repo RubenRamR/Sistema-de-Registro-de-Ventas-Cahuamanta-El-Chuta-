@@ -1,6 +1,7 @@
 package Control;
 
-import GestionarVentas.GestionarVentaFrm;
+import GestionarVentas.DetalleVenta;
+import GestionarVentas.GestionarVenta;
 import GestionarVentas.MenuCajeroFrm;
 import GestionarVentas.MetodoEfectivoFrm;
 import GestionarVentas.MetodoPagoFrm;
@@ -12,7 +13,6 @@ import dtos.VentaDTO;
 import excepciones.NegocioException;
 import fachada.INegocio;
 import fachada.Negocio;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -71,15 +71,36 @@ public class ControlVista {
     }
     
     private void mostrarGestionarVentaFrm() {
-        frameActual = new GestionarVentaFrm(
+        frameActual = new GestionarVenta(
                 () -> {
                     frameActual.dispose();
                     mostrarPuntoVentaFrm();
                 },
+                ventaDTO -> {
+                    frameActual.dispose();
+                    mostrarDetalleVentaFrm(ventaDTO);
+                },
                 () -> {
                     frameActual.dispose();
                     mostrarMenuCajeroFrm();
-                }
+                },
+                negocio.obtenerVentasDelDia()
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarDetalleVentaFrm(VentaDTO ventaDTO) {
+        ventaDTO.setDetallesVenta(negocio.obtenerDetallesVentaPorIdVenta(ventaDTO.getIdVenta()));
+        
+        Runnable cerrarPantalla = () -> {
+            System.out.println(ventaDTO);
+            frameActual.dispose();
+            mostrarGestionarVentaFrm();
+        };
+        frameActual = new DetalleVenta(
+                ventaDTO,
+                cerrarPantalla,
+                cerrarPantalla
         );
         frameActual.setVisible(true);
     }

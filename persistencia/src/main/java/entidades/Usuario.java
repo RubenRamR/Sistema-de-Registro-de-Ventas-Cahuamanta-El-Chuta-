@@ -95,4 +95,9 @@ public class Usuario implements Serializable {
         Usuario usuario = (Usuario) obj;
         return idUsuario != null ? idUsuario.equals(usuario.idUsuario) : usuario.idUsuario == null;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "idUsuario=" + idUsuario + ", nombre=" + nombre + ", contrasenia=" + contrasenia + ", tipo=" + tipo + '}';
+    }
 }

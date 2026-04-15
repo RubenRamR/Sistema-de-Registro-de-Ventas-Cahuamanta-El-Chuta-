@@ -4,11 +4,14 @@
  */
 package bos;
 
+import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;
 import entidades.Producto;
+import interfaces.IDetalleVentaDAO;
 import interfaces.IProductoDAO;
 import java.util.List;
 import java.util.stream.Collectors;
+import mappers.DetalleVentaMapper;
 import mappers.ProductoMapper;
 
 /**
@@ -19,10 +22,12 @@ import mappers.ProductoMapper;
 public class ProductoBO {
 
     private IProductoDAO productoDAO;
+    private IDetalleVentaDAO detalleVentaDAO;
 
     // Inyección de dependencia a través del constructor
-    public ProductoBO(IProductoDAO productoDAO) {
+    public ProductoBO(IProductoDAO productoDAO, IDetalleVentaDAO detalleVentaDAO) {
         this.productoDAO = productoDAO;
+        this.detalleVentaDAO = detalleVentaDAO;
     }
 
     // Crear un producto en la base de datos
@@ -63,5 +68,11 @@ public class ProductoBO {
         return productos.stream()
                         .map(ProductoMapper::toDTO)  // Convertimos cada entidad a DTO
                         .collect(Collectors.toList());
+    }
+    
+    public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id) {
+        return detalleVentaDAO.obtenerPorIdVenta(id).stream()
+                .map(DetalleVentaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
