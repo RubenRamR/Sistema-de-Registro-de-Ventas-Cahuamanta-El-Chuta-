@@ -6,6 +6,7 @@ package mappers;
 
 import dtos.VentaDTO;
 import entidades.Venta;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -33,6 +34,11 @@ public class VentaMapper {
         ventaDTO.setFechaHora(venta.getFechaHora());
         ventaDTO.setFolio(venta.getFolio());
         ventaDTO.setMetodoPago(venta.getMetodoPago());
+        ventaDTO.setDetallesVenta(
+                venta.getDetallesVenta().stream()
+                        .map(DetalleVentaMapper::toDTO)
+                        .collect(Collectors.toList())
+        );
         return ventaDTO;
     }
 }

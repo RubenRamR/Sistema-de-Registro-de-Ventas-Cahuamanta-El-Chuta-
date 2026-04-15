@@ -7,11 +7,13 @@ import GestionarVentas.MetodoPagoFrm;
 import GestionarVentas.PantallaResumen;
 import GestionarVentas.PuntoVenta;
 import IniciarSesion.PantallaLogin;
+import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
 import fachada.INegocio;
 import fachada.Negocio;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -83,17 +85,28 @@ public class ControlVista {
     }
     
     private void mostrarPuntoVentaFrm() {
-        frameActual = new PuntoVenta(detalles -> {
-            try {
-                negocio.addProductosVenta(detalles);
-                frameActual.dispose();
-                mostrarMetodoPagoFrm();
-            } catch (NegocioException e) {
-                JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        },
+        List<DetalleVentaDTO> detallesVenta = null;
+        if (negocio.getVentaActual() != null) {
+            detallesVenta = negocio.getVentaActual().getDetallesVenta();
+        }
+        
+        frameActual = new PuntoVenta(
+                detalles -> {
+                    try {
+                        negocio.addProductosVenta(detalles);
+                        frameActual.dispose();
+                        mostrarMetodoPagoFrm();
+                    } catch (NegocioException e) {
+                        JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                },
                 e -> new ArrayList<>(),
-                negocio.obtenerProductos()
+                negocio.obtenerProductos(),
+                () -> {
+                    frameActual.dispose();
+                    mostrarGestionarVentaFrm();
+                },
+                detallesVenta
         );
         frameActual.setVisible(true);
     }
@@ -151,6 +164,10 @@ public class ControlVista {
                     
                     frameActual.dispose();
                     mostrarMenuCajeroFrm();
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarMetodoPagoFrm();
                 }
         );
         frameActual.setVisible(true);

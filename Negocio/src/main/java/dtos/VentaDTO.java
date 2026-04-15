@@ -11,6 +11,7 @@ package dtos;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class VentaDTO {
 
@@ -19,6 +20,7 @@ public class VentaDTO {
     private LocalDateTime fechaHora;
     private String folio;
     private String metodoPago;
+    private List<DetalleVentaDTO> detallesVenta;
 
     // Getters y Setters
     public Long getIdVenta() {
@@ -59,6 +61,14 @@ public class VentaDTO {
 
     public void setMetodoPago(String metodoPago) {
         this.metodoPago = metodoPago;
+    }
+
+    public List<DetalleVentaDTO> getDetallesVenta() {
+        return detallesVenta;
+    }
+
+    public void setDetallesVenta(List<DetalleVentaDTO> detallesVenta) {
+        this.detallesVenta = detallesVenta;
     }
 
     @Override

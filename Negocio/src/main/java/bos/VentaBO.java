@@ -58,16 +58,13 @@ public class VentaBO {
         
         BigDecimal bD = BigDecimal.ZERO;
         for (DetalleVenta entity : entitys) {
-            bD = bD.add(entity.getPrecioUnitario());
+            bD = bD.add(entity.getPrecioUnitario().multiply(BigDecimal.valueOf(entity.getCantidad())));
         }
         
-        System.out.println(entitys.getFirst().getPrecioUnitario());
-        System.out.println(detalles);
-        System.out.println(bD);
-        
         venta.setTotal(bD);
-        System.out.println(venta.getTotal());
         
+        System.out.println("Venta por guardar: " + venta);
+        System.out.println(venta.getDetallesVenta().getFirst().getCantidad());
         this.venta = venta;
     }
     
@@ -78,6 +75,9 @@ public class VentaBO {
     }
     
     public VentaDTO obtenerVentaActual() {
+        if (venta == null) {
+            return null;
+        }
         return VentaMapper.toDTO(venta);
     }
     

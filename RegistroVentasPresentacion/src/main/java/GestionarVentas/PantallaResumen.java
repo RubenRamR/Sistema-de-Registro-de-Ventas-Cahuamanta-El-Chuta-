@@ -36,11 +36,12 @@ public class PantallaResumen extends JFrame {
 
     public PantallaResumen(
             List<DetalleVentaDTO> detalles,
-            Runnable onAceptar
+            Runnable onAceptar,
+            Runnable onBack
     ) {
         setTitle("Resumen de Compra");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cerrar solo esta ventana, no toda la app
-        setSize(700, 500);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -50,10 +51,26 @@ public class PantallaResumen extends JFrame {
         panelNorte.setPreferredSize(new Dimension(0, 60)); // Alto fijo, ancho dinámico
         add(panelNorte, BorderLayout.NORTH);
 
-        // 2. BANNER INFERIOR
-        JPanel panelSur = new JPanel();
+        // 2. BANNER INFERIOR (MODIFICADO PARA INCLUIR EL BOTÓN)
+        // Usamos FlowLayout.LEFT con márgenes en 0 para pegar el botón a la izquierda
+        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0)); 
         panelSur.setBackground(COLOR_BANNER);
         panelSur.setPreferredSize(new Dimension(0, 60));
+
+        // --- NUEVO: Botón de regresar "<" ---
+        JButton btnRegresar = new JButton("<");
+        btnRegresar.setFont(new Font("Arial", Font.BOLD, 24));
+        btnRegresar.setForeground(Color.WHITE);
+        btnRegresar.setBackground(new Color(0, 0, 100)); // Azul oscuro para contrastar
+        btnRegresar.setOpaque(true);
+        btnRegresar.setBorderPainted(false);
+        btnRegresar.setFocusPainted(false);
+        btnRegresar.setPreferredSize(new Dimension(70, 60)); // Mismo alto que el panelSur (60)
+        
+        // Acción: Cierra esta ventana (PantallaResumen) y te deja en la anterior
+        btnRegresar.addActionListener(e -> onBack.run()); 
+
+        panelSur.add(btnRegresar);
         add(panelSur, BorderLayout.SOUTH);
 
         // 3. CONTENIDO CENTRAL (BLANCO)
@@ -180,7 +197,11 @@ public class PantallaResumen extends JFrame {
         listaDePrueba.add(d2);
 
         SwingUtilities.invokeLater(() -> {
-            new PantallaResumen(listaDePrueba, () -> {}).setVisible(true);
+            new PantallaResumen(
+                    listaDePrueba, 
+                    () -> {},
+                    () -> {}
+            ).setVisible(true);
         });
     }
 }
