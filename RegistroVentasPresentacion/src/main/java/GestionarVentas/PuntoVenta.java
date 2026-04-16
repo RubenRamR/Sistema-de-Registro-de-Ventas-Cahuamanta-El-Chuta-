@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -48,12 +49,12 @@ public class PuntoVenta extends JFrame {
     private JLabel lblProductoSeleccionado;
     private JSpinner spinnerCantidad;
     private DefaultListModel<String> modeloListaResumen;
-    private JList<String> listaResumen; 
+    private JList<String> listaResumen;
     private JLabel lblSubtotal;
     private JLabel lblTotal;
-    
+
     private JPanel panelProductos;
-    
+
     // Acciones de ControlVista
     private Consumer<List<DetalleVentaDTO>> onRegistrarVenta;
     private Function<String, List<ProductoDTO>> onCategoriaSeleccionada;
@@ -71,27 +72,28 @@ public class PuntoVenta extends JFrame {
         this.inventario = inventario != null ? inventario : new ArrayList<>();
         this.onBack = onBack;
         this.carritoCompras = carritoCompras;
-        
+
         setTitle("Punto Venta");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        
-        if (carritoCompras == null) {
+
+        if (carritoCompras == null)
+        {
             this.carritoCompras = new ArrayList<>();
         }
-        
+
         // El panel principal que contiene tu lógica de venta
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(new EmptyBorder(10, 10, 10, 10));
         panelPrincipal.setBackground(Color.WHITE); // Fondo blanco para coincidir con la imagen
-        
-        JPanel panelDer = crearPanelDerecho(); 
+
+        JPanel panelDer = crearPanelDerecho();
         JPanel panelIzq = crearPanelIzquierdo();
 
         panelPrincipal.add(panelIzq, BorderLayout.CENTER);
         panelPrincipal.add(panelDer, BorderLayout.EAST);
-        
+
         // =================================================================
         // --- NUEVO CÓDIGO PARA EL MARCO (BANNERS AZULES SUPERIOR/INFERIOR) ---
         // =================================================================
@@ -116,9 +118,10 @@ public class PuntoVenta extends JFrame {
         btnRegresar.setBorderPainted(false);
         btnRegresar.setFocusPainted(false);
         btnRegresar.setPreferredSize(new Dimension(60, 50));
-        
+
         // Acción del botón regresar (Para que lo configures)
-        btnRegresar.addActionListener(e -> {
+        btnRegresar.addActionListener(e ->
+        {
             onBack.run();
         });
 
@@ -127,16 +130,17 @@ public class PuntoVenta extends JFrame {
         // 3. Contenedor Raíz para juntar el marco y tu panel principal
         JPanel contenedorRaiz = new JPanel(new BorderLayout());
         contenedorRaiz.setBackground(Color.WHITE);
-        
+
         contenedorRaiz.add(panelSuperior, BorderLayout.NORTH); // Franja superior
         contenedorRaiz.add(panelPrincipal, BorderLayout.CENTER); // Tu contenido original
         contenedorRaiz.add(panelInferior, BorderLayout.SOUTH);   // Franja inferior
 
         // Añadimos el contenedor raíz al JFrame
-        add(contenedorRaiz); 
+        add(contenedorRaiz);
         // =================================================================
-        
-        this.carritoCompras.forEach(dP -> {
+
+        this.carritoCompras.forEach(dP ->
+        {
             String nombreEnLinea = dP.getProducto().getNombre().replace("\n", " ");
             String textoLista = String.format("%s (%d)   ---   $%s",
                     nombreEnLinea,
@@ -147,19 +151,21 @@ public class PuntoVenta extends JFrame {
         });
         actualizarTotales();
     }
-    
+
     private void actualizarInventario() {
         panelProductos.removeAll();
-        if (inventario != null) {
-            for (ProductoDTO producto : inventario) {
+        if (inventario != null)
+        {
+            for (ProductoDTO producto : inventario)
+            {
                 panelProductos.add(crearBotonProducto(producto));
             }
         }
-        
+
         panelProductos.revalidate();
         panelProductos.repaint();
     }
-    
+
     private JPanel crearPanelIzquierdo() {
         JPanel panelIzquierdo = new JPanel(new BorderLayout(10, 10));
         panelIzquierdo.setBackground(Color.WHITE);
@@ -168,23 +174,36 @@ public class PuntoVenta extends JFrame {
         panelCategorias.setPreferredSize(new Dimension(0, 100));
         panelCategorias.setBackground(Color.WHITE);
 
-        panelCategorias.add(crearBotonCategoria("CALDOS Y PLATOS", "5", new Color(244, 67, 54), "CALDOS_Y_PLATOS"));
+        panelCategorias.add(crearBotonCategoria("CALDOS Y PLATOS", "9", new Color(244, 67, 54), "CALDOS_Y_PLATOS"));
         panelCategorias.add(crearBotonCategoria("TACOS", "8", new Color(255, 152, 0), "TACOS"));
-        panelCategorias.add(crearBotonCategoria("BEBIDAS", "6", new Color(33, 33, 255), "BEBIDAS"));
+        panelCategorias.add(crearBotonCategoria("BEBIDAS", "4", new Color(33, 33, 255), "BEBIDAS"));
 
         panelProductos = new JPanel(new GridLayout(0, 3, 15, 15));
         panelProductos.setBackground(Color.WHITE);
-        
-        if (inventario != null) {
-            for (ProductoDTO producto : inventario) {
+
+        if (inventario != null)
+        {
+            for (ProductoDTO producto : inventario)
+            {
                 panelProductos.add(crearBotonProducto(producto));
             }
         }
 
-        JScrollPane scrollProductos = new JScrollPane(panelProductos);
+        // --- EL FIX EMPIEZA AQUÍ ---
+        // 1. Creamos un panel envoltorio
+        JPanel contenedorGrilla = new JPanel(new BorderLayout());
+        contenedorGrilla.setBackground(Color.WHITE);
+
+        // 2. Agregamos el panelProductos al NORTE de este envoltorio. 
+        // Esto fuerza a la cuadrícula a respetar su altura original y agruparse arriba.
+        contenedorGrilla.add(panelProductos, BorderLayout.NORTH);
+
+        // 3. Metemos el envoltorio al JScrollPane en lugar del panelProductos directamente
+        JScrollPane scrollProductos = new JScrollPane(contenedorGrilla);
         scrollProductos.setBorder(null);
         scrollProductos.getVerticalScrollBar().setUnitIncrement(16);
         scrollProductos.getViewport().setBackground(Color.WHITE);
+        // --- EL FIX TERMINA AQUÍ ---
 
         panelIzquierdo.add(panelCategorias, BorderLayout.NORTH);
         panelIzquierdo.add(scrollProductos, BorderLayout.CENTER);
@@ -201,23 +220,23 @@ public class PuntoVenta extends JFrame {
 
         JLabel lblTituloSeleccionado = new JLabel("Seleccionado");
         lblTituloSeleccionado.setFont(new Font("Arial", Font.BOLD, 14));
-        
+
         JPanel panelAgregar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         panelAgregar.setBackground(new Color(240, 240, 240));
-        panelAgregar.setPreferredSize(new Dimension(350, 90)); 
+        panelAgregar.setPreferredSize(new Dimension(350, 90));
         panelAgregar.setMaximumSize(new Dimension(400, 90));
-        
+
         lblProductoSeleccionado = new JLabel("Ninguno...                ");
         lblProductoSeleccionado.setFont(new Font("Arial", Font.BOLD, 12));
-        
+
         spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-        
+
         JButton btnAgregar = new JButton("Agregar");
         btnAgregar.setBackground(Color.BLUE);
         btnAgregar.setForeground(Color.WHITE);
         btnAgregar.setOpaque(true);
         btnAgregar.setBorderPainted(false);
-        
+
         btnAgregar.addActionListener(e -> agregarAlResumen());
 
         panelAgregar.add(lblProductoSeleccionado);
@@ -228,12 +247,12 @@ public class PuntoVenta extends JFrame {
         // --- RESUMEN ---
         JLabel lblResumen = new JLabel("Resumen");
         lblResumen.setFont(new Font("Arial", Font.BOLD, 14));
-        
+
         modeloListaResumen = new DefaultListModel<>();
         listaResumen = new JList<>(modeloListaResumen);
         listaResumen.setBackground(new Color(245, 245, 245));
-        listaResumen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); 
-        
+        listaResumen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         JScrollPane scrollResumen = new JScrollPane(listaResumen);
         scrollResumen.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
@@ -247,7 +266,7 @@ public class PuntoVenta extends JFrame {
         JPanel panelTotales = new JPanel(new GridLayout(3, 2, 5, 5));
         panelTotales.setBackground(Color.WHITE);
         panelTotales.setMaximumSize(new Dimension(400, 80));
-        
+
         lblSubtotal = new JLabel("<html><b>$0.00</b></html>", SwingConstants.RIGHT);
         lblTotal = new JLabel("<html><b>$0.00</b></html>", SwingConstants.RIGHT);
 
@@ -267,8 +286,9 @@ public class PuntoVenta extends JFrame {
         btnCobrar.setFont(new Font("Arial", Font.BOLD, 16));
         btnCobrar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         btnCobrar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        btnCobrar.addActionListener(e -> {
+
+        btnCobrar.addActionListener(e ->
+        {
             onRegistrarVenta.accept(carritoCompras);
         });
 
@@ -279,8 +299,8 @@ public class PuntoVenta extends JFrame {
         panelDerecho.add(lblResumen);
         panelDerecho.add(Box.createVerticalStrut(5));
         panelDerecho.add(scrollResumen);
-        panelDerecho.add(Box.createVerticalStrut(5)); 
-        panelDerecho.add(btnEliminar); 
+        panelDerecho.add(Box.createVerticalStrut(5));
+        panelDerecho.add(btnEliminar);
         panelDerecho.add(Box.createVerticalStrut(10));
         panelDerecho.add(panelTotales);
         panelDerecho.add(Box.createVerticalStrut(20));
@@ -297,74 +317,89 @@ public class PuntoVenta extends JFrame {
         btn.setFocusPainted(false);
         btn.setOpaque(true);
         btn.setBorderPainted(false);
-        
-        btn.addActionListener(e -> {
+
+        btn.addActionListener(e ->
+        {
             inventario = onCategoriaSeleccionada.apply(categoria);
             actualizarInventario();
         });
-        
+
         return btn;
     }
 
-    private JButton crearBotonProducto(ProductoDTO producto) {
-        String nombreHtml = producto.getNombre().replace("\n", "<br>");
-        String html = "<html><center>" + nombreHtml + "<br><font color='gray'>$" + 
-                      producto.getPrecio().setScale(2, RoundingMode.HALF_UP) + "</font></center></html>";
-        
-        JButton btn = new JButton(html);
-        btn.setBackground(new Color(220, 220, 220));
-        btn.setFocusPainted(false);
-        btn.setOpaque(true);
-        btn.setBorderPainted(false);
-        btn.setPreferredSize(new Dimension(150, 150));
-        
-        btn.addActionListener(e -> {
-            productoSeleccionadoActual = producto;
-            lblProductoSeleccionado.setText(producto.getNombre().replace("\n", " "));
-            spinnerCantidad.setValue(1); 
+    // OJO: Cambiamos el tipo de retorno de JButton a JPanel
+    private JPanel crearBotonProducto(ProductoDTO producto) {
+
+        String nombreSinEspacios = producto.getNombre().replace(" ", "_").replace("/", "_");
+
+        // 2. Le quita los acentos a las letras (ej. Camarón -> Camaron)
+        String nombreLimpio = Normalizer.normalize(nombreSinEspacios, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+
+        // 3. Le agregamos el .png
+        String nombreArchivo = nombreLimpio + ".png";
+
+        Componentes.TarjetaProducto tarjeta = new Componentes.TarjetaProducto(
+                producto.getNombre(),
+                producto.getPrecio().doubleValue(),
+                nombreArchivo
+        );
+
+        // Le damos el tamaño que quieres que tenga en la cuadrícula
+        tarjeta.setPreferredSize(new Dimension(0, 200)); // El 0 en el ancho deja que la columna defina el ancho, pero fuerza la altura a 200px        
+        // Como es un JPanel, capturamos el clic con un MouseAdapter
+        tarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // Esta es la misma lógica que tenías en el botón anterior
+                productoSeleccionadoActual = producto;
+                lblProductoSeleccionado.setText(producto.getNombre().replace("\n", " "));
+                spinnerCantidad.setValue(1);
+            }
         });
-        
-        return btn;
+
+        return tarjeta;
     }
 
     // --- LÓGICA DE NEGOCIO ---
-
     private void agregarAlResumen() {
-        if (productoSeleccionadoActual == null) {
+        if (productoSeleccionadoActual == null)
+        {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un producto primero.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         carritoCompras.stream()
                 .anyMatch(p -> p.getProducto().getNombre().equals(productoSeleccionadoActual.getNombre()));
         if (carritoCompras.stream()
-                .anyMatch(p -> p.getProducto().getNombre().equals(productoSeleccionadoActual.getNombre()))) {
+                .anyMatch(p -> p.getProducto().getNombre().equals(productoSeleccionadoActual.getNombre())))
+        {
             JOptionPane.showMessageDialog(this, "El producto ya está agregado.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int cantidad = (Integer) spinnerCantidad.getValue();
         DetalleVentaDTO nuevoItem = new DetalleVentaDTO(
-                cantidad, 
-                productoSeleccionadoActual.getPrecio(), 
+                cantidad,
+                productoSeleccionadoActual.getPrecio(),
                 productoSeleccionadoActual);
-        
+
         carritoCompras.add(nuevoItem);
 
         String nombreEnLinea = productoSeleccionadoActual.getNombre().replace("\n", " ");
-        String textoLista = String.format("%s (%d)   ---   $%s", 
-                nombreEnLinea, 
-                cantidad, 
+        String textoLista = String.format("%s (%d)   ---   $%s",
+                nombreEnLinea,
+                cantidad,
                 nuevoItem.getSubtotal().setScale(2, RoundingMode.HALF_UP));
-        
+
         modeloListaResumen.addElement(textoLista);
         actualizarTotales();
     }
 
     private void eliminarDelResumen() {
-        int index = listaResumen.getSelectedIndex(); 
-        
-        if (index == -1) {
+        int index = listaResumen.getSelectedIndex();
+
+        if (index == -1)
+        {
             JOptionPane.showMessageDialog(this, "Selecciona un producto de la lista 'Resumen' para quitarlo.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -375,13 +410,14 @@ public class PuntoVenta extends JFrame {
     }
 
     private void cobrar() {
-        if (carritoCompras.isEmpty()) {
+        if (carritoCompras.isEmpty())
+        {
             JOptionPane.showMessageDialog(this, "El carrito está vacío.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         JOptionPane.showMessageDialog(this, "¡Cobro realizado con éxito!\nImprimiendo ticket...", "Venta Exitosa", JOptionPane.INFORMATION_MESSAGE);
-        
+
         carritoCompras.clear();
         modeloListaResumen.clear();
         productoSeleccionadoActual = null;
@@ -392,8 +428,9 @@ public class PuntoVenta extends JFrame {
 
     private void actualizarTotales() {
         BigDecimal granTotal = BigDecimal.ZERO;
-        
-        for (DetalleVentaDTO item : carritoCompras) {
+
+        for (DetalleVentaDTO item : carritoCompras)
+        {
             granTotal = granTotal.add(item.getSubtotal());
         }
 
@@ -403,15 +440,23 @@ public class PuntoVenta extends JFrame {
     }
 
     public static void main(String[] args) {
-        try {
+        try
+        {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         SwingUtilities.invokeLater(() -> new PuntoVenta(
-                a -> {},
+                a ->
+        {
+        },
                 e -> new ArrayList<>(),
                 null, // Ojo: Aquí mandabas null, agregué una validación arriba para evitar NullPointerException.
-                () -> {},
+                () ->
+        {
+        },
                 null
         ).setVisible(true));
     }

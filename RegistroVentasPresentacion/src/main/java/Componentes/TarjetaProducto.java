@@ -93,44 +93,39 @@ public class TarjetaProducto extends JPanel {
         });
     }
 
-    @Override
+   @Override
     protected void paintComponent(Graphics g) {
+        // 1. Siempre es buena práctica llamar al padre al inicio, no al final
+        super.paintComponent(g);
+
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         RoundRectangle2D.Float roundedRect = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 25, 25);
-        g2.setClip(roundedRect);
+        
+        // 2. ¡EL FIX ESTÁ AQUÍ! Usamos clip() en lugar de setClip()
+        g2.clip(roundedRect);
 
-        if (backgroundImage != null)
-        {
+        if (backgroundImage != null) {
             g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
             LinearGradientPaint gradiente = new LinearGradientPaint(
                     0, getHeight() / 2, 0, getHeight(),
-                    new float[]
-                    {
-                        0.0f, 1.0f
-                    },
-                    new Color[]
-                    {
-                        new Color(0, 0, 0, 0), new Color(0, 0, 0, 180)
-                    }
+                    new float[]{0.0f, 1.0f},
+                    new Color[]{new Color(0, 0, 0, 0), new Color(0, 0, 0, 180)}
             );
             g2.setPaint(gradiente);
             g2.fill(roundedRect);
-        } else
-        {
+        } else {
             g2.setColor(defaultBackgroundColor);
             g2.fill(roundedRect);
         }
 
-        if (currentOverlayColor.getAlpha() > 0)
-        {
+        if (currentOverlayColor.getAlpha() > 0) {
             g2.setColor(currentOverlayColor);
             g2.fill(roundedRect);
         }
 
         g2.dispose();
-        super.paintComponent(g);
     }
 }
