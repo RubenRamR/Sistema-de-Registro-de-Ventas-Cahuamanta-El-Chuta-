@@ -1,5 +1,8 @@
 package Control;
 
+import GestionarUsuarios.AgregarUsuario;
+import GestionarUsuarios.BuscarUsuarios;
+import GestionarUsuarios.EliminarUsuario;
 import GestionarUsuarios.PantallaGestionarUsuarios;
 import GestionarVentas.DetalleVenta;
 import GestionarVentas.GestionarVenta;
@@ -73,6 +76,72 @@ public class ControlVista {
                 () -> {
                     frameActual.dispose();
                     mostrarMenuDuenoFrm();
+                },
+                opcion -> {
+                    frameActual.dispose();
+                    switch (opcion) {
+                        case "AGREGAR" -> {
+                            mostrarAgregarUsuarioFrm();
+                        }
+                        case "EDITAR" -> {
+                            mostrarBuscarUsuariosFrm(
+                                    opcion.substring(0, 1).toUpperCase() + opcion.substring(1).toLowerCase(),
+                                    () -> {
+                                    }
+                            );
+                        }
+                        case "ELIMINAR" -> {
+                            mostrarBuscarUsuariosFrm(
+                                    opcion.substring(0, 1).toUpperCase() + opcion.substring(1).toLowerCase(),
+                                    () -> {
+                                        frameActual.dispose();
+                                        mostrarEliminarUsuarioFrm();
+                                    }
+                            );
+                        }
+                        default -> {
+                            mostrarMenuDuenoFrm();
+                        }
+                    }
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarBuscarUsuariosFrm(String titulo, Runnable onSeleccionar) {
+        frameActual = new BuscarUsuarios(
+                () -> {
+                    frameActual.dispose();
+                    mostrarGestionarUsuariosFrm();
+                },
+                titulo,
+                onSeleccionar
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarEliminarUsuarioFrm() {
+        frameActual = new EliminarUsuario(
+                null,
+                () -> {
+                    frameActual.dispose();
+                    mostrarBuscarUsuariosFrm(
+                            "ELIMINAR",
+                            () -> {
+                                frameActual.dispose();
+                                mostrarEliminarUsuarioFrm();
+                            }
+                    );
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarAgregarUsuarioFrm() {
+        frameActual = new AgregarUsuario(
+                () -> {
+                    frameActual.dispose();
+                    mostrarGestionarUsuariosFrm();
                 }
         );
         frameActual.setVisible(true);

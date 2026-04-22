@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +22,8 @@ import javax.swing.SwingUtilities;
 public class PantallaGestionarUsuarios extends JFrame {
 
     public PantallaGestionarUsuarios(
-            Runnable onBack
+            Runnable onBack,
+            Consumer<String> onOpcion
     ) {
         setTitle("Gestionar Usuarios");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -96,6 +98,9 @@ public class PantallaGestionarUsuarios extends JFrame {
         btnAgregar.setFont(fuenteBotones);
         btnAgregar.setFocusPainted(false);
         btnAgregar.setBounds(60, 60, 240, 80); // (x, y, ancho, alto)
+        btnAgregar.addActionListener(e -> {
+            onOpcion.accept("AGREGAR");
+        });
         panelOpciones.add(btnAgregar);
 
         // Botón: Eliminar Usuario
@@ -105,6 +110,9 @@ public class PantallaGestionarUsuarios extends JFrame {
         btnEliminar.setFont(fuenteBotones);
         btnEliminar.setFocusPainted(false);
         btnEliminar.setBounds(340, 60, 240, 80);
+        btnEliminar.addActionListener(e -> {
+            onOpcion.accept("ELIMINAR");
+        });
         panelOpciones.add(btnEliminar);
 
         // Botón: Editar Usuario
@@ -114,6 +122,9 @@ public class PantallaGestionarUsuarios extends JFrame {
         btnEditar.setFont(fuenteBotones);
         btnEditar.setFocusPainted(false);
         btnEditar.setBounds(200, 180, 240, 80);
+        btnEditar.addActionListener(e -> {
+            onOpcion.accept("EDITAR");
+        });
         panelOpciones.add(btnEditar);
 
         // Añadir recuadro beige al panel central principal
@@ -127,7 +138,10 @@ public class PantallaGestionarUsuarios extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            PantallaGestionarUsuarios ventana = new PantallaGestionarUsuarios(() -> {});
+            PantallaGestionarUsuarios ventana = new PantallaGestionarUsuarios(
+                    () -> {},
+                    e -> {}
+            );
             ventana.setVisible(true);
         });
     }
