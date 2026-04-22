@@ -1,4 +1,4 @@
-package IniciarSesion;
+package GestionarUsuarios;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,13 +16,15 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author MiCuenta
+ * @author Daniel
  */
 public class PantallaGestionarUsuarios extends JFrame {
 
-    public PantallaGestionarUsuarios() {
+    public PantallaGestionarUsuarios(
+            Runnable onBack
+    ) {
         setTitle("Gestionar Usuarios");
-        setSize(800, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -54,6 +56,9 @@ public class PantallaGestionarUsuarios extends JFrame {
         btnAtras.setFont(new Font("Arial", Font.BOLD, 24));
         btnAtras.setFocusPainted(false);
         btnAtras.setBorder(null);
+        btnAtras.addActionListener(e -> {
+            onBack.run();
+        });
         panelInferior.add(btnAtras);
         
         add(panelInferior, BorderLayout.SOUTH);
@@ -122,7 +127,7 @@ public class PantallaGestionarUsuarios extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            PantallaGestionarUsuarios ventana = new PantallaGestionarUsuarios();
+            PantallaGestionarUsuarios ventana = new PantallaGestionarUsuarios(() -> {});
             ventana.setVisible(true);
         });
     }

@@ -1,5 +1,6 @@
 package Control;
 
+import GestionarUsuarios.PantallaGestionarUsuarios;
 import GestionarVentas.DetalleVenta;
 import GestionarVentas.GestionarVenta;
 import GestionarVentas.MenuCajeroFrm;
@@ -7,6 +8,7 @@ import GestionarVentas.MetodoEfectivoFrm;
 import GestionarVentas.MetodoPagoFrm;
 import GestionarVentas.PantallaResumen;
 import GestionarVentas.PuntoVenta;
+import IniciarSesion.MenuDueno;
 import IniciarSesion.PantallaLogin;
 import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
@@ -35,11 +37,44 @@ public class ControlVista {
             try {
                 negocio.iniciarSesion(usuario, contrasenia);
                 frameActual.dispose();
-                mostrarMenuCajeroFrm();
+                mostrarMenuDuenoFrm();
             } catch(NegocioException e) {
                 JOptionPane.showMessageDialog(frameActual, e.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
         });
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarMenuDuenoFrm() {
+        frameActual = new MenuDueno(
+                () -> {
+                    int seleccion = JOptionPane.showConfirmDialog(
+                            frameActual,
+                            "¿Desea cerrar la sesión actual?",
+                            "¡Cuidado!",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    if (seleccion == JOptionPane.YES_OPTION) {
+                        frameActual.dispose();
+                        mostrarPantallaLogin();
+                    }
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarGestionarUsuariosFrm();
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarGestionarUsuariosFrm() {
+        frameActual = new PantallaGestionarUsuarios(
+                () -> {
+                    frameActual.dispose();
+                    mostrarMenuDuenoFrm();
+                }
+        );
         frameActual.setVisible(true);
     }
     
@@ -51,11 +86,11 @@ public class ControlVista {
         
         Runnable onBack = () -> {
             int seleccion = JOptionPane.showConfirmDialog(
-                    frameActual, // Componente padre (null para centrar en pantalla)
-                    "¿Desea cerrar la sesión actual?", // Mensaje
-                    "¡Cuidado!", // Título de la ventana
-                    JOptionPane.YES_NO_OPTION, // Tipo de botones (Sí/No)
-                    JOptionPane.WARNING_MESSAGE // Tipo de icono (Triángulo de advertencia)
+                    frameActual,
+                    "¿Desea cerrar la sesión actual?",
+                    "¡Cuidado!",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
             );
             if (seleccion == JOptionPane.YES_OPTION) {
                 frameActual.dispose();

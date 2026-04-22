@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author MiCuenta
+ * @author Daniel
  */
 public class PantallaLogin extends JFrame {
 
