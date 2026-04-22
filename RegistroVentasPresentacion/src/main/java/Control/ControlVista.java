@@ -1,5 +1,6 @@
 package Control;
 
+import GenerarReportes.Reportes;
 import GestionarUsuarios.AgregarUsuario;
 import GestionarUsuarios.BuscarUsuarios;
 import GestionarUsuarios.EditarUsuario;
@@ -67,6 +68,10 @@ public class ControlVista {
                 () -> {
                     frameActual.dispose();
                     mostrarGestionarUsuariosFrm();
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarReportesFrm();
                 }
         );
         frameActual.setVisible(true);
@@ -161,6 +166,16 @@ public class ControlVista {
                                 mostrarEditarUsuario();
                             }
                     );
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarReportesFrm() {
+        frameActual = new Reportes(
+                () -> {
+                    frameActual.dispose();
+                    mostrarMenuDuenoFrm();
                 }
         );
         frameActual.setVisible(true);

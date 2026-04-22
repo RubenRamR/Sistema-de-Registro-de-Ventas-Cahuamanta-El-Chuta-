@@ -24,7 +24,8 @@ public class MenuDueno extends JFrame {
 
     public MenuDueno(
             Runnable onBack,
-            Runnable onGestionarUsuarios
+            Runnable onGestionarUsuarios,
+            Runnable onGenerarReportes
     ) {
         // Configuración básica de la ventana
         setTitle("Menú Dueño");
@@ -33,7 +34,7 @@ public class MenuDueno extends JFrame {
         setLocationRelativeTo(null); // Centrar la ventana en la pantalla
         setLayout(new BorderLayout());
 
-        // --- Definición de Colores (Basados en la imagen) ---
+        // --- Definición de Colores
         Color colorHeaderFooter = new Color(65, 114, 159); // Azul apagado
         Color colorBotones = new Color(0, 116, 183);       // Azul brillante
         Color colorOscuro = new Color(11, 19, 84);         // Azul marino oscuro
@@ -82,16 +83,19 @@ public class MenuDueno extends JFrame {
 
         // Botón: Generar Reportes
         JButton btnReportes = crearBoton("Generar Reportes", colorBotones);
+        btnReportes.addActionListener(e -> {
+            onGenerarReportes.run();
+        });
         gbcBotones.gridx = 1; 
         gbcBotones.gridy = 0;
         panelBeige.add(btnReportes, gbcBotones);
 
         // Botón: Consultar Historial Ventas (Centrado abajo)
-        JButton btnVentas = crearBoton("Consultar Historial Ventas", colorBotones);
-        gbcBotones.gridx = 0; 
-        gbcBotones.gridy = 1; 
-        gbcBotones.gridwidth = 2; // Ocupa dos columnas para centrarse
-        panelBeige.add(btnVentas, gbcBotones);
+//        JButton btnVentas = crearBoton("Consultar Historial Ventas", colorBotones);
+//        gbcBotones.gridx = 0; 
+//        gbcBotones.gridy = 1; 
+//        gbcBotones.gridwidth = 2; // Ocupa dos columnas para centrarse
+//        panelBeige.add(btnVentas, gbcBotones);
 
         // Añadir el panel beige al panel central
         gbcMain.gridy = 1;
@@ -149,6 +153,7 @@ public class MenuDueno extends JFrame {
                 e.printStackTrace();
             }
             new MenuDueno(
+                    () -> {},
                     () -> {},
                     () -> {}
             ).setVisible(true);
