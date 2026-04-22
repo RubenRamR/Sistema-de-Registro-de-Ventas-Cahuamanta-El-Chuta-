@@ -2,6 +2,7 @@ package Control;
 
 import GestionarUsuarios.AgregarUsuario;
 import GestionarUsuarios.BuscarUsuarios;
+import GestionarUsuarios.EditarUsuario;
 import GestionarUsuarios.EliminarUsuario;
 import GestionarUsuarios.PantallaGestionarUsuarios;
 import GestionarVentas.DetalleVenta;
@@ -87,6 +88,8 @@ public class ControlVista {
                             mostrarBuscarUsuariosFrm(
                                     opcion.substring(0, 1).toUpperCase() + opcion.substring(1).toLowerCase(),
                                     () -> {
+                                        frameActual.dispose();
+                                        mostrarEditarUsuario();
                                     }
                             );
                         }
@@ -142,6 +145,22 @@ public class ControlVista {
                 () -> {
                     frameActual.dispose();
                     mostrarGestionarUsuariosFrm();
+                }
+        );
+        frameActual.setVisible(true);
+    }
+    
+    private void mostrarEditarUsuario() {
+        frameActual = new EditarUsuario(
+                () -> {
+                    frameActual.dispose();
+                    mostrarBuscarUsuariosFrm(
+                            "EDITAR",
+                            () -> {
+                                frameActual.dispose();
+                                mostrarEditarUsuario();
+                            }
+                    );
                 }
         );
         frameActual.setVisible(true);
