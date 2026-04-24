@@ -5,6 +5,7 @@
 package interfaces;
 
 import dtos.UsuarioDTO;
+import excepciones.NegocioException;
 import java.util.List;
 
 /**
@@ -14,13 +15,13 @@ import java.util.List;
 public interface IUsuarioBO {
 
     // Método para crear un usuario
-    void crearUsuario(UsuarioDTO usuarioDTO);
+    void crearUsuario(UsuarioDTO usuarioDTO) throws NegocioException;
 
     // Método para obtener un usuario por su ID
     UsuarioDTO obtenerUsuario(Long id);
 
     // Método para actualizar un usuario
-    void actualizarUsuario(UsuarioDTO usuarioDTO);
+    void actualizarUsuario(UsuarioDTO usuarioDTO) throws NegocioException;
 
     // Método para eliminar un usuario
     void eliminarUsuario(Long id);

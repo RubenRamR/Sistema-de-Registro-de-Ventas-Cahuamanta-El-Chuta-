@@ -66,4 +66,15 @@ public class UsuarioDAO implements IUsuarioDAO {
             throw new PersistenciaException("Usuario no encontrado.");
         }
     }
+
+    @Override
+    public boolean existeNombre(String nombre) {
+        Long total = em.createQuery(
+                "SELECT COUNT(u) FROM Usuario u WHERE LOWER(u.nombre) = LOWER(:nombre)",
+                Long.class
+        )
+                .setParameter("nombre", nombre)
+                .getSingleResult();
+        return total > 0;
+    }
 }

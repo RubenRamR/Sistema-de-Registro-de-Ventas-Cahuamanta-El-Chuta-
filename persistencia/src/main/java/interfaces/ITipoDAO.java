@@ -17,6 +17,8 @@ public interface ITipoDAO {
 
     Tipo obtener(Long id);
 
+    Tipo obtenerPorNombre(String nombre);
+
     List<Tipo> obtenerTodos();
 
     void actualizar(Tipo tipo);

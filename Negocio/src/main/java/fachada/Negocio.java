@@ -5,10 +5,12 @@ import bos.UsuarioBO;
 import bos.VentaBO;
 import daos.DetalleVentaDAO;
 import daos.ProductoDAO;
+import daos.TipoDAO;
 import daos.UsuarioDAO;
 import daos.VentaDAO;
 import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;
+import dtos.UsuarioDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
 import java.util.List;
@@ -24,7 +26,7 @@ public class Negocio implements INegocio {
     ProductoBO productoBO;
 
     public Negocio() {
-        usuarioBO = new UsuarioBO(new UsuarioDAO());
+        usuarioBO = new UsuarioBO(new UsuarioDAO(), new TipoDAO());
         ventaBO = new VentaBO(new VentaDAO());
         productoBO = new ProductoBO(new ProductoDAO(), new DetalleVentaDAO());
     }
@@ -37,6 +39,11 @@ public class Negocio implements INegocio {
     @Override
     public void cerrarSesionActual() {
         usuarioBO.cerrarSesion();
+    }
+
+    @Override
+    public UsuarioDTO getSesionActual() {
+        return usuarioBO.obtenerSesionActual();
     }
 
     @Override
@@ -83,5 +90,30 @@ public class Negocio implements INegocio {
     @Override
     public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id) {
         return productoBO.obtenerDetallesVentaPorIdVenta(id);
+    }
+
+    @Override
+    public void crearUsuario(UsuarioDTO usuarioDTO) throws NegocioException {
+        usuarioBO.crearUsuario(usuarioDTO);
+    }
+
+    @Override
+    public void actualizarUsuario(UsuarioDTO usuarioDTO) throws NegocioException {
+        usuarioBO.actualizarUsuario(usuarioDTO);
+    }
+
+    @Override
+    public void eliminarUsuario(Long id) {
+        usuarioBO.eliminarUsuario(id);
+    }
+
+    @Override
+    public UsuarioDTO obtenerUsuario(Long id) {
+        return usuarioBO.obtenerUsuario(id);
+    }
+
+    @Override
+    public List<UsuarioDTO> obtenerUsuarios() {
+        return usuarioBO.obtenerTodosLosUsuarios();
     }
 }

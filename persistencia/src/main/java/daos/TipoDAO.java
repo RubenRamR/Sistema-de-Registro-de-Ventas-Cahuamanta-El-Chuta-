@@ -32,6 +32,18 @@ public class TipoDAO implements ITipoDAO {
     }
 
     @Override
+    public Tipo obtenerPorNombre(String nombre) {
+        List<Tipo> tipos = em.createQuery(
+                "SELECT t FROM Tipo t WHERE LOWER(t.nombre) = LOWER(:nombre)",
+                Tipo.class
+        )
+                .setParameter("nombre", nombre)
+                .setMaxResults(1)
+                .getResultList();
+        return tipos.isEmpty() ? null : tipos.getFirst();
+    }
+
+    @Override
     public List<Tipo> obtenerTodos() {
         return em.createQuery("SELECT t FROM Tipo t", Tipo.class).getResultList();
     }
