@@ -5,7 +5,7 @@ import entidades.Usuario;
 import excepciones.PersistenciaException;
 import interfaces.IUsuarioDAO;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *
@@ -57,12 +57,30 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public Usuario obtener(String nombre, String contrasenia) throws PersistenciaException {
         try {
-            return em.createQuery(
-                "SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.contrasenia = :contrasenia", Usuario.class)
-                .setParameter("nombre", nombre)
-                .setParameter("contrasenia", contrasenia)
+            String nombreLimpio = nombre != null ? nombre.trim() : "";
+            String contraseLimpia = contrasenia != null ? contrasenia.trim() : "";
+            
+            // Debug: log de los valores
+            System.out.println("[DEBUG] Buscando usuario: '" + nombreLimpio + "' con contraseña: '" + contraseLimpia + "'");
+            
+            Usuario usuarioEncontrado = em.createQuery(
+                "SELECT u FROM Usuario u LEFT JOIN FETCH u.tipo WHERE LOWER(u.nombre) = LOWER(:nombre) AND u.contrasenia = :contrasenia", Usuario.class)
+                .setParameter("nombre", nombreLimpio)
+                .setParameter("contrasenia", contraseLimpia)
                 .getSingleResult();
+            
+            System.out.println("[DEBUG] Usuario encontrado: " + usuarioEncontrado.getNombre() + ", Rol: " + (usuarioEncontrado.getTipo() != null ? usuarioEncontrado.getTipo().getNombre() : "SIN ROL"));
+            return usuarioEncontrado;
         } catch(Exception e) {
+            System.err.println("[DEBUG] Error en búsqueda: " + e.getMessage());
+            System.err.println("[DEBUG] Todos los usuarios en BD:");
+            try {
+                em.createQuery("SELECT u FROM Usuario u LEFT JOIN FETCH u.tipo", Usuario.class)
+                    .getResultList()
+                    .forEach(u -> System.err.println("  - " + u.getNombre() + " (rol: " + (u.getTipo() != null ? u.getTipo().getNombre() : "null") + ")"));
+            } catch(Exception ex) {
+                System.err.println("Error listando usuarios: " + ex.getMessage());
+            }
             throw new PersistenciaException("Usuario no encontrado.");
         }
     }

@@ -8,7 +8,7 @@ import conexion.ConexionBD;
 import entidades.Producto;
 import interfaces.IProductoDAO;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

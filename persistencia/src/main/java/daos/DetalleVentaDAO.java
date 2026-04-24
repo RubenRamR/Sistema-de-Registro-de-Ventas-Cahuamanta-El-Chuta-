@@ -4,7 +4,7 @@ import conexion.ConexionBD;
 import entidades.DetalleVenta;
 import interfaces.IDetalleVentaDAO;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *
