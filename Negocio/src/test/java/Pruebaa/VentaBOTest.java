@@ -1,6 +1,8 @@
 package Pruebaa;
 
 import bos.VentaBO;
+import dtos.DetalleVentaDTO;
+import dtos.ProductoDTO;
 import dtos.ReporteVentasDTO;
 import dtos.VentaDTO;
 import entidades.Usuario;
@@ -95,6 +97,27 @@ class VentaBOTest {
         assertTrue(Files.size(pdf) > 0);
     }
 
+    @Test
+    void validarPagoEfectivoVentaActualLanzaErrorSiMontoEsInsuficiente() throws Exception {
+        VentaBO ventaBO = new VentaBO(new FakeVentaDAO());
+        ventaBO.crearVenta(List.of(crearDetalle("48.00", 2)));
+
+        NegocioException error = assertThrows(
+                NegocioException.class,
+                () -> ventaBO.validarPagoEfectivoVentaActual(new BigDecimal("90.00"))
+        );
+
+        assertEquals("El pago en efectivo es insuficiente para cubrir el total.", error.getMessage());
+    }
+
+    @Test
+    void validarPagoEfectivoVentaActualAceptaMontoSuficiente() throws Exception {
+        VentaBO ventaBO = new VentaBO(new FakeVentaDAO());
+        ventaBO.crearVenta(List.of(crearDetalle("48.00", 2)));
+
+        assertDoesNotThrow(() -> ventaBO.validarPagoEfectivoVentaActual(new BigDecimal("96.00")));
+    }
+
     private Venta crearVenta(Long id, LocalDateTime fechaHora, String total, String nombreUsuario, String metodoPago) {
         Venta venta = new Venta();
         venta.setIdVenta(id);
@@ -108,6 +131,20 @@ class VentaBOTest {
         venta.setUsuario(usuario);
 
         return venta;
+    }
+
+    private DetalleVentaDTO crearDetalle(String precioUnitario, int cantidad) {
+        ProductoDTO producto = new ProductoDTO();
+        producto.setIdProducto(1L);
+        producto.setNombre("Producto prueba");
+        producto.setPrecio(new BigDecimal(precioUnitario));
+        producto.setCategoria("General");
+
+        DetalleVentaDTO detalle = new DetalleVentaDTO();
+        detalle.setCantidad(cantidad);
+        detalle.setPrecioUnitario(new BigDecimal(precioUnitario));
+        detalle.setProducto(producto);
+        return detalle;
     }
 
     private static class FakeVentaDAO implements IVentaDAO {

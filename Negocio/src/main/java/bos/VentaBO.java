@@ -92,6 +92,21 @@ public class VentaBO {
         return VentaMapper.toDTO(venta);
     }
 
+    public void validarPagoEfectivoVentaActual(BigDecimal montoRecibido) throws NegocioException {
+        if (venta == null || venta.getTotal() == null) {
+            throw new NegocioException("No hay una venta activa para validar el pago.");
+        }
+        if (montoRecibido == null) {
+            throw new NegocioException("Debe ingresar el monto recibido.");
+        }
+        if (montoRecibido.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new NegocioException("El monto recibido debe ser mayor a cero.");
+        }
+        if (montoRecibido.compareTo(venta.getTotal()) < 0) {
+            throw new NegocioException("El pago en efectivo es insuficiente para cubrir el total.");
+        }
+    }
+
     public void setMetodoPago(String metodoPago) {
         if (venta != null) {
             venta.setMetodoPago(metodoPago);

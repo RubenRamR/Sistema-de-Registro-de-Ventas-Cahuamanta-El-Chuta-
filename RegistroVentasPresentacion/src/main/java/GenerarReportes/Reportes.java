@@ -33,30 +33,29 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Daniel
- */
 public class Reportes extends JFrame {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-    private final Color COLOR_HEADER_FOOTER = new Color(65, 114, 159);
-    private final Color COLOR_OSCURO = new Color(11, 19, 84);
-    private final Color COLOR_BEIGE = new Color(248, 246, 240);
-    private final Color COLOR_BORDE = new Color(220, 220, 215);
-    private final Color COLOR_ROJO = new Color(178, 34, 34);
+    private static final Color COLOR_BARRA = new Color(18, 63, 94);
+    private static final Color COLOR_FONDO = new Color(244, 247, 243);
+    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
+    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
+    private static final Color COLOR_MUTED = new Color(92, 105, 117);
+    private static final Color COLOR_BORDE = new Color(214, 222, 230);
+    private static final Color COLOR_ACCION = new Color(28, 143, 124);
+    private static final Color COLOR_DANGER = new Color(182, 60, 54);
+    private static final Color COLOR_AUXILIAR = new Color(223, 235, 229);
 
     private final ReporteConsultaOperacion onConsultar;
     private final ReporteExportacionOperacion onExportar;
     private final DatePicker datePickerInicio = new DatePicker();
     private final DatePicker datePickerFin = new DatePicker();
-    private final DefaultTableModel modeloTabla;
+    private DefaultTableModel modeloTabla;
     private final JLabel lblPeriodoValor = new JLabel("-");
     private final JLabel lblCantidadValor = new JLabel("0");
     private final JLabel lblTotalValor = new JLabel("$0.00");
@@ -71,87 +70,15 @@ public class Reportes extends JFrame {
         this.onConsultar = onConsultar;
         this.onExportar = onExportar;
 
-        setTitle("Reportes");
+        setTitle("Reportes de ventas");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(COLOR_HEADER_FOOTER);
-        headerPanel.setPreferredSize(new Dimension(800, 50));
-        add(headerPanel, BorderLayout.NORTH);
-
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
-
-        JLabel lblTitulo = new JLabel("Reportes");
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 42));
-        lblTitulo.setForeground(COLOR_OSCURO);
-        lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
-
-        centerPanel.add(lblTitulo);
-        centerPanel.add(Box.createVerticalStrut(20));
-        centerPanel.add(crearPanelFiltros());
-        centerPanel.add(Box.createVerticalStrut(15));
-        centerPanel.add(crearPanelResumen());
-        centerPanel.add(Box.createVerticalStrut(15));
-
-        String[] columnas = {"Fecha", "Venta", "Usuario", "Metodo", "Total"};
-        modeloTabla = new DefaultTableModel(null, columnas) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        JTable tabla = new JTable(modeloTabla);
-        tabla.setRowHeight(32);
-
-        JScrollPane scrollPane = new JScrollPane(tabla);
-        scrollPane.setBorder(BorderFactory.createLineBorder(COLOR_BORDE));
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        scrollPane.setPreferredSize(new Dimension(900, 350));
-        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 380));
-
-        centerPanel.add(scrollPane);
-        centerPanel.add(Box.createVerticalStrut(15));
-
-        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBoton.setBackground(Color.WHITE);
-        JButton btnPdf = new JButton("Descargar PDF");
-        btnPdf.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnPdf.setForeground(Color.WHITE);
-        btnPdf.setBackground(COLOR_ROJO);
-        btnPdf.setFocusPainted(false);
-        btnPdf.setOpaque(true);
-        btnPdf.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnPdf.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_ROJO.darker(), 1, true),
-                new EmptyBorder(10, 30, 10, 30)
-        ));
-        btnPdf.addActionListener(e -> exportarPdf());
-        panelBoton.add(btnPdf);
-        centerPanel.add(panelBoton);
-
-        add(centerPanel, BorderLayout.CENTER);
-
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        footerPanel.setBackground(COLOR_HEADER_FOOTER);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(COLOR_OSCURO);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> onBack.run());
-        footerPanel.add(btnRegresar);
-        add(footerPanel, BorderLayout.SOUTH);
+        add(crearBarraSuperior(), BorderLayout.NORTH);
+        add(crearContenido(), BorderLayout.CENTER);
+        add(crearBarraInferior(onBack), BorderLayout.SOUTH);
 
         ReporteVentasDTO reporte = reporteInicial == null ? new ReporteVentasDTO() : reporteInicial;
         LocalDate hoy = LocalDate.now();
@@ -160,36 +87,89 @@ public class Reportes extends JFrame {
         renderizarReporte(reporte);
     }
 
-    private JPanel crearPanelFiltros() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        panel.setBackground(COLOR_BEIGE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(15, 20, 15, 20)
-        ));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+    private JPanel crearBarraSuperior() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 74));
 
-        JButton btnHoy = new JButton("Hoy");
+        JLabel lbl = new JLabel("Panel de reportes");
+        lbl.setForeground(Color.WHITE);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
+        panel.add(lbl, BorderLayout.WEST);
+        return panel;
+    }
+
+    private JPanel crearContenido() {
+        JPanel fondo = new JPanel(new BorderLayout());
+        fondo.setBackground(COLOR_FONDO);
+        fondo.setBorder(new EmptyBorder(28, 36, 28, 36));
+
+        JPanel tarjeta = new JPanel();
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(COLOR_TARJETA);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(30, 32, 30, 32)
+        ));
+
+        JLabel lblTitulo = new JLabel("Reportes");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel lblSubtitulo = new JLabel("Consulta, resume y exporta las ventas reales del periodo seleccionado");
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        lblSubtitulo.setForeground(COLOR_MUTED);
+        lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        tarjeta.add(lblTitulo);
+        tarjeta.add(Box.createVerticalStrut(6));
+        tarjeta.add(lblSubtitulo);
+        tarjeta.add(Box.createVerticalStrut(22));
+        tarjeta.add(crearPanelFiltros());
+        tarjeta.add(Box.createVerticalStrut(18));
+        tarjeta.add(crearPanelResumen());
+        tarjeta.add(Box.createVerticalStrut(18));
+        tarjeta.add(crearTablaVentas());
+        tarjeta.add(Box.createVerticalStrut(18));
+        tarjeta.add(crearPanelExportacion());
+
+        fondo.add(tarjeta, BorderLayout.CENTER);
+        return fondo;
+    }
+
+    private JPanel crearPanelFiltros() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
+        panel.setBackground(COLOR_AUXILIAR);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 88));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(8, 12, 8, 12)
+        ));
+
+        JButton btnHoy = crearBoton("Hoy", COLOR_BARRA);
         btnHoy.addActionListener(e -> aplicarPreset(LocalDate.now(), LocalDate.now(), false));
 
-        JButton btnSemana = new JButton("Semana");
+        JButton btnSemana = crearBoton("Semana", COLOR_BARRA);
         btnSemana.addActionListener(e -> {
             LocalDate fin = LocalDate.now();
             aplicarPreset(fin.minusDays(6), fin, false);
         });
 
-        JButton btnMes = new JButton("Mes");
+        JButton btnMes = crearBoton("Mes", COLOR_BARRA);
         btnMes.addActionListener(e -> {
             LocalDate fin = LocalDate.now();
             aplicarPreset(fin.withDayOfMonth(1), fin, false);
         });
 
-        JButton btnConsultar = new JButton("Consultar");
+        JButton btnConsultar = crearBoton("Consultar", COLOR_ACCION);
         btnConsultar.addActionListener(e -> consultarReporte(true));
 
-        panel.add(new JLabel("Inicio:"));
+        panel.add(crearEtiquetaSecundaria("Inicio"));
         panel.add(datePickerInicio);
-        panel.add(new JLabel("Fin:"));
+        panel.add(crearEtiquetaSecundaria("Fin"));
         panel.add(datePickerFin);
         panel.add(btnHoy);
         panel.add(btnSemana);
@@ -199,35 +179,116 @@ public class Reportes extends JFrame {
     }
 
     private JPanel crearPanelResumen() {
-        JPanel panel = new JPanel(new GridLayout(1, 4, 15, 0));
-        panel.setBackground(Color.WHITE);
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        JPanel panel = new JPanel(new GridLayout(1, 4, 16, 0));
+        panel.setBackground(COLOR_TARJETA);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 118));
 
         panel.add(crearTarjetaResumen("Periodo", lblPeriodoValor));
         panel.add(crearTarjetaResumen("Ventas", lblCantidadValor));
-        panel.add(crearTarjetaResumen("Monto Total", lblTotalValor));
+        panel.add(crearTarjetaResumen("Monto total", lblTotalValor));
         panel.add(crearTarjetaResumen("Promedio", lblPromedioValor));
         return panel;
     }
 
     private JPanel crearTarjetaResumen(String titulo, JLabel valor) {
-        JPanel panel = new JPanel(new BorderLayout(0, 8));
-        panel.setBackground(COLOR_BEIGE);
+        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        panel.setBackground(new Color(249, 250, 248));
         panel.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(15, 15, 15, 15)
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(16, 16, 16, 16)
         ));
 
         JLabel lblTitulo = new JLabel(titulo);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
-        lblTitulo.setForeground(COLOR_OSCURO);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblTitulo.setForeground(COLOR_MUTED);
 
-        valor.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        valor.setForeground(Color.DARK_GRAY);
+        valor.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        valor.setForeground(COLOR_TEXTO);
 
         panel.add(lblTitulo, BorderLayout.NORTH);
         panel.add(valor, BorderLayout.CENTER);
         return panel;
+    }
+
+    private JScrollPane crearTablaVentas() {
+        String[] columnas = {"Fecha", "Venta", "Usuario", "Metodo", "Total"};
+        modeloTabla = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        JTable tabla = new JTable(modeloTabla);
+        tabla.setRowHeight(34);
+        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tabla.setForeground(COLOR_TEXTO);
+        tabla.setShowHorizontalLines(true);
+        tabla.setGridColor(new Color(234, 238, 242));
+        tabla.setSelectionBackground(new Color(223, 235, 229));
+        tabla.setSelectionForeground(COLOR_TEXTO);
+        tabla.getTableHeader().setBackground(COLOR_BARRA);
+        tabla.getTableHeader().setForeground(Color.WHITE);
+        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tabla.getTableHeader().setReorderingAllowed(false);
+
+        DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
+        centrado.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(centrado);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        scrollPane.setAlignmentX(LEFT_ALIGNMENT);
+        scrollPane.setBorder(BorderFactory.createLineBorder(COLOR_BORDE, 1, true));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        scrollPane.setPreferredSize(new Dimension(900, 360));
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 420));
+        return scrollPane;
+    }
+
+    private JPanel crearPanelExportacion() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        panel.setBackground(COLOR_TARJETA);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+
+        JButton btnPdf = crearBoton("Descargar PDF", COLOR_DANGER);
+        btnPdf.setPreferredSize(new Dimension(190, 46));
+        btnPdf.addActionListener(e -> exportarPdf());
+        panel.add(btnPdf);
+        return panel;
+    }
+
+    private JPanel crearBarraInferior(Runnable onBack) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 72));
+
+        JButton btnRegresar = crearBoton("Regresar", new Color(12, 38, 57));
+        btnRegresar.setPreferredSize(new Dimension(150, 46));
+        btnRegresar.addActionListener(e -> onBack.run());
+        panel.add(btnRegresar);
+        return panel;
+    }
+
+    private JButton crearBoton(String texto, Color color) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        boton.setForeground(Color.WHITE);
+        boton.setBackground(color);
+        boton.setFocusPainted(false);
+        boton.setOpaque(true);
+        boton.setBorderPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    private JLabel crearEtiquetaSecundaria(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        label.setForeground(COLOR_TEXTO);
+        return label;
     }
 
     private void aplicarPreset(LocalDate inicio, LocalDate fin, boolean mostrarMensajeSinDatos) {
@@ -330,9 +391,11 @@ public class Reportes extends JFrame {
             reporte.setFechaInicio(LocalDate.now());
             reporte.setFechaFin(LocalDate.now());
             new Reportes(
-                    () -> {},
+                    () -> {
+                    },
                     (inicio, fin) -> reporte,
-                    (inicio, fin, destino) -> {},
+                    (inicio, fin, destino) -> {
+                    },
                     reporte
             ).setVisible(true);
         });

@@ -393,7 +393,8 @@ public class ControlVista {
         VentaDTO venta = negocio.getVentaActual();
         frameActual = new MetodoEfectivoFrm(
                 venta.getTotal(),
-                () -> {
+                montoRecibido -> {
+                    negocio.validarPagoEfectivoVentaActual(montoRecibido);
                     negocio.setMetodoPagoVentaActual("EFECTIVO");
                     frameActual.dispose();
                     mostrarPantallaResumen();

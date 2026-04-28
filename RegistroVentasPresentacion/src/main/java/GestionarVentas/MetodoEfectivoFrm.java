@@ -1,15 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package GestionarVentas;
 
-import Componentes.TarjetaPago;
+import aplicacion.PagoEfectivoOperacion;
+import excepciones.NegocioException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
@@ -17,415 +30,301 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-/**
- *
- * @author rramirez
- */
-public class MetodoEfectivoFrm extends javax.swing.JFrame {
+public class MetodoEfectivoFrm extends JFrame {
 
-    private Runnable onAceptar;
-    private Runnable onBack;
-    
-    /**
-     * Creates new form MenuFrm
-     * @param total
-     */
+    private static final Color COLOR_BARRA = new Color(18, 63, 94);
+    private static final Color COLOR_FONDO = new Color(245, 247, 243);
+    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
+    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
+    private static final Color COLOR_BORDE = new Color(214, 222, 230);
+    private static final Color COLOR_PRIMARIO = new Color(28, 143, 124);
+    private static final Color COLOR_PELIGRO = new Color(182, 60, 54);
+    private static final Color COLOR_SUAVE = new Color(233, 240, 235);
+    private static final Font FUENTE_TITULO = new Font("Segoe UI", Font.BOLD, 44);
+    private static final Font FUENTE_SUBTITULO = new Font("Segoe UI", Font.PLAIN, 18);
+    private static final Font FUENTE_ETIQUETA = new Font("Segoe UI", Font.BOLD, 20);
+    private static final Font FUENTE_MONTO = new Font("Segoe UI", Font.BOLD, 30);
+    private static final Font FUENTE_CAMPO = new Font("Segoe UI", Font.PLAIN, 24);
+
+    private final BigDecimal total;
+    private final PagoEfectivoOperacion onAceptar;
+    private final Runnable onBack;
+
+    private JLabel lblCambioMonto;
+    private JLabel lblEstado;
+    private JLabel lblPagoSugerido;
+    private JTextField txtPago;
+    private JButton btnAceptar;
+
     public MetodoEfectivoFrm(
             BigDecimal total,
-            Runnable onAceptar,
+            PagoEfectivoOperacion onAceptar,
             Runnable onBack
     ) {
+        this.total = total == null ? BigDecimal.ZERO : total;
         this.onAceptar = onAceptar;
         this.onBack = onBack;
-        
-        initComponents();
-        setExtendedState(MetodoEfectivoFrm.MAXIMIZED_BOTH);
+
+        setTitle("Pago en efectivo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        
-        LblTotalMonto.setText(total.toString());
-        
-        AbstractDocument doc = (AbstractDocument) TxtPago.getDocument();
-        doc.setDocumentFilter(new DocumentFilter() {
-            @Override
-            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                if (string.matches("\\d+")) { // Solo números
-                    super.insertString(fb, offset, string, attr);
-                }
-            }
+        setLayout(new BorderLayout());
 
-            @Override
-            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-                if (text != null && text.matches("\\d+")) { // Solo números
-                    super.replace(fb, offset, length, text, attrs);
-                }
-            }
-        });
-        
-        TxtPago.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) { calcularPago(); }
-            @Override
-            public void removeUpdate(DocumentEvent e) { calcularPago(); }
-            @Override
-            public void changedUpdate(DocumentEvent e) {}
-        });
+        add(crearBarraSuperior(), BorderLayout.NORTH);
+        add(crearContenido(), BorderLayout.CENTER);
+        add(crearBarraInferior(), BorderLayout.SOUTH);
+
+        actualizarEstadoPago();
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
+    private JPanel crearBarraSuperior() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 72));
 
-        PnlHeader = new javax.swing.JPanel();
-        PnlFooter = new javax.swing.JPanel();
-        BtnBack = new javax.swing.JButton();
-        PnlContenido = new javax.swing.JPanel();
-        LblTitulo = new javax.swing.JLabel();
-        LblTotalEtiqueta = new javax.swing.JLabel();
-        LblPagoEtiqueta = new javax.swing.JLabel();
-        LblCambioEtiqueta = new javax.swing.JLabel();
-        LblTotalMonto = new javax.swing.JLabel();
-        TxtPago = new javax.swing.JTextField();
-        LblCambioMonto = new javax.swing.JLabel();
-        BtnAceptar = new javax.swing.JButton();
+        JLabel lblMarca = new JLabel("Cobro en efectivo");
+        lblMarca.setForeground(Color.WHITE);
+        lblMarca.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lblMarca.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
+        panel.add(lblMarca, BorderLayout.WEST);
+        return panel;
+    }
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
+    private JPanel crearContenido() {
+        JPanel fondo = new JPanel(new GridBagLayout());
+        fondo.setBackground(COLOR_FONDO);
 
-        PnlHeader.setBackground(new java.awt.Color(47, 102, 144));
-        PnlHeader.setPreferredSize(new java.awt.Dimension(1024, 60));
+        JPanel tarjeta = new JPanel();
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(COLOR_TARJETA);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                BorderFactory.createEmptyBorder(36, 42, 36, 42)
+        ));
+        tarjeta.setPreferredSize(new Dimension(700, 540));
 
-        javax.swing.GroupLayout PnlHeaderLayout = new javax.swing.GroupLayout(PnlHeader);
-        PnlHeader.setLayout(PnlHeaderLayout);
-        PnlHeaderLayout.setHorizontalGroup(
-            PnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        PnlHeaderLayout.setVerticalGroup(
-            PnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        JLabel lblTitulo = new JLabel("Efectivo");
+        lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
+        lblTitulo.setFont(FUENTE_TITULO);
+        lblTitulo.setForeground(COLOR_TEXTO);
 
-        getContentPane().add(PnlHeader, java.awt.BorderLayout.NORTH);
+        JLabel lblSubtitulo = new JLabel("Confirma el cobro antes de registrar la venta");
+        lblSubtitulo.setAlignmentX(CENTER_ALIGNMENT);
+        lblSubtitulo.setFont(FUENTE_SUBTITULO);
+        lblSubtitulo.setForeground(new Color(97, 109, 122));
 
-        PnlFooter.setBackground(new java.awt.Color(47, 102, 144));
-        PnlFooter.setPreferredSize(new java.awt.Dimension(1024, 60));
-        PnlFooter.setLayout(new java.awt.GridBagLayout());
+        tarjeta.add(lblTitulo);
+        tarjeta.add(Box.createVerticalStrut(8));
+        tarjeta.add(lblSubtitulo);
+        tarjeta.add(Box.createVerticalStrut(28));
+        tarjeta.add(crearFilaResumen("Total a cobrar", "$" + formatearMonto(total), false));
+        tarjeta.add(Box.createVerticalStrut(12));
+        tarjeta.add(crearPanelPago());
+        tarjeta.add(Box.createVerticalStrut(12));
+        tarjeta.add(crearFilaResumen("Cambio", "$0.00", true));
+        tarjeta.add(Box.createVerticalStrut(12));
 
-        BtnBack.setBackground(new java.awt.Color(3, 4, 94));
-        BtnBack.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
-        BtnBack.setForeground(new java.awt.Color(255, 255, 255));
-        BtnBack.setText("←");
-        BtnBack.setAlignmentY(0.0F);
-        BtnBack.setBorder(null);
-        BtnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        BtnBack.setFocusPainted(false);
-        BtnBack.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnBack.setInheritsPopupMenu(true);
-        BtnBack.setMargin(new java.awt.Insets(2, 14, 0, 14));
-        BtnBack.setMaximumSize(new java.awt.Dimension(32, 64));
-        BtnBack.setPreferredSize(new java.awt.Dimension(60, 10));
-        BtnBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnBackActionPerformed(evt);
+        lblEstado = new JLabel("Ingresa el monto recibido para continuar");
+        lblEstado.setAlignmentX(CENTER_ALIGNMENT);
+        lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        tarjeta.add(lblEstado);
+
+        tarjeta.add(Box.createVerticalStrut(12));
+        lblPagoSugerido = new JLabel("Monto minimo sugerido: $" + formatearMonto(total));
+        lblPagoSugerido.setAlignmentX(CENTER_ALIGNMENT);
+        lblPagoSugerido.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblPagoSugerido.setForeground(new Color(101, 115, 126));
+        tarjeta.add(lblPagoSugerido);
+
+        tarjeta.add(Box.createVerticalStrut(24));
+        tarjeta.add(crearPanelAcciones());
+
+        fondo.add(tarjeta);
+        return fondo;
+    }
+
+    private JPanel crearFilaResumen(String etiqueta, String valorInicial, boolean filaCambio) {
+        JPanel panel = new JPanel(new BorderLayout(18, 0));
+        panel.setBackground(filaCambio ? COLOR_SUAVE : COLOR_TARJETA);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                BorderFactory.createEmptyBorder(18, 20, 18, 20)
+        ));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 88));
+
+        JLabel lblEtiqueta = new JLabel(etiqueta);
+        lblEtiqueta.setFont(FUENTE_ETIQUETA);
+        lblEtiqueta.setForeground(COLOR_TEXTO);
+
+        JLabel lblValor = new JLabel(valorInicial, SwingConstants.RIGHT);
+        lblValor.setFont(FUENTE_MONTO);
+        lblValor.setForeground(COLOR_TEXTO);
+
+        panel.add(lblEtiqueta, BorderLayout.WEST);
+        panel.add(lblValor, BorderLayout.EAST);
+
+        if (filaCambio) {
+            lblCambioMonto = lblValor;
+        }
+
+        return panel;
+    }
+
+    private JPanel crearPanelPago() {
+        JPanel panel = new JPanel(new BorderLayout(18, 0));
+        panel.setBackground(COLOR_TARJETA);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                BorderFactory.createEmptyBorder(18, 20, 18, 20)
+        ));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 96));
+
+        JLabel lblEtiqueta = new JLabel("Pago recibido");
+        lblEtiqueta.setFont(FUENTE_ETIQUETA);
+        lblEtiqueta.setForeground(COLOR_TEXTO);
+
+        txtPago = new JTextField("0.00");
+        txtPago.setFont(FUENTE_CAMPO);
+        txtPago.setForeground(COLOR_TEXTO);
+        txtPago.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtPago.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(187, 199, 210), 1, true),
+                BorderFactory.createEmptyBorder(8, 14, 8, 14)
+        ));
+        ((AbstractDocument) txtPago.getDocument()).setDocumentFilter(new DecimalFilter());
+        txtPago.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                actualizarEstadoPago();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                actualizarEstadoPago();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                actualizarEstadoPago();
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 2.0;
-        PnlFooter.add(BtnBack, gridBagConstraints);
 
-        getContentPane().add(PnlFooter, java.awt.BorderLayout.SOUTH);
+        panel.add(lblEtiqueta, BorderLayout.WEST);
+        panel.add(txtPago, BorderLayout.CENTER);
+        return panel;
+    }
 
-        PnlContenido.setBackground(new java.awt.Color(255, 255, 255));
-        PnlContenido.setLayout(new java.awt.GridBagLayout());
+    private JPanel crearPanelAcciones() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(COLOR_TARJETA);
 
-        LblTitulo.setBackground(new java.awt.Color(255, 255, 255));
-        LblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 80)); // NOI18N
-        LblTitulo.setForeground(new java.awt.Color(3, 4, 94));
-        LblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblTitulo.setText("Efectivo");
-        LblTitulo.setAlignmentY(0.0F);
-        LblTitulo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.weighty = 1.0;
-        PnlContenido.add(LblTitulo, gridBagConstraints);
+        btnAceptar = crearBoton("Registrar pago", COLOR_PRIMARIO);
+        btnAceptar.setPreferredSize(new Dimension(250, 54));
+        btnAceptar.addActionListener(e -> confirmarPago());
 
-        LblTotalEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
-        LblTotalEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblTotalEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblTotalEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblTotalEtiqueta.setText("Total: ");
-        LblTotalEtiqueta.setAlignmentY(0.0F);
-        LblTotalEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblTotalEtiqueta.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
-        PnlContenido.add(LblTotalEtiqueta, gridBagConstraints);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 8, 0, 8);
+        panel.add(btnAceptar, gbc);
+        return panel;
+    }
 
-        LblPagoEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
-        LblPagoEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblPagoEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblPagoEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblPagoEtiqueta.setText("Pago: ");
-        LblPagoEtiqueta.setAlignmentY(0.0F);
-        LblPagoEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblPagoEtiqueta.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-        PnlContenido.add(LblPagoEtiqueta, gridBagConstraints);
+    private JPanel crearBarraInferior() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 72));
 
-        LblCambioEtiqueta.setBackground(new java.awt.Color(255, 255, 255));
-        LblCambioEtiqueta.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblCambioEtiqueta.setForeground(new java.awt.Color(3, 4, 94));
-        LblCambioEtiqueta.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LblCambioEtiqueta.setText("Cambio: ");
-        LblCambioEtiqueta.setAlignmentY(0.0F);
-        LblCambioEtiqueta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblCambioEtiqueta.setPreferredSize(new java.awt.Dimension(150, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-        PnlContenido.add(LblCambioEtiqueta, gridBagConstraints);
+        JButton btnBack = crearBoton("Regresar", new Color(12, 38, 57));
+        btnBack.setPreferredSize(new Dimension(150, 46));
+        btnBack.addActionListener(e -> onBack.run());
+        panel.add(btnBack);
+        return panel;
+    }
 
-        LblTotalMonto.setBackground(new java.awt.Color(255, 255, 255));
-        LblTotalMonto.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblTotalMonto.setForeground(new java.awt.Color(3, 4, 94));
-        LblTotalMonto.setText("100$");
-        LblTotalMonto.setAlignmentY(0.0F);
-        LblTotalMonto.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        LblTotalMonto.setPreferredSize(new java.awt.Dimension(100, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
-        PnlContenido.add(LblTotalMonto, gridBagConstraints);
+    private JButton crearBoton(String texto, Color color) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        boton.setForeground(Color.WHITE);
+        boton.setBackground(color);
+        boton.setOpaque(true);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
 
-        TxtPago.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        TxtPago.setForeground(new java.awt.Color(3, 4, 94));
-        TxtPago.setText("0");
-        TxtPago.setPreferredSize(new java.awt.Dimension(150, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-        PnlContenido.add(TxtPago, gridBagConstraints);
-
-        LblCambioMonto.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        LblCambioMonto.setForeground(new java.awt.Color(3, 4, 94));
-        LblCambioMonto.setText("$");
-        LblCambioMonto.setPreferredSize(new java.awt.Dimension(150, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
-        PnlContenido.add(LblCambioMonto, gridBagConstraints);
-
-        BtnAceptar.setBackground(new java.awt.Color(0, 119, 182));
-        BtnAceptar.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
-        BtnAceptar.setForeground(new java.awt.Color(255, 255, 255));
-        BtnAceptar.setText("Aceptar");
-        BtnAceptar.setBorder(null);
-        BtnAceptar.setPreferredSize(new java.awt.Dimension(230, 75));
-        BtnAceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAceptarActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.insets = new java.awt.Insets(40, 0, 40, 0);
-        PnlContenido.add(BtnAceptar, gridBagConstraints);
-
-        getContentPane().add(PnlContenido, java.awt.BorderLayout.CENTER);
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void BtnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBackActionPerformed
-        onBack.run();
-    }//GEN-LAST:event_BtnBackActionPerformed
-
-    private void BtnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAceptarActionPerformed
-        onAceptar.run();
-    }//GEN-LAST:event_BtnAceptarActionPerformed
-
-    private void calcularPago() {
-        if (TxtPago.getText().isEmpty()) {
+    private void actualizarEstadoPago() {
+        BigDecimal pago = obtenerPagoIngresado();
+        if (pago == null) {
+            lblCambioMonto.setText("$0.00");
+            lblEstado.setText("Ingresa un monto valido para continuar");
+            lblEstado.setForeground(COLOR_PELIGRO);
+            btnAceptar.setEnabled(false);
             return;
         }
-        double total = Double.parseDouble(LblTotalMonto.getText());
-        double efectivo = Double.parseDouble(TxtPago.getText());
-        double cambio = efectivo - total;
-        
-        if (cambio < 0) {
-            LblCambioMonto.setText("");
+
+        BigDecimal cambio = pago.subtract(total).setScale(2, RoundingMode.HALF_UP);
+        if (cambio.signum() < 0) {
+            BigDecimal faltante = cambio.abs();
+            lblCambioMonto.setText("$0.00");
+            lblEstado.setText("Faltan $" + formatearMonto(faltante) + " para completar la venta");
+            lblEstado.setForeground(COLOR_PELIGRO);
+            btnAceptar.setEnabled(false);
             return;
         }
-        
-        LblCambioMonto.setText(String.valueOf(cambio));
+
+        lblCambioMonto.setText("$" + formatearMonto(cambio));
+        lblEstado.setText("Pago suficiente. Puedes registrar la venta.");
+        lblEstado.setForeground(COLOR_PRIMARIO.darker());
+        btnAceptar.setEnabled(true);
     }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex)
-        {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
-            java.util.logging.Logger.getLogger(MetodoEfectivoFrm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+    private void confirmarPago() {
+        BigDecimal pago = obtenerPagoIngresado();
+        if (pago == null) {
+            JOptionPane.showMessageDialog(this, "Ingresa un monto valido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MetodoEfectivoFrm(
-                        BigDecimal.ZERO, 
-                        () -> {},
-                        () -> {}
-                ).setVisible(true);
-            }
-        });
+        try {
+            onAceptar.ejecutar(pago);
+        } catch (NegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnAceptar;
-    private javax.swing.JButton BtnBack;
-    private javax.swing.JLabel LblCambioEtiqueta;
-    private javax.swing.JLabel LblCambioMonto;
-    private javax.swing.JLabel LblPagoEtiqueta;
-    private javax.swing.JLabel LblTitulo;
-    private javax.swing.JLabel LblTotalEtiqueta;
-    private javax.swing.JLabel LblTotalMonto;
-    private javax.swing.JPanel PnlContenido;
-    private javax.swing.JPanel PnlFooter;
-    private javax.swing.JPanel PnlHeader;
-    private javax.swing.JTextField TxtPago;
-    // End of variables declaration//GEN-END:variables
+    private BigDecimal obtenerPagoIngresado() {
+        String texto = txtPago.getText();
+        if (texto == null || texto.isBlank()) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+        try {
+            return new BigDecimal(texto.replace(',', '.')).setScale(2, RoundingMode.HALF_UP);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String formatearMonto(BigDecimal monto) {
+        BigDecimal valor = monto == null ? BigDecimal.ZERO : monto;
+        return valor.setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
+    private static class DecimalFilter extends DocumentFilter {
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            replace(fb, offset, 0, string, attr);
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
+            String siguiente = new StringBuilder(actual).replace(offset, offset + length, text == null ? "" : text).toString();
+            if (siguiente.isBlank() || siguiente.matches("\\d{0,7}([\\.,]\\d{0,2})?")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+    }
 }

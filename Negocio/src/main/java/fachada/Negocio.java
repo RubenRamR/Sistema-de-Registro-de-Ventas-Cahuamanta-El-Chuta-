@@ -14,6 +14,7 @@ import dtos.ReporteVentasDTO;
 import dtos.UsuarioDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -56,6 +57,11 @@ public class Negocio implements INegocio {
     @Override
     public VentaDTO getVentaActual() {
         return ventaBO.obtenerVentaActual();
+    }
+
+    @Override
+    public void validarPagoEfectivoVentaActual(BigDecimal montoRecibido) throws NegocioException {
+        ventaBO.validarPagoEfectivoVentaActual(montoRecibido);
     }
 
     @Override
