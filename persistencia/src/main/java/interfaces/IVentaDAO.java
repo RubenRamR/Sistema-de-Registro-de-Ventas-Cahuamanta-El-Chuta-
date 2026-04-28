@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package interfaces;
 
 import entidades.Venta;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +15,8 @@ public interface IVentaDAO {
     Venta obtener(Long id);
 
     List<Venta> obtenerTodos();
+
+    List<Venta> obtenerPorRango(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     void actualizar(Venta venta);
 

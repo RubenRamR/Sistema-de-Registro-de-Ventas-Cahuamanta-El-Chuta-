@@ -10,9 +10,11 @@ import daos.UsuarioDAO;
 import daos.VentaDAO;
 import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;
+import dtos.ReporteVentasDTO;
 import dtos.UsuarioDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -20,10 +22,10 @@ import java.util.List;
  * @author Daniel
  */
 public class Negocio implements INegocio {
-    
-    UsuarioBO usuarioBO;
-    VentaBO ventaBO;
-    ProductoBO productoBO;
+
+    private final UsuarioBO usuarioBO;
+    private final VentaBO ventaBO;
+    private final ProductoBO productoBO;
 
     public Negocio() {
         usuarioBO = new UsuarioBO(new UsuarioDAO(), new TipoDAO());
@@ -35,7 +37,7 @@ public class Negocio implements INegocio {
     public void iniciarSesion(String nombre, String contrasenia) throws NegocioException {
         usuarioBO.iniciarSesion(nombre, contrasenia);
     }
-    
+
     @Override
     public void cerrarSesionActual() {
         usuarioBO.cerrarSesion();
@@ -83,10 +85,24 @@ public class Negocio implements INegocio {
 
     @Override
     public List<VentaDTO> obtenerVentasDelDia() {
-        System.out.println(ventaBO.obtenerTodasLasVentas());
-        return ventaBO.obtenerTodasLasVentas();
+        return ventaBO.obtenerVentasPorFecha(LocalDate.now());
     }
-    
+
+    @Override
+    public List<VentaDTO> obtenerVentasPorFecha(LocalDate fecha) {
+        return ventaBO.obtenerVentasPorFecha(fecha);
+    }
+
+    @Override
+    public ReporteVentasDTO obtenerReporteVentas(LocalDate fechaInicio, LocalDate fechaFin) throws NegocioException {
+        return ventaBO.obtenerReporteVentas(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public void exportarReporteVentas(LocalDate fechaInicio, LocalDate fechaFin, String rutaArchivo) throws NegocioException {
+        ventaBO.exportarReporteVentas(fechaInicio, fechaFin, rutaArchivo);
+    }
+
     @Override
     public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id) {
         return productoBO.obtenerDetallesVentaPorIdVenta(id);

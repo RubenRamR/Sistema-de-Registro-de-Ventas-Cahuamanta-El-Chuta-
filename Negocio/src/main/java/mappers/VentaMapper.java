@@ -1,21 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package mappers;
 
 import dtos.VentaDTO;
 import entidades.Venta;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
  *
  * @author luise
  */
-
 public class VentaMapper {
 
-    // Convertir de VentaDTO a Venta (para persistir en la base de datos)
     public static Venta toEntity(VentaDTO ventaDTO) {
         Venta venta = new Venta();
         venta.setIdVenta(ventaDTO.getIdVenta());
@@ -23,11 +18,12 @@ public class VentaMapper {
         venta.setFechaHora(ventaDTO.getFechaHora());
         venta.setFolio(ventaDTO.getFolio());
         venta.setMetodoPago(ventaDTO.getMetodoPago());
-        venta.setUsuario(UsuarioMapper.toEntity(ventaDTO.getUsuario()));
+        if (ventaDTO.getUsuario() != null) {
+            venta.setUsuario(UsuarioMapper.toEntity(ventaDTO.getUsuario()));
+        }
         return venta;
     }
 
-    // Convertir de Venta a VentaDTO (para enviar los datos a la capa de presentación o negocio)
     public static VentaDTO toDTO(Venta venta) {
         VentaDTO ventaDTO = new VentaDTO();
         ventaDTO.setIdVenta(venta.getIdVenta());
@@ -36,9 +32,11 @@ public class VentaMapper {
         ventaDTO.setFolio(venta.getFolio());
         ventaDTO.setMetodoPago(venta.getMetodoPago());
         ventaDTO.setDetallesVenta(
-                venta.getDetallesVenta().stream()
-                        .map(DetalleVentaMapper::toDTO)
-                        .collect(Collectors.toList())
+                venta.getDetallesVenta() == null
+                        ? new ArrayList<>()
+                        : venta.getDetallesVenta().stream()
+                                .map(DetalleVentaMapper::toDTO)
+                                .collect(Collectors.toList())
         );
         if (venta.getUsuario() != null) {
             ventaDTO.setUsuario(UsuarioMapper.toDTO(venta.getUsuario()));

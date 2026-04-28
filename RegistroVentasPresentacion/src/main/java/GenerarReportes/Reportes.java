@@ -1,30 +1,41 @@
 package GenerarReportes;
 
+import aplicacion.ReporteConsultaOperacion;
+import aplicacion.ReporteExportacionOperacion;
 import com.github.lgooddatepicker.components.DatePicker;
+import dtos.ReporteVentasDTO;
+import dtos.UsuarioDTO;
+import dtos.VentaDTO;
+import excepciones.NegocioException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.GridLayout;
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -32,105 +43,83 @@ import javax.swing.table.JTableHeader;
  */
 public class Reportes extends JFrame {
 
-    // --- Paleta de Colores ---
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     private final Color COLOR_HEADER_FOOTER = new Color(65, 114, 159);
     private final Color COLOR_OSCURO = new Color(11, 19, 84);
     private final Color COLOR_BEIGE = new Color(248, 246, 240);
     private final Color COLOR_BORDE = new Color(220, 220, 215);
-    private final Color COLOR_ROJO = new Color(178, 34, 34); // Rojo oscuro para el PDF
+    private final Color COLOR_ROJO = new Color(178, 34, 34);
+
+    private final ReporteConsultaOperacion onConsultar;
+    private final ReporteExportacionOperacion onExportar;
+    private final DatePicker datePickerInicio = new DatePicker();
+    private final DatePicker datePickerFin = new DatePicker();
+    private final DefaultTableModel modeloTabla;
+    private final JLabel lblPeriodoValor = new JLabel("-");
+    private final JLabel lblCantidadValor = new JLabel("0");
+    private final JLabel lblTotalValor = new JLabel("$0.00");
+    private final JLabel lblPromedioValor = new JLabel("$0.00");
 
     public Reportes(
-            Runnable onBack
+            Runnable onBack,
+            ReporteConsultaOperacion onConsultar,
+            ReporteExportacionOperacion onExportar,
+            ReporteVentasDTO reporteInicial
     ) {
-        setTitle("Seleccionar Periodo");
+        this.onConsultar = onConsultar;
+        this.onExportar = onExportar;
+
+        setTitle("Reportes");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- ENCABEZADO ---
         JPanel headerPanel = new JPanel();
         headerPanel.setBackground(COLOR_HEADER_FOOTER);
         headerPanel.setPreferredSize(new Dimension(800, 50));
         add(headerPanel, BorderLayout.NORTH);
 
-        // --- CONTENIDO CENTRAL ---
-        JPanel centerPanel = new JPanel(new GridBagLayout());
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBackground(Color.WHITE);
-        GridBagConstraints gbcMain = new GridBagConstraints();
-        gbcMain.gridx = 0;
-        gbcMain.anchor = GridBagConstraints.CENTER;
+        centerPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
 
-        // 1. Título
         JLabel lblTitulo = new JLabel("Reportes");
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 42));
         lblTitulo.setForeground(COLOR_OSCURO);
-        
-        gbcMain.gridy = 0;
-        gbcMain.insets = new Insets(0, 0, 20, 0); 
-        centerPanel.add(lblTitulo, gbcMain);
+        lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
 
-        // 2. Tarjeta Beige (Fechas + Tabla + Botón)
-        JPanel cardPanel = crearTarjetaReportes();
-        
-        gbcMain.gridy = 1;
-        gbcMain.insets = new Insets(0, 0, 0, 0);
-        centerPanel.add(cardPanel, gbcMain);
+        centerPanel.add(lblTitulo);
+        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(crearPanelFiltros());
+        centerPanel.add(Box.createVerticalStrut(15));
+        centerPanel.add(crearPanelResumen());
+        centerPanel.add(Box.createVerticalStrut(15));
 
-        add(centerPanel, BorderLayout.CENTER);
+        String[] columnas = {"Fecha", "Venta", "Usuario", "Metodo", "Total"};
+        modeloTabla = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable tabla = new JTable(modeloTabla);
+        tabla.setRowHeight(32);
 
-        // --- PIE DE PÁGINA ---
-        JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(COLOR_HEADER_FOOTER);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-        footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(COLOR_OSCURO);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> {
-            onBack.run();
-        });
-        footerPanel.add(btnRegresar);
-
-        add(footerPanel, BorderLayout.SOUTH);
-    }
-
-    private JPanel crearTarjetaReportes() {
-        JPanel panel = new JPanel(new BorderLayout(0, 20)); // Espacio vertical entre zonas
-        panel.setBackground(COLOR_BEIGE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(30, 40, 30, 40)
-        ));
-        panel.setPreferredSize(new Dimension(800, 450)); // Tamaño fijo para la tarjeta
-
-        // --- ZONA SUPERIOR: Selector de Fechas ---
-        JPanel panelFechas = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        panelFechas.setBackground(COLOR_BEIGE);
-
-        panelFechas.add(crearInputFecha("Fecha Inicio:"));
-        panelFechas.add(crearInputFecha("Fecha Fin:"));
-
-        panel.add(panelFechas, BorderLayout.NORTH);
-
-        // --- ZONA CENTRAL: Tabla Estilizada ---
-        JTable tabla = crearTablaAesthetica();
         JScrollPane scrollPane = new JScrollPane(tabla);
         scrollPane.setBorder(BorderFactory.createLineBorder(COLOR_BORDE));
-        scrollPane.getViewport().setBackground(Color.WHITE); // Fondo blanco para la tabla
-        
-        panel.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        scrollPane.setPreferredSize(new Dimension(900, 350));
+        scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 380));
 
-        // --- ZONA INFERIOR: Botón PDF ---
+        centerPanel.add(scrollPane);
+        centerPanel.add(Box.createVerticalStrut(15));
+
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBoton.setBackground(COLOR_BEIGE);
-
+        panelBoton.setBackground(Color.WHITE);
         JButton btnPdf = new JButton("Descargar PDF");
         btnPdf.setFont(new Font("SansSerif", Font.BOLD, 16));
         btnPdf.setForeground(Color.WHITE);
@@ -142,74 +131,192 @@ public class Reportes extends JFrame {
                 new LineBorder(COLOR_ROJO.darker(), 1, true),
                 new EmptyBorder(10, 30, 10, 30)
         ));
-
+        btnPdf.addActionListener(e -> exportarPdf());
         panelBoton.add(btnPdf);
-        panel.add(panelBoton, BorderLayout.SOUTH);
+        centerPanel.add(panelBoton);
 
-        return panel;
+        add(centerPanel, BorderLayout.CENTER);
+
+        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        footerPanel.setBackground(COLOR_HEADER_FOOTER);
+        footerPanel.setPreferredSize(new Dimension(800, 60));
+
+        JButton btnRegresar = new JButton("<");
+        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
+        btnRegresar.setForeground(Color.WHITE);
+        btnRegresar.setBackground(COLOR_OSCURO);
+        btnRegresar.setPreferredSize(new Dimension(60, 60));
+        btnRegresar.setFocusPainted(false);
+        btnRegresar.setBorderPainted(false);
+        btnRegresar.setOpaque(true);
+        btnRegresar.addActionListener(e -> onBack.run());
+        footerPanel.add(btnRegresar);
+        add(footerPanel, BorderLayout.SOUTH);
+
+        ReporteVentasDTO reporte = reporteInicial == null ? new ReporteVentasDTO() : reporteInicial;
+        LocalDate hoy = LocalDate.now();
+        datePickerInicio.setDate(reporte.getFechaInicio() == null ? hoy : reporte.getFechaInicio());
+        datePickerFin.setDate(reporte.getFechaFin() == null ? hoy : reporte.getFechaFin());
+        renderizarReporte(reporte);
     }
 
-    private JPanel crearInputFecha(String etiqueta) {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+    private JPanel crearPanelFiltros() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         panel.setBackground(COLOR_BEIGE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(15, 20, 15, 20)
+        ));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
 
-        JLabel lbl = new JLabel(etiqueta);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 16));
-        
-        DatePicker datePicker = new DatePicker();
-        datePicker.getComponentDateTextField().setEditable(false);
+        JButton btnHoy = new JButton("Hoy");
+        btnHoy.addActionListener(e -> aplicarPreset(LocalDate.now(), LocalDate.now(), false));
 
-        panel.add(lbl);
-        panel.add(datePicker); 
-        
+        JButton btnSemana = new JButton("Semana");
+        btnSemana.addActionListener(e -> {
+            LocalDate fin = LocalDate.now();
+            aplicarPreset(fin.minusDays(6), fin, false);
+        });
+
+        JButton btnMes = new JButton("Mes");
+        btnMes.addActionListener(e -> {
+            LocalDate fin = LocalDate.now();
+            aplicarPreset(fin.withDayOfMonth(1), fin, false);
+        });
+
+        JButton btnConsultar = new JButton("Consultar");
+        btnConsultar.addActionListener(e -> consultarReporte(true));
+
+        panel.add(new JLabel("Inicio:"));
+        panel.add(datePickerInicio);
+        panel.add(new JLabel("Fin:"));
+        panel.add(datePickerFin);
+        panel.add(btnHoy);
+        panel.add(btnSemana);
+        panel.add(btnMes);
+        panel.add(btnConsultar);
         return panel;
     }
 
-    private JTable crearTablaAesthetica() {
-        String[] columnas = {"Fecha", "Venta", "Total"};
-        Object[][] datos = {
-                {"24/11/25  10:00", "#101", "$250.00"},
-                {"24/11/25  10:01", "#102", "$300.00"},
-                {"24/11/25  10:02", "#103", "$150.00"},
-                {"24/11/25  10:15", "#104", "$420.00"},
-                {"24/11/25  10:30", "#105", "$80.00"}
-        };
+    private JPanel crearPanelResumen() {
+        JPanel panel = new JPanel(new GridLayout(1, 4, 15, 0));
+        panel.setBackground(Color.WHITE);
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
-        DefaultTableModel modelo = new DefaultTableModel(datos, columnas) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Hacer que la tabla no sea editable directamente
-            }
-        };
+        panel.add(crearTarjetaResumen("Periodo", lblPeriodoValor));
+        panel.add(crearTarjetaResumen("Ventas", lblCantidadValor));
+        panel.add(crearTarjetaResumen("Monto Total", lblTotalValor));
+        panel.add(crearTarjetaResumen("Promedio", lblPromedioValor));
+        return panel;
+    }
 
-        JTable tabla = new JTable(modelo);
+    private JPanel crearTarjetaResumen(String titulo, JLabel valor) {
+        JPanel panel = new JPanel(new BorderLayout(0, 8));
+        panel.setBackground(COLOR_BEIGE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(15, 15, 15, 15)
+        ));
 
-        // Estética general de la tabla
-        tabla.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tabla.setRowHeight(35); // Filas más altas para respirar
-        tabla.setShowVerticalLines(false); // Quitar líneas verticales
-        tabla.setGridColor(COLOR_BORDE); // Color de línea horizontal muy suave
-        tabla.setSelectionBackground(new Color(230, 240, 255)); // Azul muy claro al seleccionar
-        tabla.setSelectionForeground(Color.BLACK);
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
+        lblTitulo.setForeground(COLOR_OSCURO);
 
-        // Estética del Encabezado (Header)
-        JTableHeader header = tabla.getTableHeader();
-        header.setFont(new Font("SansSerif", Font.BOLD, 15));
-        header.setBackground(Color.WHITE);
-        header.setForeground(Color.BLACK);
-        header.setBorder(new LineBorder(COLOR_BORDE, 1)); // Borde sutil al encabezado
-        header.setPreferredSize(new Dimension(100, 40)); // Encabezado más alto
+        valor.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        valor.setForeground(Color.DARK_GRAY);
 
-        // Alinear el contenido de las celdas a la izquierda con un pequeño margen
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.LEFT);
-        renderer.setBorder(new EmptyBorder(0, 10, 0, 0)); // Margen interno
-        
-        for (int i = 0; i < tabla.getColumnCount(); i++) {
-            tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        panel.add(lblTitulo, BorderLayout.NORTH);
+        panel.add(valor, BorderLayout.CENTER);
+        return panel;
+    }
+
+    private void aplicarPreset(LocalDate inicio, LocalDate fin, boolean mostrarMensajeSinDatos) {
+        datePickerInicio.setDate(inicio);
+        datePickerFin.setDate(fin);
+        consultarReporte(mostrarMensajeSinDatos);
+    }
+
+    private void consultarReporte(boolean mostrarMensajeSinDatos) {
+        LocalDate fechaInicio = datePickerInicio.getDate();
+        LocalDate fechaFin = datePickerFin.getDate();
+        if (fechaInicio == null || fechaFin == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona la fecha inicial y final.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
-        return tabla;
+        try {
+            ReporteVentasDTO reporte = onConsultar.ejecutar(fechaInicio, fechaFin);
+            renderizarReporte(reporte);
+            if (mostrarMensajeSinDatos && (reporte.getVentas() == null || reporte.getVentas().isEmpty())) {
+                JOptionPane.showMessageDialog(this, "No hay registros disponibles en el periodo seleccionado.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (NegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void renderizarReporte(ReporteVentasDTO reporte) {
+        modeloTabla.setRowCount(0);
+
+        LocalDate inicio = reporte.getFechaInicio();
+        LocalDate fin = reporte.getFechaFin();
+        lblPeriodoValor.setText(inicio == null || fin == null ? "-" : inicio.format(FORMATO_FECHA) + " - " + fin.format(FORMATO_FECHA));
+        lblCantidadValor.setText(String.valueOf(reporte.getCantidadVentas()));
+        lblTotalValor.setText("$" + formatearMonto(reporte.getMontoTotal()));
+        lblPromedioValor.setText("$" + formatearMonto(reporte.getPromedioVenta()));
+
+        if (reporte.getVentas() == null) {
+            return;
+        }
+
+        for (VentaDTO venta : reporte.getVentas()) {
+            modeloTabla.addRow(new Object[]{
+                venta.getFechaHora() == null ? "Sin fecha" : venta.getFechaHora().format(FORMATO_FECHA_HORA),
+                venta.getFolio() == null || venta.getFolio().isBlank() ? "#" + venta.getIdVenta() : venta.getFolio(),
+                obtenerNombreUsuario(venta.getUsuario()),
+                venta.getMetodoPago() == null ? "Sin metodo" : venta.getMetodoPago(),
+                "$" + formatearMonto(venta.getTotal())
+            });
+        }
+    }
+
+    private void exportarPdf() {
+        LocalDate fechaInicio = datePickerInicio.getDate();
+        LocalDate fechaFin = datePickerFin.getDate();
+        if (fechaInicio == null || fechaFin == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona la fecha inicial y final.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Guardar reporte PDF");
+        chooser.setSelectedFile(new File("reporte-ventas-" + fechaInicio + "-" + fechaFin + ".pdf"));
+        chooser.setFileFilter(new FileNameExtensionFilter("Archivos PDF", "pdf"));
+
+        int resultado = chooser.showSaveDialog(this);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File destino = chooser.getSelectedFile();
+        if (!destino.getName().toLowerCase().endsWith(".pdf")) {
+            destino = new File(destino.getParentFile(), destino.getName() + ".pdf");
+        }
+
+        try {
+            onExportar.ejecutar(fechaInicio, fechaFin, destino);
+            JOptionPane.showMessageDialog(this, "Reporte generado correctamente en:\n" + destino.getAbsolutePath(), "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NegocioException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String obtenerNombreUsuario(UsuarioDTO usuarioDTO) {
+        return usuarioDTO == null || usuarioDTO.getNombre() == null ? "Sin usuario" : usuarioDTO.getNombre();
+    }
+
+    private String formatearMonto(BigDecimal monto) {
+        return monto == null ? "0.00" : monto.setScale(2, RoundingMode.HALF_UP).toString();
     }
 
     public static void main(String[] args) {
@@ -219,8 +326,14 @@ public class Reportes extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            ReporteVentasDTO reporte = new ReporteVentasDTO();
+            reporte.setFechaInicio(LocalDate.now());
+            reporte.setFechaFin(LocalDate.now());
             new Reportes(
-                    () -> {}
+                    () -> {},
+                    (inicio, fin) -> reporte,
+                    (inicio, fin, destino) -> {},
+                    reporte
             ).setVisible(true);
         });
     }

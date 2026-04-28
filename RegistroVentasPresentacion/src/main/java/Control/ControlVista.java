@@ -16,11 +16,13 @@ import GestionarVentas.PuntoVenta;
 import IniciarSesion.MenuDueno;
 import IniciarSesion.PantallaLogin;
 import dtos.DetalleVentaDTO;
+import dtos.ReporteVentasDTO;
 import dtos.UsuarioDTO;
 import dtos.VentaDTO;
 import excepciones.NegocioException;
 import fachada.INegocio;
 import fachada.Negocio;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
@@ -35,6 +37,8 @@ public class ControlVista {
     private final INegocio negocio;
     private JFrame frameActual;
     private UsuarioDTO usuarioSeleccionado;
+    private LocalDate filtroVentasCajero = LocalDate.now();
+    private LocalDate filtroHistorialDueno = LocalDate.now();
 
     public ControlVista() {
         this.negocio = new Negocio();
@@ -100,6 +104,10 @@ public class ControlVista {
                 () -> {
                     frameActual.dispose();
                     mostrarGestionarUsuariosFrm();
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarHistorialVentasFrm();
                 },
                 () -> {
                     frameActual.dispose();
@@ -221,11 +229,24 @@ public class ControlVista {
     }
 
     private void mostrarReportesFrm() {
+        LocalDate hoy = LocalDate.now();
+        ReporteVentasDTO reporteInicial;
+        try {
+            reporteInicial = negocio.obtenerReporteVentas(hoy, hoy);
+        } catch (NegocioException e) {
+            reporteInicial = new ReporteVentasDTO();
+            reporteInicial.setFechaInicio(hoy);
+            reporteInicial.setFechaFin(hoy);
+        }
+
         frameActual = new Reportes(
                 () -> {
                     frameActual.dispose();
                     mostrarMenuDuenoFrm();
-                }
+                },
+                (fechaInicio, fechaFin) -> negocio.obtenerReporteVentas(fechaInicio, fechaFin),
+                (fechaInicio, fechaFin, destino) -> negocio.exportarReporteVentas(fechaInicio, fechaFin, destino.getAbsolutePath()),
+                reporteInicial
         );
         frameActual.setVisible(true);
     }
@@ -254,29 +275,59 @@ public class ControlVista {
 
     private void mostrarGestionarVentaFrm() {
         frameActual = new GestionarVenta(
+                "Gestionar Venta",
+                true,
                 () -> {
                     frameActual.dispose();
                     mostrarPuntoVentaFrm();
                 },
                 ventaDTO -> {
                     frameActual.dispose();
-                    mostrarDetalleVentaFrm(ventaDTO);
+                    mostrarDetalleVentaFrm(ventaDTO, this::mostrarGestionarVentaFrm);
                 },
                 () -> {
                     frameActual.dispose();
                     mostrarMenuCajeroFrm();
                 },
-                negocio.obtenerVentasDelDia()
+                negocio.obtenerVentasPorFecha(filtroVentasCajero),
+                fecha -> {
+                    filtroVentasCajero = fecha == null ? LocalDate.now() : fecha;
+                    return negocio.obtenerVentasPorFecha(filtroVentasCajero);
+                },
+                filtroVentasCajero
         );
         frameActual.setVisible(true);
     }
 
-    private void mostrarDetalleVentaFrm(VentaDTO ventaDTO) {
+    private void mostrarHistorialVentasFrm() {
+        frameActual = new GestionarVenta(
+                "Historial de Ventas",
+                false,
+                null,
+                ventaDTO -> {
+                    frameActual.dispose();
+                    mostrarDetalleVentaFrm(ventaDTO, this::mostrarHistorialVentasFrm);
+                },
+                () -> {
+                    frameActual.dispose();
+                    mostrarMenuDuenoFrm();
+                },
+                negocio.obtenerVentasPorFecha(filtroHistorialDueno),
+                fecha -> {
+                    filtroHistorialDueno = fecha == null ? LocalDate.now() : fecha;
+                    return negocio.obtenerVentasPorFecha(filtroHistorialDueno);
+                },
+                filtroHistorialDueno
+        );
+        frameActual.setVisible(true);
+    }
+
+    private void mostrarDetalleVentaFrm(VentaDTO ventaDTO, Runnable onCerrarDetalle) {
         ventaDTO.setDetallesVenta(negocio.obtenerDetallesVentaPorIdVenta(ventaDTO.getIdVenta()));
 
         Runnable cerrarPantalla = () -> {
             frameActual.dispose();
-            mostrarGestionarVentaFrm();
+            onCerrarDetalle.run();
         };
 
         frameActual = new DetalleVenta(
@@ -360,6 +411,7 @@ public class ControlVista {
                 negocio.getProductosVenta(),
                 () -> {
                     negocio.registrarVentaActual();
+                    filtroVentasCajero = LocalDate.now();
                     JOptionPane.showMessageDialog(frameActual, "Venta registrada.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                     frameActual.dispose();
                     mostrarMenuCajeroFrm();
