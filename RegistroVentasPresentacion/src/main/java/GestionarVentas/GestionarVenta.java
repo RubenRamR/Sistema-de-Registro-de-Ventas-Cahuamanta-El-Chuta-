@@ -1,5 +1,7 @@
 package GestionarVentas;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import dtos.UsuarioDTO;
 import dtos.VentaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,10 +10,12 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -30,144 +34,227 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 public class GestionarVenta extends JFrame {
-private final Color COLOR_BANNER = new Color(43, 90, 140);
-    private final Color COLOR_FONDO_APP = new Color(245, 247, 250);
-    private final Color COLOR_TITULO = new Color(30, 40, 60);
-    private final Color COLOR_BTN_AGREGAR = new Color(40, 199, 111);
-    private final Color COLOR_BTN_NARANJA = new Color(243, 156, 18);
-    
+
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final Color COLOR_BARRA = new Color(18, 63, 94);
+    private static final Color COLOR_FONDO = new Color(244, 247, 243);
+    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
+    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
+    private static final Color COLOR_MUTED = new Color(92, 105, 117);
+    private static final Color COLOR_BORDE = new Color(214, 222, 230);
+    private static final Color COLOR_AGREGAR = new Color(28, 143, 124);
+    private static final Color COLOR_DETALLE = new Color(214, 124, 37);
+    private static final Color COLOR_BLOQUE = new Color(223, 235, 229);
+
+    private final Runnable onAgregarVenta;
+    private final Runnable onBack;
+    private final Consumer<VentaDTO> onVerDetalles;
+    private final Function<LocalDate, List<VentaDTO>> onFiltrarVentas;
+    private final boolean mostrarBotonAgregar;
+    private final String tituloPantalla;
+    private final LocalDate fechaInicialFiltro;
+
     private JTable tablaVentas;
     private DefaultTableModel modeloTabla;
-    
-    private Runnable onBack;
-    private Consumer<VentaDTO> onVerDetalles;
+    private DatePicker datePickerFiltro;
+    private JLabel lblResumen;
 
-    // EL CONSTRUCTOR RECIBE LA LISTA
     public GestionarVenta(
             Runnable onAgregarVenta,
             Consumer<VentaDTO> onVerDetalles,
             Runnable onBack,
             List<VentaDTO> ventasDelDia
     ) {
-        this.onBack = onBack;
+        this("Gestionar Venta", true, onAgregarVenta, onVerDetalles, onBack, ventasDelDia, null, LocalDate.now());
+    }
+
+    public GestionarVenta(
+            String tituloPantalla,
+            boolean mostrarBotonAgregar,
+            Runnable onAgregarVenta,
+            Consumer<VentaDTO> onVerDetalles,
+            Runnable onBack,
+            List<VentaDTO> ventasIniciales,
+            Function<LocalDate, List<VentaDTO>> onFiltrarVentas,
+            LocalDate fechaInicialFiltro
+    ) {
+        this.tituloPantalla = tituloPantalla;
+        this.mostrarBotonAgregar = mostrarBotonAgregar;
+        this.onAgregarVenta = onAgregarVenta;
         this.onVerDetalles = onVerDetalles;
-        
-        setTitle("Gestionar Venta");
+        this.onBack = onBack;
+        this.onFiltrarVentas = onFiltrarVentas;
+        this.fechaInicialFiltro = fechaInicialFiltro;
+
+        setTitle(tituloPantalla);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
 
-        // --- Banners ---
-        JPanel panelNorte = new JPanel();
-        panelNorte.setBackground(COLOR_BANNER);
-        panelNorte.setPreferredSize(new Dimension(0, 60));
-        add(panelNorte, BorderLayout.NORTH);
+        add(crearBarraSuperior(), BorderLayout.NORTH);
+        add(crearContenido(ventasIniciales), BorderLayout.CENTER);
+        add(crearBarraInferior(), BorderLayout.SOUTH);
+    }
 
-        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        panelSur.setBackground(COLOR_BANNER);
-        panelSur.setPreferredSize(new Dimension(0, 60));
-        JButton btnRegresar = crearBotonRegresar();
-        panelSur.add(btnRegresar);
-        add(panelSur, BorderLayout.SOUTH);
+    private JPanel crearBarraSuperior() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 74));
 
-        // --- Contenido ---
-        JPanel panelCentro = new JPanel();
-        panelCentro.setLayout(new BoxLayout(panelCentro, BoxLayout.Y_AXIS));
-        panelCentro.setBackground(COLOR_FONDO_APP);
-        panelCentro.setBorder(new EmptyBorder(40, 50, 40, 50));
+        JLabel lbl = new JLabel(mostrarBotonAgregar ? "Ventas activas" : "Consulta de ventas");
+        lbl.setForeground(Color.WHITE);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
+        panel.add(lbl, BorderLayout.WEST);
+        return panel;
+    }
 
-        JLabel lblTitulo = new JLabel("Gestionar Venta");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 42));
-        lblTitulo.setForeground(COLOR_TITULO);
-        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+    private JPanel crearContenido(List<VentaDTO> ventasIniciales) {
+        JPanel fondo = new JPanel(new BorderLayout());
+        fondo.setBackground(COLOR_FONDO);
+        fondo.setBorder(new EmptyBorder(28, 36, 28, 36));
 
-        // --- Configuración de Tabla y Modelo ---
+        JPanel tarjeta = new JPanel();
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(COLOR_TARJETA);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(30, 32, 30, 32)
+        ));
+
+        JLabel lblTitulo = new JLabel(tituloPantalla);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel lblSubtitulo = new JLabel(mostrarBotonAgregar
+                ? "Consulta ventas del dia o registra una nueva desde el mismo flujo"
+                : "Revisa el historial del dia seleccionado y abre el detalle cuando lo necesites");
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        lblSubtitulo.setForeground(COLOR_MUTED);
+        lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        tarjeta.add(lblTitulo);
+        tarjeta.add(Box.createVerticalStrut(6));
+        tarjeta.add(lblSubtitulo);
+        tarjeta.add(Box.createVerticalStrut(18));
+
+        JPanel filtros = crearPanelFiltros();
+        if (filtros != null) {
+            tarjeta.add(filtros);
+            tarjeta.add(Box.createVerticalStrut(16));
+        }
+
+        lblResumen = new JLabel();
+        lblResumen.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblResumen.setForeground(COLOR_TEXTO);
+        lblResumen.setOpaque(true);
+        lblResumen.setBackground(COLOR_BLOQUE);
+        lblResumen.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                BorderFactory.createEmptyBorder(10, 14, 10, 14)
+        ));
+        lblResumen.setAlignmentX(LEFT_ALIGNMENT);
+        tarjeta.add(lblResumen);
+        tarjeta.add(Box.createVerticalStrut(16));
+
+        crearTabla();
+        llenarTabla(ventasIniciales);
+
+        JScrollPane scrollTabla = new JScrollPane(tablaVentas);
+        scrollTabla.setBorder(BorderFactory.createLineBorder(COLOR_BORDE, 1, true));
+        scrollTabla.getViewport().setBackground(Color.WHITE);
+        scrollTabla.setAlignmentX(LEFT_ALIGNMENT);
+        scrollTabla.setPreferredSize(new Dimension(900, 420));
+        scrollTabla.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+        tarjeta.add(scrollTabla);
+
+        if (mostrarBotonAgregar) {
+            tarjeta.add(Box.createVerticalStrut(18));
+            JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+            acciones.setBackground(COLOR_TARJETA);
+            acciones.setAlignmentX(LEFT_ALIGNMENT);
+
+            JButton btnAgregar = crearBoton("Agregar nueva venta", COLOR_AGREGAR);
+            btnAgregar.setPreferredSize(new Dimension(220, 46));
+            btnAgregar.addActionListener(e -> {
+                if (this.onAgregarVenta != null) {
+                    this.onAgregarVenta.run();
+                }
+            });
+            acciones.add(btnAgregar);
+            tarjeta.add(acciones);
+        }
+
+        fondo.add(tarjeta, BorderLayout.CENTER);
+        return fondo;
+    }
+
+    private JPanel crearPanelFiltros() {
+        if (onFiltrarVentas == null) {
+            return null;
+        }
+
+        JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
+        panelFiltros.setBackground(COLOR_BLOQUE);
+        panelFiltros.setAlignmentX(LEFT_ALIGNMENT);
+        panelFiltros.setMaximumSize(new Dimension(Integer.MAX_VALUE, 84));
+        panelFiltros.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+
+        JLabel lblFecha = new JLabel("Fecha");
+        lblFecha.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblFecha.setForeground(COLOR_TEXTO);
+
+        datePickerFiltro = new DatePicker();
+        datePickerFiltro.setDate(fechaInicialFiltro == null ? LocalDate.now() : fechaInicialFiltro);
+
+        JButton btnFiltrar = crearBoton("Filtrar", COLOR_BARRA);
+        btnFiltrar.addActionListener(e -> cargarVentasFiltradas(datePickerFiltro.getDate(), true));
+
+        JButton btnHoy = crearBoton("Hoy", COLOR_AGREGAR);
+        btnHoy.addActionListener(e -> {
+            LocalDate hoy = LocalDate.now();
+            datePickerFiltro.setDate(hoy);
+            cargarVentasFiltradas(hoy, false);
+        });
+
+        panelFiltros.add(lblFecha);
+        panelFiltros.add(datePickerFiltro);
+        panelFiltros.add(btnFiltrar);
+        panelFiltros.add(btnHoy);
+        return panelFiltros;
+    }
+
+    private void crearTabla() {
         String[] columnas = {"Id", "Fecha", "Total", "Metodo Pago", "Usuario", ""};
         modeloTabla = new DefaultTableModel(null, columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5; // Solo la celda del botón es editable
+                return column == 5;
             }
         };
 
         tablaVentas = new JTable(modeloTabla);
-        configurarEsteticaTabla();
-
-        // Llenamos la tabla con la lista recibida
-        llenarTabla(ventasDelDia);
-
-        JScrollPane scrollTabla = new JScrollPane(tablaVentas);
-        scrollTabla.setBorder(BorderFactory.createEmptyBorder());
-        scrollTabla.getViewport().setBackground(Color.WHITE);
-
-        // --- Botón Agregar ---
-        JButton btnAgregar = new JButton("Agregar Nueva Venta");
-        btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        btnAgregar.setBackground(COLOR_BTN_AGREGAR);
-        btnAgregar.setForeground(Color.WHITE);
-        btnAgregar.setOpaque(true);
-        btnAgregar.setContentAreaFilled(true);
-        btnAgregar.setBorderPainted(false);
-        btnAgregar.setFocusPainted(false);
-        btnAgregar.setPreferredSize(new Dimension(0, 55));
-        btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAgregar.addActionListener(e -> {
-            onAgregarVenta.run();
-        });
-
-        // --- Panel Marco ---
-        JPanel panelCuadroVentas = new JPanel(new BorderLayout());
-        panelCuadroVentas.setBackground(Color.WHITE);
-        panelCuadroVentas.setBorder(BorderFactory.createLineBorder(new Color(220, 225, 230), 1));
-        panelCuadroVentas.setMaximumSize(new Dimension(900, 500));
-        
-        panelCuadroVentas.add(scrollTabla, BorderLayout.CENTER);
-        panelCuadroVentas.add(btnAgregar, BorderLayout.SOUTH);
-
-        panelCentro.add(lblTitulo);
-        panelCentro.add(Box.createVerticalStrut(30));
-        panelCentro.add(panelCuadroVentas);
-
-        add(panelCentro, BorderLayout.CENTER);
-    }
-
-    // MÉTODO CLAVE: LLENAR LA TABLA DESDE LA LISTA
-    private void llenarTabla(List<VentaDTO> ventas) {
-        // 1. Limpiamos cualquier dato previo
-        modeloTabla.setRowCount(0);
-
-        // 2. Si la lista no es nula, la recorremos
-        if (ventas != null) {
-            for (VentaDTO venta : ventas) {
-                // Creamos la fila. 
-                // IMPORTANTE: El último elemento es el objeto 'venta' completo.
-                Object[] fila = {
-                    venta.getIdVenta(),
-                    venta.getFechaHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:")),//venta.getFechaFormateada(), // Supongamos que tienes este método en tu DTO
-                    "$" + venta.getTotal(),
-                    venta.getMetodoPago(),
-                    venta.getUsuario().getNombre(),//venta.getUsuario().getNombre(),
-                    venta // <-- Aquí metemos el DTO para el botón "Ver Detalle"
-                };
-                modeloTabla.addRow(fila);
-            }
-        }
-    }
-
-    private void configurarEsteticaTabla() {
-        tablaVentas.setRowHeight(45);
-        tablaVentas.setShowVerticalLines(false);
-        tablaVentas.setGridColor(new Color(235, 235, 235));
-        
-        // Render de botones naranja (usando el truco de paintComponent para evitar opacidad)
+        tablaVentas.setRowHeight(38);
+        tablaVentas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tablaVentas.setForeground(COLOR_TEXTO);
+        tablaVentas.setShowHorizontalLines(true);
+        tablaVentas.setGridColor(new Color(234, 238, 242));
+        tablaVentas.setSelectionBackground(new Color(236, 243, 248));
+        tablaVentas.setSelectionForeground(COLOR_TEXTO);
+        tablaVentas.getTableHeader().setBackground(COLOR_BARRA);
+        tablaVentas.getTableHeader().setForeground(Color.WHITE);
+        tablaVentas.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tablaVentas.getTableHeader().setReorderingAllowed(false);
         tablaVentas.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
-        tablaVentas.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), tablaVentas));
+        tablaVentas.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox()));
 
-        // Centrar columnas de texto
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         for (int i = 0; i < 5; i++) {
@@ -175,96 +262,119 @@ private final Color COLOR_BANNER = new Color(43, 90, 140);
         }
     }
 
-    private JButton crearBotonRegresar() {
-        JButton btn = new JButton("<");
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        btn.setForeground(Color.WHITE);
-        btn.setBackground(new Color(25, 60, 100));
-        btn.setOpaque(true);
-        btn.setContentAreaFilled(true);
-        btn.setBorderPainted(false);
-        btn.setPreferredSize(new Dimension(70, 60));
-        btn.addActionListener(e -> {
-            onBack.run();
-        });
-        return btn;
+    private JPanel crearBarraInferior() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 72));
+
+        JButton btn = crearBoton("Regresar", new Color(12, 38, 57));
+        btn.setPreferredSize(new Dimension(150, 46));
+        btn.addActionListener(e -> onBack.run());
+        panel.add(btn);
+        return panel;
     }
-    // ==========================================
-    // CLASES PARA EL BOTÓN "VER DETALLE" (NARANJA)
-    // ==========================================
+
+    private JButton crearBoton(String texto, Color color) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        boton.setForeground(Color.WHITE);
+        boton.setBackground(color);
+        boton.setOpaque(true);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    private void cargarVentasFiltradas(LocalDate fecha, boolean mostrarMensajeSinDatos) {
+        if (fecha == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una fecha para filtrar las ventas.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        List<VentaDTO> ventas = onFiltrarVentas.apply(fecha);
+        llenarTabla(ventas);
+        if (mostrarMensajeSinDatos && (ventas == null || ventas.isEmpty())) {
+            JOptionPane.showMessageDialog(this, "No hay ventas registradas para la fecha seleccionada.", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void llenarTabla(List<VentaDTO> ventas) {
+        modeloTabla.setRowCount(0);
+        List<VentaDTO> ventasSeguras = ventas == null ? List.of() : ventas;
+
+        for (VentaDTO venta : ventasSeguras) {
+            modeloTabla.addRow(new Object[]{
+                venta.getIdVenta(),
+                venta.getFechaHora() == null ? "Sin fecha" : venta.getFechaHora().format(FORMATO_FECHA),
+                "$" + (venta.getTotal() == null ? "0.00" : venta.getTotal()),
+                venta.getMetodoPago() == null ? "Sin metodo" : venta.getMetodoPago(),
+                obtenerNombreUsuario(venta.getUsuario()),
+                venta
+            });
+        }
+
+        String fechaResumen = datePickerFiltro == null || datePickerFiltro.getDate() == null
+                ? "la fecha seleccionada"
+                : datePickerFiltro.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        lblResumen.setText("Ventas encontradas: " + ventasSeguras.size() + " para " + fechaResumen);
+    }
+
+    private String obtenerNombreUsuario(UsuarioDTO usuarioDTO) {
+        return usuarioDTO == null || usuarioDTO.getNombre() == null ? "Sin usuario" : usuarioDTO.getNombre();
+    }
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
+
         public ButtonRenderer() {
             setOpaque(true);
-            // 1. Apagamos el pintado nativo del sistema operativo
-            setContentAreaFilled(false); 
+            setContentAreaFilled(false);
             setBorderPainted(false);
             setFocusPainted(false);
             setFont(new Font("Segoe UI", Font.BOLD, 12));
-            setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
             setCursor(new Cursor(Cursor.HAND_CURSOR));
             setForeground(Color.WHITE);
         }
 
-        // 2. Forzamos a Java a pintar nuestro color exacto
         @Override
         protected void paintComponent(java.awt.Graphics g) {
-            g.setColor(COLOR_BTN_NARANJA);
-            g.fillRect(0, 0, getWidth(), getHeight());
-            super.paintComponent(g); // Esto pinta el texto encima
+            g.setColor(COLOR_DETALLE);
+            g.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
+            super.paintComponent(g);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-
-            // AQUÍ ESTABA EL ERROR: Antes decía value.toString()
-            // Lo cambiamos para que SIEMPRE diga "Ver Detalle"
-            setText("Ver Detalle");
-
-            setBackground(COLOR_BTN_NARANJA);
+            setText("Ver detalle");
             return this;
         }
     }
 
     class ButtonEditor extends DefaultCellEditor {
-        protected JButton button;
-        private boolean isPushed;
-        private JTable tabla;
 
-        // NUEVO: Variable para guardar el DTO de la fila que estamos clickeando
+        private final JButton button;
         private VentaDTO dtoSeleccionado;
 
-        public ButtonEditor(JCheckBox checkBox, JTable tabla) {
+        public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
-            this.tabla = tabla;
-
             button = new JButton() {
                 @Override
                 protected void paintComponent(java.awt.Graphics g) {
-                    g.setColor(COLOR_BTN_NARANJA);
-                    g.fillRect(0, 0, getWidth(), getHeight());
+                    g.setColor(COLOR_DETALLE);
+                    g.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
                     super.paintComponent(g);
                 }
             };
-
             button.setOpaque(true);
             button.setContentAreaFilled(false);
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setForeground(Color.WHITE);
             button.setFont(new Font("Segoe UI", Font.BOLD, 12));
-            button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
             button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            // NUEVO: La acción del botón ahora usa el DTO directamente
             button.addActionListener(e -> {
                 if (dtoSeleccionado != null) {
                     onVerDetalles.accept(dtoSeleccionado);
-                    // Aquí ya tienes todo el objeto. ¡Puedes pasarlo a tu siguiente pantalla!
-                    //JOptionPane.showMessageDialog(button, "Abrir detalles del objeto con ID: " + dtoSeleccionado.getIdVenta());
-
-                    // Ejemplo: new PantallaResumen(dtoSeleccionado).setVisible(true);
                 }
                 fireEditingStopped();
             });
@@ -273,46 +383,38 @@ private final Color COLOR_BANNER = new Color(43, 90, 140);
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value,
                 boolean isSelected, int row, int column) {
-
-            // Guardamos el DTO de forma invisible
-            if (value instanceof VentaDTO) {
-                this.dtoSeleccionado = (VentaDTO) value;
+            if (value instanceof VentaDTO ventaDTO) {
+                this.dtoSeleccionado = ventaDTO;
             }
-
-            // Y forzamos el texto visual del botón
-            button.setText("Ver Detalle");
-
-            isPushed = true;
+            button.setText("Ver detalle");
             return button;
         }
 
         @Override
         public Object getCellEditorValue() {
-            isPushed = false;
-            return dtoSeleccionado; // Devolvemos el DTO en lugar del texto
-        }
-
-        @Override
-        public boolean stopCellEditing() {
-            isPushed = false;
-            return super.stopCellEditing();
+            return dtoSeleccionado;
         }
     }
 
-    // ==========================================
-    // MAIN
-    // ==========================================
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         SwingUtilities.invokeLater(() -> {
             new GestionarVenta(
-                    () -> {},
-                    e -> {},
-                    () -> {},
-                    new ArrayList<>()
+                    "Historial de Ventas",
+                    false,
+                    null,
+                    venta -> {
+                    },
+                    () -> {
+                    },
+                    new ArrayList<>(),
+                    fecha -> new ArrayList<>(),
+                    LocalDate.now()
             ).setVisible(true);
         });
     }

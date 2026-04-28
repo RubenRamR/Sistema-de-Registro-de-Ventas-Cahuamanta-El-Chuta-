@@ -2,160 +2,197 @@ package IniciarSesion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
-/**
- *
- * @author Daniel
- */
 public class MenuDueno extends JFrame {
+
+    private static final Color COLOR_BARRA = new Color(18, 63, 94);
+    private static final Color COLOR_FONDO = new Color(244, 247, 243);
+    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
+    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
+    private static final Color COLOR_MUTED = new Color(92, 105, 117);
+    private static final Color COLOR_BORDE = new Color(214, 222, 230);
+    private static final Color COLOR_ACCION = new Color(28, 143, 124);
+    private static final Color COLOR_SECUNDARIO = new Color(214, 124, 37);
 
     public MenuDueno(
             Runnable onBack,
             Runnable onGestionarUsuarios,
+            Runnable onHistorialVentas,
             Runnable onGenerarReportes
     ) {
-        // Configuración básica de la ventana
-        setTitle("Menú Dueño");
+        setTitle("Menu Dueno");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- Definición de Colores
-        Color colorHeaderFooter = new Color(65, 114, 159); // Azul apagado
-        Color colorBotones = new Color(0, 116, 183);       // Azul brillante
-        Color colorOscuro = new Color(11, 19, 84);         // Azul marino oscuro
-        Color colorFondoBeige = new Color(245, 245, 240);  // Beige claro
-
-        // --- ENCABEZADO (Header) ---
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(colorHeaderFooter);
-        headerPanel.setPreferredSize(new Dimension(800, 50));
-        add(headerPanel, BorderLayout.NORTH);
-
-        // --- CONTENIDO CENTRAL (Center) ---
-        JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbcMain = new GridBagConstraints();
-
-        // Título Principal
-        JLabel lblTitulo = new JLabel("Menú de Opciones");
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 48));
-        lblTitulo.setForeground(colorOscuro);
-        
-        gbcMain.gridx = 0; 
-        gbcMain.gridy = 0;
-        gbcMain.insets = new Insets(0, 0, 30, 0); // Espacio debajo del título
-        centerPanel.add(lblTitulo, gbcMain);
-
-        // Panel Beige que contiene los botones
-        JPanel panelBeige = new JPanel();
-        panelBeige.setBackground(colorFondoBeige);
-        panelBeige.setLayout(new GridBagLayout());
-        // Darle un margen interno al panel beige para simular el recuadro de la imagen
-        panelBeige.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60)); 
-        
-        GridBagConstraints gbcBotones = new GridBagConstraints();
-        gbcBotones.insets = new Insets(15, 15, 15, 15); // Espacio entre botones
-
-        // Botón: Gestionar Usuarios
-        JButton btnUsuarios = crearBoton("Gestionar Usuarios", colorBotones);
-        btnUsuarios.addActionListener(e -> {
-            onGestionarUsuarios.run();
-        });
-        gbcBotones.gridx = 0; 
-        gbcBotones.gridy = 0;
-        panelBeige.add(btnUsuarios, gbcBotones);
-
-        // Botón: Generar Reportes
-        JButton btnReportes = crearBoton("Generar Reportes", colorBotones);
-        btnReportes.addActionListener(e -> {
-            onGenerarReportes.run();
-        });
-        gbcBotones.gridx = 1; 
-        gbcBotones.gridy = 0;
-        panelBeige.add(btnReportes, gbcBotones);
-
-        // Botón: Consultar Historial Ventas (Centrado abajo)
-//        JButton btnVentas = crearBoton("Consultar Historial Ventas", colorBotones);
-//        gbcBotones.gridx = 0; 
-//        gbcBotones.gridy = 1; 
-//        gbcBotones.gridwidth = 2; // Ocupa dos columnas para centrarse
-//        panelBeige.add(btnVentas, gbcBotones);
-
-        // Añadir el panel beige al panel central
-        gbcMain.gridy = 1;
-        gbcMain.insets = new Insets(0, 0, 0, 0);
-        centerPanel.add(panelBeige, gbcMain);
-
-        add(centerPanel, BorderLayout.CENTER);
-
-        // --- PIE DE PÁGINA (Footer) ---
-        JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(colorHeaderFooter);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-        footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0)); // Alinear a la izquierda sin márgenes
-
-        // Botón de regreso "<"
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("Arial", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(colorOscuro);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> {
-            onBack.run();
-        });
-        footerPanel.add(btnRegresar);
-
-        add(footerPanel, BorderLayout.SOUTH);
+        add(crearBarraSuperior(), BorderLayout.NORTH);
+        add(crearContenido(onGestionarUsuarios, onHistorialVentas, onGenerarReportes), BorderLayout.CENTER);
+        add(crearBarraInferior(onBack), BorderLayout.SOUTH);
     }
 
-    /**
-     * Método auxiliar para crear botones con estilo uniforme
-     */
-    private JButton crearBoton(String texto, Color colorFondo) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Arial", Font.PLAIN, 18));
+    private JPanel crearBarraSuperior() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 74));
+
+        JLabel lbl = new JLabel("Panel del dueno");
+        lbl.setForeground(Color.WHITE);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
+        panel.add(lbl, BorderLayout.WEST);
+        return panel;
+    }
+
+    private JPanel crearContenido(
+            Runnable onGestionarUsuarios,
+            Runnable onHistorialVentas,
+            Runnable onGenerarReportes
+    ) {
+        JPanel fondo = new JPanel(new BorderLayout());
+        fondo.setBackground(COLOR_FONDO);
+        fondo.setBorder(new EmptyBorder(32, 40, 32, 40));
+
+        JPanel tarjeta = new JPanel();
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(COLOR_TARJETA);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(34, 36, 34, 36)
+        ));
+
+        JLabel lblTitulo = new JLabel("Menu de opciones");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel lblSubtitulo = new JLabel("Accede rapido a las operaciones mas importantes del sistema");
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        lblSubtitulo.setForeground(COLOR_MUTED);
+        lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        tarjeta.add(lblTitulo);
+        tarjeta.add(Box.createVerticalStrut(8));
+        tarjeta.add(lblSubtitulo);
+        tarjeta.add(Box.createVerticalStrut(26));
+
+        JPanel grid = new JPanel(new GridLayout(1, 3, 18, 0));
+        grid.setBackground(COLOR_TARJETA);
+        grid.add(crearTarjetaAcceso(
+                "Gestionar usuarios",
+                "Altas, ediciones y bajas del personal.",
+                COLOR_ACCION,
+                onGestionarUsuarios
+        ));
+        grid.add(crearTarjetaAcceso(
+                "Historial de ventas",
+                "Consulta ventas registradas y revisa sus detalles.",
+                COLOR_SECUNDARIO,
+                onHistorialVentas
+        ));
+        grid.add(crearTarjetaAcceso(
+                "Generar reportes",
+                "Resumenes por periodo y exportacion en PDF.",
+                COLOR_BARRA,
+                onGenerarReportes
+        ));
+
+        tarjeta.add(grid);
+        fondo.add(tarjeta, BorderLayout.CENTER);
+        return fondo;
+    }
+
+    private JPanel crearTarjetaAcceso(String titulo, String descripcion, Color colorBoton, Runnable accion) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(249, 250, 248));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                new EmptyBorder(22, 20, 22, 20)
+        ));
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitulo.setForeground(COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel lblDescripcion = new JLabel("<html><div style='width:220px'>" + descripcion + "</div></html>");
+        lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblDescripcion.setForeground(COLOR_MUTED);
+        lblDescripcion.setAlignmentX(LEFT_ALIGNMENT);
+
+        JButton boton = new JButton("Abrir");
+        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
         boton.setForeground(Color.WHITE);
-        boton.setBackground(colorFondo);
-        boton.setPreferredSize(new Dimension(260, 80));
-        boton.setFocusPainted(false);
+        boton.setBackground(colorBoton);
         boton.setOpaque(true);
-        // Quitar el borde por defecto para un diseño más plano (Flat Design)
-        boton.setBorder(BorderFactory.createEmptyBorder()); 
-        return boton;
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setPreferredSize(new Dimension(140, 42));
+        boton.setMaximumSize(new Dimension(140, 42));
+        boton.setAlignmentX(LEFT_ALIGNMENT);
+        boton.addActionListener(e -> accion.run());
+
+        panel.add(lblTitulo);
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(lblDescripcion);
+        panel.add(Box.createVerticalGlue());
+        panel.add(Box.createVerticalStrut(18));
+        panel.add(boton);
+        return panel;
+    }
+
+    private JPanel crearBarraInferior(Runnable onBack) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
+        panel.setBackground(COLOR_BARRA);
+        panel.setPreferredSize(new Dimension(0, 72));
+
+        JButton btnRegresar = new JButton("Cerrar sesion");
+        btnRegresar.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        btnRegresar.setForeground(Color.WHITE);
+        btnRegresar.setBackground(new Color(12, 38, 57));
+        btnRegresar.setOpaque(true);
+        btnRegresar.setBorderPainted(false);
+        btnRegresar.setFocusPainted(false);
+        btnRegresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnRegresar.setPreferredSize(new Dimension(150, 46));
+        btnRegresar.addActionListener(e -> onBack.run());
+        panel.add(btnRegresar);
+        return panel;
     }
 
     public static void main(String[] args) {
-        // Asegurar que la UI se ejecute en el hilo despachador de eventos
         SwingUtilities.invokeLater(() -> {
             try {
-                // Usar el Look and Feel del sistema para mejor apariencia
                 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
             new MenuDueno(
-                    () -> {},
-                    () -> {},
-                    () -> {}
+                    () -> {
+                    },
+                    () -> {
+                    },
+                    () -> {
+                    },
+                    () -> {
+                    }
             ).setVisible(true);
         });
     }

@@ -4,7 +4,7 @@ import conexion.ConexionBD;
 import entidades.Tipo;
 import interfaces.ITipoDAO;
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *
@@ -29,6 +29,18 @@ public class TipoDAO implements ITipoDAO {
     @Override
     public Tipo obtener(Long id) {
         return em.find(Tipo.class, id);
+    }
+
+    @Override
+    public Tipo obtenerPorNombre(String nombre) {
+        List<Tipo> tipos = em.createQuery(
+                "SELECT t FROM Tipo t WHERE LOWER(t.nombre) = LOWER(:nombre)",
+                Tipo.class
+        )
+                .setParameter("nombre", nombre)
+                .setMaxResults(1)
+                .getResultList();
+        return tipos.isEmpty() ? null : tipos.getFirst();
     }
 
     @Override

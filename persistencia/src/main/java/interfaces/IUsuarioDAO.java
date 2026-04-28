@@ -25,4 +25,6 @@ public interface IUsuarioDAO {
     void eliminar(Long id);
     
     Usuario obtener(String nombre, String contrasenia) throws PersistenciaException;
+
+    boolean existeNombre(String nombre);
 }

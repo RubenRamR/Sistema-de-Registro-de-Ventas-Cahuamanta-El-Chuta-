@@ -5,6 +5,7 @@
 package mappers;
 
 import dtos.UsuarioDTO;
+import entidades.Tipo;
 import entidades.Usuario;
 
 /**
@@ -19,6 +20,11 @@ public class UsuarioMapper {
         usuario.setIdUsuario(usuarioDTO.getIdUsuario());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setContrasenia(usuarioDTO.getContrasenia());
+        if (usuarioDTO.getRol() != null && !usuarioDTO.getRol().isBlank()) {
+            Tipo tipo = new Tipo();
+            tipo.setNombre(usuarioDTO.getRol());
+            usuario.setTipo(tipo);
+        }
         return usuario;
     }
 
@@ -28,6 +34,9 @@ public class UsuarioMapper {
         usuarioDTO.setIdUsuario(usuario.getIdUsuario());
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setContrasenia(usuario.getContrasenia());
+        if (usuario.getTipo() != null) {
+            usuarioDTO.setRol(usuario.getTipo().getNombre());
+        }
         return usuarioDTO;
     }
 }
