@@ -60,13 +60,16 @@ public class UsuarioBO {
     }
 
     public void iniciarSesion(String nombre, String contrasenia) throws NegocioException {
-        if (nombre == null || nombre.isBlank() || contrasenia == null || contrasenia.isBlank()) {
+        if (nombre == null || nombre.isBlank() || contrasenia == null || contrasenia.isBlank())
+        {
             throw new NegocioException("Debe ingresar usuario y contrasenia.");
         }
 
-        try {
+        try
+        {
             sesion = usuarioDAO.obtener(nombre.trim(), contrasenia.trim());
-        } catch (PersistenciaException e) {
+        } catch (PersistenciaException e)
+        {
             throw new NegocioException("Usuario o contrasenia incorrectos.");
         }
     }
@@ -84,37 +87,44 @@ public class UsuarioBO {
     }
 
     private void validarUsuario(UsuarioDTO usuarioDTO, boolean esActualizacion) throws NegocioException {
-        if (usuarioDTO == null) {
+        if (usuarioDTO == null)
+        {
             throw new NegocioException("Datos de usuario no enviados.");
         }
-        if (esActualizacion && usuarioDTO.getIdUsuario() == null) {
+        if (esActualizacion && usuarioDTO.getIdUsuario() == null)
+        {
             throw new NegocioException("Usuario no valido para actualizar.");
         }
-        if (usuarioDTO.getNombre() == null || usuarioDTO.getNombre().isBlank()) {
+        if (usuarioDTO.getNombre() == null || usuarioDTO.getNombre().isBlank())
+        {
             throw new NegocioException("El nombre de usuario es obligatorio.");
         }
-        if (usuarioDTO.getContrasenia() == null || usuarioDTO.getContrasenia().isBlank()) {
+        if (usuarioDTO.getContrasenia() == null || usuarioDTO.getContrasenia().isBlank())
+        {
             throw new NegocioException("La contrasenia es obligatoria.");
         }
 
         String rol = normalizarRol(usuarioDTO.getRol());
-        if (!ROL_ADMIN.equals(rol) && !ROL_CAJERO.equals(rol)) {
+        if (!ROL_ADMIN.equals(rol) && !ROL_CAJERO.equals(rol))
+        {
             throw new NegocioException("Rol no valido.");
         }
 
         boolean nombreOcupado = usuarioDAO.obtenerTodos().stream()
-                .anyMatch(usuarioExistente ->
-                        usuarioExistente.getNombre().equalsIgnoreCase(usuarioDTO.getNombre().trim())
-                        && (!esActualizacion || !usuarioExistente.getIdUsuario().equals(usuarioDTO.getIdUsuario()))
+                .anyMatch(usuarioExistente
+                        -> usuarioExistente.getNombre().equalsIgnoreCase(usuarioDTO.getNombre().trim())
+                && (!esActualizacion || !usuarioExistente.getIdUsuario().equals(usuarioDTO.getIdUsuario()))
                 );
-        if (nombreOcupado) {
+        if (nombreOcupado)
+        {
             throw new NegocioException("Ya existe un usuario con ese nombre.");
         }
     }
 
     private Tipo obtenerOCrearTipo(String rol) {
         Tipo tipo = tipoDAO.obtenerPorNombre(rol);
-        if (tipo != null) {
+        if (tipo != null)
+        {
             return tipo;
         }
 
@@ -125,14 +135,19 @@ public class UsuarioBO {
     }
 
     private String normalizarRol(String rol) {
-        if (rol == null) {
+        if (rol == null)
+        {
             return "";
         }
 
-        return switch (rol.trim().toUpperCase()) {
-            case "DUEÑO", "DUEÃ‘O", "DUENO", "ADMIN" -> ROL_ADMIN;
-            case "CAJERO" -> ROL_CAJERO;
-            default -> rol.trim().toUpperCase();
+        return switch (rol.trim().toUpperCase())
+        {
+            case "DUEÑO", "DUEÃ‘O", "DUENO", "ADMIN" ->
+                ROL_ADMIN;
+            case "CAJERO" ->
+                ROL_CAJERO;
+            default ->
+                rol.trim().toUpperCase();
         };
     }
 

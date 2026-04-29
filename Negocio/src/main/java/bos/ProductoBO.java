@@ -18,7 +18,6 @@ import mappers.ProductoMapper;
  *
  * @author luise
  */
-
 public class ProductoBO {
 
     private IProductoDAO productoDAO;
@@ -42,12 +41,12 @@ public class ProductoBO {
         Producto producto = productoDAO.obtener(id);  // El DAO obtiene la entidad directamente
         return ProductoMapper.toDTO(producto);  // Convertimos la entidad a DTO
     }
-    
+
     public List<ProductoDTO> obtenerProducto(String categoria) {
         List<Producto> productos = productoDAO.obtener(categoria);
         return productos.stream()
-                        .map(ProductoMapper::toDTO)  // Convertimos cada entidad a DTO
-                        .collect(Collectors.toList());
+                .map(ProductoMapper::toDTO) // Convertimos cada entidad a DTO
+                .collect(Collectors.toList());
     }
 
     // Actualizar un producto
@@ -66,10 +65,10 @@ public class ProductoBO {
     public List<ProductoDTO> obtenerTodosLosProductos() {
         List<Producto> productos = productoDAO.obtenerTodos();  // El DAO obtiene las entidades directamente
         return productos.stream()
-                        .map(ProductoMapper::toDTO)  // Convertimos cada entidad a DTO
-                        .collect(Collectors.toList());
+                .map(ProductoMapper::toDTO) // Convertimos cada entidad a DTO
+                .collect(Collectors.toList());
     }
-    
+
     public List<DetalleVentaDTO> obtenerDetallesVentaPorIdVenta(Long id) {
         return detalleVentaDAO.obtenerPorIdVenta(id).stream()
                 .map(DetalleVentaMapper::toDTO)

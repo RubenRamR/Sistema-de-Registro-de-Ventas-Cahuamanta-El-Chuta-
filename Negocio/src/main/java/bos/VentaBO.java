@@ -48,13 +48,15 @@ public class VentaBO {
     }
 
     public void crearVenta(List<DetalleVentaDTO> detalles) throws NegocioException {
-        if (detalles == null || detalles.isEmpty()) {
+        if (detalles == null || detalles.isEmpty())
+        {
             throw new NegocioException("Sin productos.");
         }
 
         boolean cantidadInvalida = detalles.stream()
                 .anyMatch(detalle -> detalle.getCantidad() <= 0);
-        if (cantidadInvalida) {
+        if (cantidadInvalida)
+        {
             throw new NegocioException("Cantidades no seleccionadas.");
         }
 
@@ -67,7 +69,8 @@ public class VentaBO {
         ventaActual.setFechaHora(LocalDateTime.now());
 
         BigDecimal total = BigDecimal.ZERO;
-        for (DetalleVenta detalle : entidades) {
+        for (DetalleVenta detalle : entidades)
+        {
             detalle.setVenta(ventaActual);
             total = total.add(detalle.getPrecioUnitario().multiply(BigDecimal.valueOf(detalle.getCantidad())));
         }
@@ -77,7 +80,8 @@ public class VentaBO {
     }
 
     public void crearVenta(Usuario sesion) {
-        if (venta == null || sesion == null) {
+        if (venta == null || sesion == null)
+        {
             return;
         }
         venta.setUsuario(sesion);
@@ -86,35 +90,42 @@ public class VentaBO {
     }
 
     public VentaDTO obtenerVentaActual() {
-        if (venta == null) {
+        if (venta == null)
+        {
             return null;
         }
         return VentaMapper.toDTO(venta);
     }
 
     public void validarPagoEfectivoVentaActual(BigDecimal montoRecibido) throws NegocioException {
-        if (venta == null || venta.getTotal() == null) {
+        if (venta == null || venta.getTotal() == null)
+        {
             throw new NegocioException("No hay una venta activa para validar el pago.");
         }
-        if (montoRecibido == null) {
+        if (montoRecibido == null)
+        {
             throw new NegocioException("Debe ingresar el monto recibido.");
         }
-        if (montoRecibido.compareTo(BigDecimal.ZERO) <= 0) {
+        if (montoRecibido.compareTo(BigDecimal.ZERO) <= 0)
+        {
             throw new NegocioException("El monto recibido debe ser mayor a cero.");
         }
-        if (montoRecibido.compareTo(venta.getTotal()) < 0) {
+        if (montoRecibido.compareTo(venta.getTotal()) < 0)
+        {
             throw new NegocioException("El pago en efectivo es insuficiente para cubrir el total.");
         }
     }
 
     public void setMetodoPago(String metodoPago) {
-        if (venta != null) {
+        if (venta != null)
+        {
             venta.setMetodoPago(metodoPago);
         }
     }
 
     public List<DetalleVentaDTO> getProductosVenta() {
-        if (venta == null || venta.getDetallesVenta() == null) {
+        if (venta == null || venta.getDetallesVenta() == null)
+        {
             return Collections.emptyList();
         }
         return venta.getDetallesVenta().stream()
@@ -165,20 +176,25 @@ public class VentaBO {
 
     public void exportarReporteVentas(LocalDate fechaInicio, LocalDate fechaFin, String rutaArchivo) throws NegocioException {
         ReporteVentasDTO reporte = obtenerReporteVentas(fechaInicio, fechaFin);
-        if (reporte.getVentas().isEmpty()) {
+        if (reporte.getVentas().isEmpty())
+        {
             throw new NegocioException("No hay registros disponibles en el periodo seleccionado.");
         }
-        if (rutaArchivo == null || rutaArchivo.isBlank()) {
+        if (rutaArchivo == null || rutaArchivo.isBlank())
+        {
             throw new NegocioException("La ruta del archivo no es valida.");
         }
 
         Path destino = Path.of(rutaArchivo).toAbsolutePath();
-        try {
-            if (destino.getParent() != null) {
+        try
+        {
+            if (destino.getParent() != null)
+            {
                 Files.createDirectories(destino.getParent());
             }
             generarPdfReporte(reporte, destino);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             throw new NegocioException("No fue posible generar el PDF del reporte.");
         }
     }
@@ -204,59 +220,99 @@ public class VentaBO {
     }
 
     private void validarRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) throws NegocioException {
-        if (fechaInicio == null || fechaFin == null) {
+        if (fechaInicio == null || fechaFin == null)
+        {
             throw new NegocioException("Debe seleccionar una fecha inicial y una fecha final.");
         }
-        if (fechaFin.isBefore(fechaInicio)) {
+        if (fechaFin.isBefore(fechaInicio))
+        {
             throw new NegocioException("La fecha final no puede ser menor que la fecha inicial.");
         }
     }
 
-    private void generarPdfReporte(ReporteVentasDTO reporte, Path destino) throws IOException {
+   private void generarPdfReporte(ReporteVentasDTO reporte, Path destino) throws IOException {
         try (PDDocument documento = new PDDocument()) {
             PDPage pagina = new PDPage(PDRectangle.LETTER);
             documento.addPage(pagina);
 
-            float margen = 50f;
-            float y = pagina.getMediaBox().getHeight() - margen;
+            float margenIzquierdo = 50f;
+            float margenSuperior = pagina.getMediaBox().getHeight() - 50f;
+            float y = margenSuperior;
             PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
 
             try {
-                y = escribirLinea(contenido, PDType1Font.HELVETICA_BOLD, 18, margen, y, "Reporte de ventas");
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margen, y, "Periodo: "
+                // --- CABECERA ---
+                y = escribirLinea(contenido, PDType1Font.HELVETICA_BOLD, 18, margenIzquierdo, y, "Reporte de ventas");
+                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y, "Periodo: "
                         + reporte.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        + " - "
-                        + reporte.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margen, y,
+                        + " - " + reporte.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
                         "Cantidad de ventas: " + reporte.getCantidadVentas());
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margen, y,
+                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
                         "Monto total: $" + reporte.getMontoTotal().setScale(2, RoundingMode.HALF_UP));
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margen, y,
+                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
                         "Promedio por venta: $" + reporte.getPromedioVenta().setScale(2, RoundingMode.HALF_UP));
-                y -= 10f;
+                y -= 20f; // Espacio extra antes de la tabla
 
-                y = escribirLinea(contenido, PDType1Font.COURIER_BOLD, 10, margen, y,
-                        ajustarColumna("Fecha", 18)
-                        + ajustarColumna("Venta", 10)
-                        + ajustarColumna("Usuario", 18)
-                        + ajustarColumna("Metodo", 16)
-                        + "Total");
+                // --- DEFINICIÓN DE COLUMNAS
+                float xFecha = margenIzquierdo;
+                float xVenta = margenIzquierdo + 120f;
+                float xUsuario = margenIzquierdo + 180f;
+                float xMetodo = margenIzquierdo + 300f;
+                float xTotal = margenIzquierdo + 430f;
+
+                // --- ENCABEZADOS DE LA TABLA ---
+                PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
+                float sizeHeader = 10f;
+                
+                // Línea superior
+                contenido.moveTo(margenIzquierdo, y + 12);
+                contenido.lineTo(margenIzquierdo + 500f, y + 12);
+                contenido.stroke();
+                
+                // Imprimir cada encabezado en su posición fija
+                escribirCelda(contenido, fontHeader, sizeHeader, xFecha, y, "Fecha");
+                escribirCelda(contenido, fontHeader, sizeHeader, xVenta, y, "Venta");
+                escribirCelda(contenido, fontHeader, sizeHeader, xUsuario, y, "Usuario");
+                escribirCelda(contenido, fontHeader, sizeHeader, xMetodo, y, "Método");
+                escribirCelda(contenido, fontHeader, sizeHeader, xTotal, y, "Total");
+                
+                y -= 15f;
+                
+                // Linea inferior
+                contenido.moveTo(margenIzquierdo, y + 12);
+                contenido.lineTo(margenIzquierdo + 500f, y + 12);
+                contenido.stroke();
+
+                // --- DATOS DE LA TABLA ---
+                PDType1Font fontData = PDType1Font.HELVETICA;
+                float sizeData = 9f;
 
                 for (VentaDTO ventaDTO : reporte.getVentas()) {
-                    if (y < margen) {
+                    if (y < 50f) {
                         contenido.close();
                         pagina = new PDPage(PDRectangle.LETTER);
                         documento.addPage(pagina);
                         contenido = new PDPageContentStream(documento, pagina);
-                        y = pagina.getMediaBox().getHeight() - margen;
+                        y = margenSuperior;
+                        
+                        // Repetir encabezados en nueva página
+                        escribirCelda(contenido, fontHeader, sizeHeader, xFecha, y, "Fecha");
+                        escribirCelda(contenido, fontHeader, sizeHeader, xVenta, y, "Venta");
+                        escribirCelda(contenido, fontHeader, sizeHeader, xUsuario, y, "Usuario");
+                        escribirCelda(contenido, fontHeader, sizeHeader, xMetodo, y, "Método");
+                        escribirCelda(contenido, fontHeader, sizeHeader, xTotal, y, "Total");
+                        y -= 15f;
                     }
 
-                    String fila = ajustarColumna(formatearFecha(ventaDTO), 18)
-                            + ajustarColumna(obtenerFolio(ventaDTO), 10)
-                            + ajustarColumna(obtenerUsuario(ventaDTO), 18)
-                            + ajustarColumna(obtenerMetodoPago(ventaDTO), 16)
-                            + "$" + formatearMonto(ventaDTO.getTotal());
-                    y = escribirLinea(contenido, PDType1Font.COURIER, 9, margen, y, fila);
+                    // Imprimir datos en las mismas posiciones X fijas
+                    escribirCelda(contenido, fontData, sizeData, xFecha, y, formatearFecha(ventaDTO));
+                    escribirCelda(contenido, fontData, sizeData, xVenta, y, obtenerFolio(ventaDTO));
+                    escribirCelda(contenido, fontData, sizeData, xUsuario, y, truncar(obtenerUsuario(ventaDTO), 15));
+                    escribirCelda(contenido, fontData, sizeData, xMetodo, y, obtenerMetodoPago(ventaDTO));
+                    escribirCelda(contenido, fontData, sizeData, xTotal, y, "$" + formatearMonto(ventaDTO.getTotal()));
+                    
+                    y -= 15f;
                 }
             } finally {
                 contenido.close();
@@ -264,6 +320,22 @@ public class VentaBO {
 
             documento.save(destino.toFile());
         }
+    }
+
+    private void escribirCelda(PDPageContentStream contenido, PDType1Font fuente, float tamanio, float x, float y, String texto) throws IOException {
+        contenido.beginText();
+        contenido.setFont(fuente, tamanio);
+        contenido.newLineAtOffset(x, y);
+        contenido.showText(limpiarTextoPdf(texto));
+        contenido.endText();
+    }
+    
+    private String truncar(String texto, int maxLongitud) {
+        if (texto == null) return "";
+        if (texto.length() > maxLongitud) {
+            return texto.substring(0, maxLongitud - 3) + "...";
+        }
+        return texto;
     }
 
     private float escribirLinea(PDPageContentStream contenido, PDType1Font fuente, float tamanio, float x, float y, String texto) throws IOException {
@@ -276,7 +348,8 @@ public class VentaBO {
     }
 
     private String limpiarTextoPdf(String texto) {
-        if (texto == null) {
+        if (texto == null)
+        {
             return "";
         }
         String normalizado = Normalizer.normalize(texto, Normalizer.Form.NFD)
@@ -286,28 +359,32 @@ public class VentaBO {
 
     private String ajustarColumna(String valor, int longitud) {
         String limpio = limpiarTextoPdf(valor == null ? "" : valor);
-        if (limpio.length() > longitud) {
+        if (limpio.length() > longitud)
+        {
             limpio = limpio.substring(0, Math.max(0, longitud - 1)) + "~";
         }
         return String.format("%-" + longitud + "s", limpio);
     }
 
     private String formatearFecha(VentaDTO ventaDTO) {
-        if (ventaDTO.getFechaHora() == null) {
+        if (ventaDTO.getFechaHora() == null)
+        {
             return "Sin fecha";
         }
         return ventaDTO.getFechaHora().format(FORMATO_FECHA_HORA);
     }
 
     private String obtenerFolio(VentaDTO ventaDTO) {
-        if (ventaDTO.getFolio() != null && !ventaDTO.getFolio().isBlank()) {
+        if (ventaDTO.getFolio() != null && !ventaDTO.getFolio().isBlank())
+        {
             return ventaDTO.getFolio();
         }
         return ventaDTO.getIdVenta() == null ? "Sin folio" : "#" + ventaDTO.getIdVenta();
     }
 
     private String obtenerUsuario(VentaDTO ventaDTO) {
-        if (ventaDTO.getUsuario() == null || ventaDTO.getUsuario().getNombre() == null) {
+        if (ventaDTO.getUsuario() == null || ventaDTO.getUsuario().getNombre() == null)
+        {
             return "Sin usuario";
         }
         return ventaDTO.getUsuario().getNombre();
@@ -321,4 +398,3 @@ public class VentaBO {
         return monto == null ? "0.00" : monto.setScale(2, RoundingMode.HALF_UP).toString();
     }
 }
-
