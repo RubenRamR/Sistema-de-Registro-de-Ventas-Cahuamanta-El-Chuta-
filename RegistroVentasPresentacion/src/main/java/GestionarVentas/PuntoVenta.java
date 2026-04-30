@@ -368,30 +368,47 @@ public class PuntoVenta extends JFrame {
             return;
         }
 
-        carritoCompras.stream()
-                .anyMatch(p -> p.getProducto().getNombre().equals(productoSeleccionadoActual.getNombre()));
-        if (carritoCompras.stream()
-                .anyMatch(p -> p.getProducto().getNombre().equals(productoSeleccionadoActual.getNombre())))
+        int cantidad = (Integer) spinnerCantidad.getValue();
+
+        int indiceExistente = -1;
+        for (int i = 0; i < carritoCompras.size(); i++)
         {
-            JOptionPane.showMessageDialog(this, "El producto ya está agregado.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
+            if (carritoCompras.get(i).getProducto().getNombre().equals(productoSeleccionadoActual.getNombre()))
+            {
+                indiceExistente = i;
+                break;
+            }
         }
 
-        int cantidad = (Integer) spinnerCantidad.getValue();
-        DetalleVentaDTO nuevoItem = new DetalleVentaDTO(
-                cantidad,
-                productoSeleccionadoActual.getPrecio(),
-                productoSeleccionadoActual);
+        DetalleVentaDTO item;
+        if (indiceExistente >= 0)
+        {
+            item = carritoCompras.get(indiceExistente);
+            item.setCantidad(item.getCantidad() + cantidad);
+        }
+        else
+        {
+            item = new DetalleVentaDTO(
+                    cantidad,
+                    productoSeleccionadoActual.getPrecio(),
+                    productoSeleccionadoActual);
+            carritoCompras.add(item);
+        }
 
-        carritoCompras.add(nuevoItem);
-
-        String nombreEnLinea = productoSeleccionadoActual.getNombre().replace("\n", " ");
+        String nombreEnLinea = item.getProducto().getNombre().replace("\n", " ");
         String textoLista = String.format("%s (%d)   ---   $%s",
                 nombreEnLinea,
-                cantidad,
-                nuevoItem.getSubtotal().setScale(2, RoundingMode.HALF_UP));
+                item.getCantidad(),
+                item.getSubtotal().setScale(2, RoundingMode.HALF_UP));
 
-        modeloListaResumen.addElement(textoLista);
+        if (indiceExistente >= 0)
+        {
+            modeloListaResumen.set(indiceExistente, textoLista);
+        }
+        else
+        {
+            modeloListaResumen.addElement(textoLista);
+        }
         actualizarTotales();
     }
 

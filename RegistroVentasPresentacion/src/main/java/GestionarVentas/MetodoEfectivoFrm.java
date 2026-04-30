@@ -50,11 +50,15 @@ public class MetodoEfectivoFrm extends JFrame {
     private final PagoEfectivoOperacion onAceptar;
     private final Runnable onBack;
 
+    private static final String PLACEHOLDER_PAGO = "0.00";
+    private static final Color COLOR_PLACEHOLDER = new Color(160, 170, 180);
+
     private JLabel lblCambioMonto;
     private JLabel lblEstado;
     private JLabel lblPagoSugerido;
     private JTextField txtPago;
     private JButton btnAceptar;
+    private boolean placeholderActivo = true;
 
     public MetodoEfectivoFrm(
             BigDecimal total,
@@ -186,14 +190,14 @@ public class MetodoEfectivoFrm extends JFrame {
         lblEtiqueta.setFont(FUENTE_ETIQUETA);
         lblEtiqueta.setForeground(COLOR_TEXTO);
 
-        txtPago = new JTextField("0.00");
+        txtPago = new JTextField();
         txtPago.setFont(FUENTE_CAMPO);
-        txtPago.setForeground(COLOR_TEXTO);
         txtPago.setHorizontalAlignment(SwingConstants.RIGHT);
         txtPago.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(187, 199, 210), 1, true),
                 BorderFactory.createEmptyBorder(8, 14, 8, 14)
         ));
+        mostrarPlaceholder();
         ((AbstractDocument) txtPago.getDocument()).setDocumentFilter(new DecimalFilter());
         txtPago.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -209,6 +213,23 @@ public class MetodoEfectivoFrm extends JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 actualizarEstadoPago();
+            }
+        });
+        txtPago.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (placeholderActivo) {
+                    placeholderActivo = false;
+                    txtPago.setText("");
+                    txtPago.setForeground(COLOR_TEXTO);
+                }
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (txtPago.getText().isBlank()) {
+                    mostrarPlaceholder();
+                }
             }
         });
 
@@ -258,6 +279,15 @@ public class MetodoEfectivoFrm extends JFrame {
     }
 
     private void actualizarEstadoPago() {
+        if (placeholderActivo)
+        {
+            lblCambioMonto.setText("$0.00");
+            lblEstado.setText("Ingresa el monto recibido para continuar");
+            lblEstado.setForeground(new Color(101, 115, 126));
+            btnAceptar.setEnabled(false);
+            return;
+        }
+
         BigDecimal pago = obtenerPagoIngresado();
         if (pago == null)
         {
@@ -283,6 +313,12 @@ public class MetodoEfectivoFrm extends JFrame {
         lblEstado.setText("Pago suficiente. Puedes registrar la venta.");
         lblEstado.setForeground(COLOR_PRIMARIO.darker());
         btnAceptar.setEnabled(true);
+    }
+
+    private void mostrarPlaceholder() {
+        placeholderActivo = true;
+        txtPago.setForeground(COLOR_PLACEHOLDER);
+        txtPago.setText(PLACEHOLDER_PAGO);
     }
 
     private void confirmarPago() {
