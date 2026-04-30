@@ -7,6 +7,7 @@ package GestionarVentas;
 import Componentes.TarjetaPago;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import utils.EstiloUI;
 
 /**
  *
@@ -18,7 +19,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
     private Runnable onPagoTarjeta;
     private Runnable onPagoTransferencia;
     private Runnable onBack;
-    
+
     /**
      * Creates new form MenuFrm
      */
@@ -32,11 +33,30 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
         this.onPagoTarjeta = onPagoTarjeta;
         this.onPagoTransferencia = onPagoTransferencia;
         this.onBack = onBack;
-        
+
         initComponents();
         setExtendedState(MetodoPagoFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        aplicarEstilo();
         configurarTarjetas();
+    }
+
+    private void aplicarEstilo() {
+        getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+
+        BtnBack.setText("Regresar");
+        BtnBack.setFont(EstiloUI.FUENTE_BOTON);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setForeground(java.awt.Color.WHITE);
+        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
+        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
+        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+
+        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 44));
+        LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
     }
 
     private void configurarTarjetas() {

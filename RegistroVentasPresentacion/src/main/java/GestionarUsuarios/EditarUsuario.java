@@ -26,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import utils.EstiloUI;
 
 /**
  *
@@ -33,11 +34,11 @@ import javax.swing.border.LineBorder;
  */
 public class EditarUsuario extends JFrame {
 
-    private final Color COLOR_HEADER_FOOTER = new Color(65, 114, 159);
-    private final Color COLOR_OSCURO = new Color(11, 19, 84);
-    private final Color COLOR_BEIGE = new Color(248, 246, 240);
-    private final Color COLOR_BORDE = new Color(220, 220, 215);
-    private final Color COLOR_VERDE_OSCURO = new Color(25, 130, 55);
+    private final Color COLOR_HEADER_FOOTER = EstiloUI.COLOR_BARRA;
+    private final Color COLOR_OSCURO = EstiloUI.COLOR_TEXTO;
+    private final Color COLOR_BEIGE = EstiloUI.COLOR_TARJETA_BEIGE;
+    private final Color COLOR_BORDE = EstiloUI.COLOR_BORDE;
+    private final Color COLOR_VERDE_OSCURO = EstiloUI.COLOR_ACCION;
 
     private final UsuarioDTO usuario;
     private final JTextField txtNombre = new JTextField(15);
@@ -57,19 +58,16 @@ public class EditarUsuario extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(COLOR_HEADER_FOOTER);
-        headerPanel.setPreferredSize(new Dimension(800, 50));
-        add(headerPanel, BorderLayout.NORTH);
+        add(EstiloUI.crearBarraSuperior("Editar usuario"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(EstiloUI.COLOR_FONDO);
         GridBagConstraints gbcMain = new GridBagConstraints();
         gbcMain.gridx = 0;
         gbcMain.anchor = GridBagConstraints.CENTER;
 
-        JLabel lblTitulo = new JLabel("Editar Usuario");
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 42));
+        JLabel lblTitulo = new JLabel("Editar usuario");
+        lblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(COLOR_OSCURO);
 
         gbcMain.gridy = 0;
@@ -84,23 +82,7 @@ public class EditarUsuario extends JFrame {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(COLOR_HEADER_FOOTER);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-        footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(COLOR_OSCURO);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> onBack.run());
-        footerPanel.add(btnRegresar);
-
-        add(footerPanel, BorderLayout.SOUTH);
+        add(EstiloUI.crearBarraInferior(EstiloUI.crearBotonRegresar(onBack)), BorderLayout.SOUTH);
     }
 
     private JPanel crearFormularioEdicion(UsuarioOperacion onGuardar) {
@@ -117,7 +99,7 @@ public class EditarUsuario extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel lblNombre = new JLabel("Nombre de Usuario:");
-        lblNombre.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblNombre.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -129,7 +111,7 @@ public class EditarUsuario extends JFrame {
         panel.add(txtNombre, gbc);
 
         JLabel lblPass = new JLabel("Contrasena:");
-        lblPass.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblPass.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblPass.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -141,13 +123,13 @@ public class EditarUsuario extends JFrame {
         panel.add(txtPass, gbc);
 
         JLabel lblRol = new JLabel("Rol:");
-        lblRol.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblRol.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblRol.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 2;
         panel.add(lblRol, gbc);
 
-        cmbRol.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        cmbRol.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         cmbRol.setBackground(Color.WHITE);
         cmbRol.setPreferredSize(new Dimension(200, 35));
         cmbRol.setBorder(BorderFactory.createCompoundBorder(
@@ -159,7 +141,7 @@ public class EditarUsuario extends JFrame {
         panel.add(cmbRol, gbc);
 
         JButton btnConfirmar = new JButton("Confirmar");
-        btnConfirmar.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        btnConfirmar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         btnConfirmar.setForeground(Color.WHITE);
         btnConfirmar.setBackground(COLOR_VERDE_OSCURO);
         btnConfirmar.setFocusPainted(false);
@@ -197,7 +179,7 @@ public class EditarUsuario extends JFrame {
     }
 
     private void estilizarInput(JTextField campo) {
-        campo.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        campo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         campo.setPreferredSize(new Dimension(200, 35));
         campo.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(COLOR_BORDE, 1, true),

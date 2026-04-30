@@ -32,6 +32,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import utils.EstiloUI;
 
 /**
  *
@@ -39,10 +40,10 @@ import javax.swing.event.DocumentListener;
  */
 public class BuscarUsuarios extends JFrame {
 
-    private final Color COLOR_HEADER_FOOTER = new Color(65, 114, 159);
-    private final Color COLOR_OSCURO = new Color(11, 19, 84);
-    private final Color COLOR_BEIGE = new Color(248, 246, 240);
-    private final Color COLOR_BORDE = new Color(220, 220, 215);
+    private final Color COLOR_HEADER_FOOTER = EstiloUI.COLOR_BARRA;
+    private final Color COLOR_OSCURO = EstiloUI.COLOR_TEXTO;
+    private final Color COLOR_BEIGE = EstiloUI.COLOR_TARJETA_BEIGE;
+    private final Color COLOR_BORDE = EstiloUI.COLOR_BORDE;
 
     private final List<UsuarioDTO> usuarios;
     private final Consumer<UsuarioDTO> onSeleccionar;
@@ -63,36 +64,31 @@ public class BuscarUsuarios extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(COLOR_HEADER_FOOTER);
-        headerPanel.setPreferredSize(new Dimension(800, 50));
-        add(headerPanel, BorderLayout.NORTH);
+        add(EstiloUI.crearBarraSuperior(titulo + " usuarios"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(EstiloUI.COLOR_FONDO);
 
         JPanel topCenterPanel = new JPanel();
         topCenterPanel.setLayout(new BoxLayout(topCenterPanel, BoxLayout.Y_AXIS));
-        topCenterPanel.setBackground(Color.WHITE);
+        topCenterPanel.setBackground(EstiloUI.COLOR_FONDO);
         topCenterPanel.setBorder(new EmptyBorder(30, 0, 20, 0));
 
-        JLabel lblTitulo = new JLabel(titulo + " Usuarios");
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 42));
+        JLabel lblTitulo = new JLabel(titulo + " usuarios");
+        lblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(COLOR_OSCURO);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
-        searchPanel.setBackground(Color.WHITE);
+        searchPanel.setBackground(EstiloUI.COLOR_FONDO);
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        lblNombre.setForeground(EstiloUI.COLOR_TEXTO);
 
         JTextField txtBusqueda = new JTextField("", 25);
-        txtBusqueda.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        txtBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         txtBusqueda.setPreferredSize(new Dimension(300, 40));
-        txtBusqueda.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
+        txtBusqueda.setBorder(EstiloUI.bordeInput());
 
         txtBusqueda.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -122,34 +118,19 @@ public class BuscarUsuarios extends JFrame {
 
         listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
-        listPanel.setBackground(Color.WHITE);
+        listPanel.setBackground(EstiloUI.COLOR_FONDO);
         listPanel.setBorder(new EmptyBorder(10, 50, 20, 50));
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(EstiloUI.COLOR_FONDO);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(COLOR_HEADER_FOOTER);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-        footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(COLOR_OSCURO);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> onBack.run());
-        footerPanel.add(btnRegresar);
-
-        add(footerPanel, BorderLayout.SOUTH);
+        add(EstiloUI.crearBarraInferior(EstiloUI.crearBotonRegresar(onBack)), BorderLayout.SOUTH);
 
         filtrarUsuarios("");
     }
@@ -165,7 +146,7 @@ public class BuscarUsuarios extends JFrame {
 
         if (usuariosFiltrados.isEmpty()) {
             JLabel lblSinResultados = new JLabel("No hay usuarios para mostrar.");
-            lblSinResultados.setFont(new Font("SansSerif", Font.PLAIN, 20));
+            lblSinResultados.setFont(new Font("Segoe UI", Font.PLAIN, 20));
             lblSinResultados.setForeground(Color.DARK_GRAY);
             lblSinResultados.setAlignmentX(Component.CENTER_ALIGNMENT);
             listPanel.add(lblSinResultados);
@@ -199,11 +180,11 @@ public class BuscarUsuarios extends JFrame {
         textPanel.setBackground(COLOR_BEIGE);
 
         JLabel lblNombre = new JLabel(usuario.getNombre());
-        lblNombre.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblNombre.setForeground(COLOR_OSCURO);
 
         JLabel lblPuesto = new JLabel(formatearRol(usuario.getRol()));
-        lblPuesto.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        lblPuesto.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         lblPuesto.setForeground(Color.DARK_GRAY);
 
         lblNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -221,7 +202,7 @@ public class BuscarUsuarios extends JFrame {
         btnContainer.setBackground(COLOR_BEIGE);
 
         JButton btnSeleccionar = new JButton("Seleccionar");
-        btnSeleccionar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnSeleccionar.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnSeleccionar.setForeground(Color.WHITE);
         btnSeleccionar.setBackground(COLOR_OSCURO);
         btnSeleccionar.setFocusPainted(false);

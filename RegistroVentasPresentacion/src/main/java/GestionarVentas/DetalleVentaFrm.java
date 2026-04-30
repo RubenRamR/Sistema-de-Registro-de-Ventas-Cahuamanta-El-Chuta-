@@ -6,6 +6,7 @@ package GestionarVentas;
 
 import utils.ButtonEditor;
 import utils.ButtonRenderer;
+import utils.EstiloUI;
 
 /**
  *
@@ -20,7 +21,46 @@ public class DetalleVentaFrm extends javax.swing.JFrame {
         initComponents();
         setExtendedState(DetalleVentaFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        aplicarEstilo();
         configurarTabla();
+    }
+
+    private void aplicarEstilo() {
+        getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlDetalleVenta.setBackground(EstiloUI.COLOR_TARJETA_BEIGE);
+        PnlDetalleVenta.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+
+        BtnBack.setText("Regresar");
+        BtnBack.setFont(EstiloUI.FUENTE_BOTON);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setForeground(java.awt.Color.WHITE);
+        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
+        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
+        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+
+        java.awt.Font fuenteEtiqueta = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16);
+        LblFolio.setFont(fuenteEtiqueta);
+        LblFecha.setFont(fuenteEtiqueta);
+        LblMetodo.setFont(fuenteEtiqueta);
+        LblEstado.setFont(fuenteEtiqueta);
+        LblTotoal.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 20));
+        LblFolio.setForeground(EstiloUI.COLOR_TEXTO);
+        LblFecha.setForeground(EstiloUI.COLOR_TEXTO);
+        LblMetodo.setForeground(EstiloUI.COLOR_TEXTO);
+        LblEstado.setForeground(EstiloUI.COLOR_TEXTO);
+        LblTotoal.setForeground(EstiloUI.COLOR_TEXTO);
+
+        jButton1.setBackground(EstiloUI.COLOR_DANGER);
+        jButton1.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        jButton1.setForeground(java.awt.Color.WHITE);
+        jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 24, 10, 24));
+        jButton1.setPreferredSize(new java.awt.Dimension(160, 44));
     }
 
     public void configurarTabla() {

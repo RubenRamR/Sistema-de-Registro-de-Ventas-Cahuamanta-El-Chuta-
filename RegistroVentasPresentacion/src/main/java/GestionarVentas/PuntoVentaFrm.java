@@ -6,6 +6,7 @@ package GestionarVentas;
 
 import Componentes.TarjetaCategoria;
 import Componentes.TarjetaProducto;
+import utils.EstiloUI;
 
 /**
  *
@@ -19,8 +20,28 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
     public PuntoVentaFrm() {
         initComponents();
         setExtendedState(PuntoVentaFrm.MAXIMIZED_BOTH);
+        aplicarEstilo();
         configurarCategorias();
         configurarCatalogo();
+    }
+
+    private void aplicarEstilo() {
+        getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlResumen.setBackground(EstiloUI.COLOR_TARJETA);
+        PnlResumen.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        LblnombreProducto.setForeground(EstiloUI.COLOR_TEXTO);
+        LblCantidad.setForeground(EstiloUI.COLOR_TEXTO);
+
+        BtnAgregar.setBackground(EstiloUI.COLOR_ACCION);
+        BtnAgregar.setForeground(java.awt.Color.WHITE);
+        BtnAgregar.setFont(EstiloUI.FUENTE_BOTON);
+        BtnAgregar.setFocusPainted(false);
+        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 24, 10, 24));
+        BtnAgregar.setPreferredSize(new java.awt.Dimension(120, 44));
     }
 
     public void configurarCategorias() {
@@ -36,22 +57,22 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
         // T1: CALDOS Y PLATOS
         gbc.weightx = 0.40;
         gbc.insets = new java.awt.Insets(0, 0, 0, 20);
-        PnlCategorias.add(new TarjetaCategoria("CALDOS Y PLATOS", "9", new java.awt.Color(255, 51, 51)), gbc);
+        PnlCategorias.add(new TarjetaCategoria("CALDOS Y PLATOS", "9", EstiloUI.COLOR_CATEGORIA_ROJO), gbc);
 
         // T2: TACOS
         gbc.weightx = 0.20;
         gbc.insets = new java.awt.Insets(0, 0, 0, 20);
-        PnlCategorias.add(new TarjetaCategoria("TACOS", "8", new java.awt.Color(255, 128, 0)), gbc);
+        PnlCategorias.add(new TarjetaCategoria("TACOS", "8", EstiloUI.COLOR_CATEGORIA_NARANJA), gbc);
 
         // T3: COMBOS
         gbc.weightx = 0.20;
         gbc.insets = new java.awt.Insets(0, 0, 0, 20);
-        PnlCategorias.add(new TarjetaCategoria("COMBOS", "1", new java.awt.Color(156, 39, 176)), gbc);
+        PnlCategorias.add(new TarjetaCategoria("COMBOS", "1", EstiloUI.COLOR_CATEGORIA_MORADO), gbc);
 
         // T4: BEBIDAS
         gbc.weightx = 0.20;
         gbc.insets = new java.awt.Insets(0, 0, 0, 0);
-        PnlCategorias.add(new TarjetaCategoria("BEBIDAS", "4", new java.awt.Color(0, 51, 255)), gbc);
+        PnlCategorias.add(new TarjetaCategoria("BEBIDAS", "4", EstiloUI.COLOR_CATEGORIA_AZUL), gbc);
 
         PnlCategorias.revalidate();
         PnlCategorias.repaint();

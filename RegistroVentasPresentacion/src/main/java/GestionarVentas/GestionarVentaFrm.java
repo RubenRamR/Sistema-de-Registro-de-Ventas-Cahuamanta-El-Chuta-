@@ -6,6 +6,7 @@ package GestionarVentas;
 
 import utils.ButtonEditor;
 import utils.ButtonRenderer;
+import utils.EstiloUI;
 
 /**
  *
@@ -15,7 +16,7 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
     private Runnable onAgregarVenta;
     private Runnable onBack;
-    
+
     /**
      * Creates new form MenuFrm
      */
@@ -26,10 +27,37 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
         initComponents();
         setExtendedState(GestionarVentaFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        aplicarEstilo();
         configurarTabla();
-        
+
         this.onAgregarVenta = onAgregarVenta;
         this.onBack = onBack;
+    }
+
+    private void aplicarEstilo() {
+        getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+
+        BtnBack.setText("Regresar");
+        BtnBack.setFont(EstiloUI.FUENTE_BOTON);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setForeground(java.awt.Color.WHITE);
+        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
+        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
+        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+
+        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 40));
+        LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+
+        BtnAgregar.setText("Agregar venta");
+        BtnAgregar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        BtnAgregar.setBackground(EstiloUI.COLOR_ACCION);
+        BtnAgregar.setForeground(java.awt.Color.WHITE);
+        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 24, 12, 24));
+        BtnAgregar.setPreferredSize(new java.awt.Dimension(280, 56));
+        BtnAgregar.setFocusPainted(false);
     }
 
     public void configurarTabla() {

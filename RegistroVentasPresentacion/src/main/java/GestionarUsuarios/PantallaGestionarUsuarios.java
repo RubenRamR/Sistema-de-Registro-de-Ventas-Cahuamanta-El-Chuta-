@@ -2,18 +2,20 @@ package GestionarUsuarios;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.GridLayout;
 import java.util.function.Consumer;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import utils.EstiloUI;
 
 /**
  *
@@ -25,115 +27,107 @@ public class PantallaGestionarUsuarios extends JFrame {
             Runnable onBack,
             Consumer<String> onOpcion
     ) {
-        setTitle("Gestionar Usuarios");
+        setTitle("Gestionar usuarios");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Colores
-        Color colorAzulFranja = Color.decode("#336690");
-        Color colorAzulOscuroTitulo = Color.decode("#090060");
-        Color colorFondoBeige = Color.decode("#F5F4EE");
-        Color colorBotonAccion = Color.decode("#007ACC");
-        Color colorBotonAtras = Color.decode("#00005C");
+        add(EstiloUI.crearBarraSuperior("Gestionar usuarios"), BorderLayout.NORTH);
+        add(crearContenido(onOpcion), BorderLayout.CENTER);
+        add(EstiloUI.crearBarraInferior(EstiloUI.crearBotonRegresar(onBack)), BorderLayout.SOUTH);
+    }
 
-        // HEADER
-        JPanel panelSuperior = new JPanel();
-        panelSuperior.setBackground(colorAzulFranja);
-        panelSuperior.setPreferredSize(new Dimension(0, 50));
-        add(panelSuperior, BorderLayout.NORTH);
+    private JPanel crearContenido(Consumer<String> onOpcion) {
+        JPanel fondo = new JPanel(new BorderLayout());
+        fondo.setBackground(EstiloUI.COLOR_FONDO);
+        fondo.setBorder(new EmptyBorder(32, 40, 32, 40));
 
-        // FOOTER
-        JPanel panelInferior = new JPanel();
-        panelInferior.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        panelInferior.setBackground(colorAzulFranja);
-        panelInferior.setPreferredSize(new Dimension(0, 60));
+        JPanel tarjeta = new JPanel();
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+        tarjeta.setBackground(EstiloUI.COLOR_TARJETA);
+        tarjeta.setBorder(EstiloUI.bordeTarjeta());
 
-        // Botón de retroceso
-        JButton btnAtras = new JButton("<");
-        btnAtras.setPreferredSize(new Dimension(60, 60));
-        btnAtras.setBackground(colorBotonAtras);
-        btnAtras.setForeground(Color.WHITE);
-        btnAtras.setFont(new Font("Arial", Font.BOLD, 24));
-        btnAtras.setFocusPainted(false);
-        btnAtras.setBorder(null);
-        btnAtras.addActionListener(e -> {
-            onBack.run();
-        });
-        panelInferior.add(btnAtras);
-        
-        add(panelInferior, BorderLayout.SOUTH);
+        JLabel lblTitulo = new JLabel("Gestionar usuarios");
+        lblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
+        lblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        // CENTRO
-        JPanel panelCentral = new JPanel(new GridBagLayout());
-        panelCentral.setBackground(Color.WHITE);
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        JLabel lblSubtitulo = new JLabel("Administra el personal del negocio");
+        lblSubtitulo.setFont(EstiloUI.FUENTE_SUBTITULO);
+        lblSubtitulo.setForeground(EstiloUI.COLOR_MUTED);
+        lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        // Título "Gestionar Usuarios"
-        JLabel lblTitulo = new JLabel("Gestionar Usuarios");
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 46));
-        lblTitulo.setForeground(colorAzulOscuroTitulo);
-        
-        gbc.gridy = 0; 
-        gbc.insets = new Insets(0, 0, 40, 0); 
-        panelCentral.add(lblTitulo, gbc);
+        tarjeta.add(lblTitulo);
+        tarjeta.add(Box.createVerticalStrut(8));
+        tarjeta.add(lblSubtitulo);
+        tarjeta.add(Box.createVerticalStrut(28));
 
-        // Recuadro Beige de las Opciones
-        JPanel panelOpciones = new JPanel();
-        panelOpciones.setLayout(null);
-        panelOpciones.setBackground(colorFondoBeige);
-        panelOpciones.setPreferredSize(new Dimension(640, 320)); 
+        JPanel grid = new JPanel(new GridLayout(1, 3, 18, 0));
+        grid.setBackground(EstiloUI.COLOR_TARJETA);
+        grid.add(crearTarjetaOpcion(
+                "Agregar usuario",
+                "Da de alta un nuevo cajero o dueno.",
+                EstiloUI.COLOR_ACCION,
+                () -> onOpcion.accept("AGREGAR")
+        ));
+        grid.add(crearTarjetaOpcion(
+                "Editar usuario",
+                "Actualiza los datos de un usuario existente.",
+                EstiloUI.COLOR_SECUNDARIO,
+                () -> onOpcion.accept("EDITAR")
+        ));
+        grid.add(crearTarjetaOpcion(
+                "Eliminar usuario",
+                "Da de baja un usuario del sistema.",
+                EstiloUI.COLOR_DANGER,
+                () -> onOpcion.accept("ELIMINAR")
+        ));
 
-        // Configuración de fuente general para los botones
-        Font fuenteBotones = new Font("Arial", Font.PLAIN, 18);
+        tarjeta.add(grid);
+        fondo.add(tarjeta, BorderLayout.CENTER);
+        return fondo;
+    }
 
-        // Botón: Agregar Usuario
-        JButton btnAgregar = new JButton("Agregar Usuario");
-        btnAgregar.setBackground(colorBotonAccion);
-        btnAgregar.setForeground(Color.WHITE);
-        btnAgregar.setFont(fuenteBotones);
-        btnAgregar.setFocusPainted(false);
-        btnAgregar.setBounds(60, 60, 240, 80); // (x, y, ancho, alto)
-        btnAgregar.addActionListener(e -> {
-            onOpcion.accept("AGREGAR");
-        });
-        panelOpciones.add(btnAgregar);
+    private JPanel crearTarjetaOpcion(String titulo, String descripcion, Color colorBoton, Runnable accion) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(249, 250, 248));
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true),
+                new EmptyBorder(22, 20, 22, 20)
+        ));
 
-        // Botón: Eliminar Usuario
-        JButton btnEliminar = new JButton("Eliminar Usuario");
-        btnEliminar.setBackground(colorBotonAccion);
-        btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.setFont(fuenteBotones);
-        btnEliminar.setFocusPainted(false);
-        btnEliminar.setBounds(340, 60, 240, 80);
-        btnEliminar.addActionListener(e -> {
-            onOpcion.accept("ELIMINAR");
-        });
-        panelOpciones.add(btnEliminar);
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22));
+        lblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        // Botón: Editar Usuario
-        JButton btnEditar = new JButton("Editar Usuario");
-        btnEditar.setBackground(colorBotonAccion);
-        btnEditar.setForeground(Color.WHITE);
-        btnEditar.setFont(fuenteBotones);
-        btnEditar.setFocusPainted(false);
-        btnEditar.setBounds(200, 180, 240, 80);
-        btnEditar.addActionListener(e -> {
-            onOpcion.accept("EDITAR");
-        });
-        panelOpciones.add(btnEditar);
+        JLabel lblDescripcion = new JLabel("<html><div style='width:220px'>" + descripcion + "</div></html>");
+        lblDescripcion.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 15));
+        lblDescripcion.setForeground(EstiloUI.COLOR_MUTED);
+        lblDescripcion.setAlignmentX(LEFT_ALIGNMENT);
 
-        // Añadir recuadro beige al panel central principal
-        gbc.gridy = 1; 
-        gbc.insets = new Insets(0, 0, 0, 0); 
-        panelCentral.add(panelOpciones, gbc);
+        JButton boton = new JButton("Abrir");
+        boton.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
+        boton.setForeground(Color.WHITE);
+        boton.setBackground(colorBoton);
+        boton.setOpaque(true);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setPreferredSize(new Dimension(140, 42));
+        boton.setMaximumSize(new Dimension(140, 42));
+        boton.setAlignmentX(LEFT_ALIGNMENT);
+        boton.addActionListener(e -> accion.run());
 
-        // Añadir la sección central a la ventana principal
-        add(panelCentral, BorderLayout.CENTER);
+        panel.add(lblTitulo);
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(lblDescripcion);
+        panel.add(Box.createVerticalGlue());
+        panel.add(Box.createVerticalStrut(18));
+        panel.add(boton);
+        return panel;
     }
 
     public static void main(String[] args) {

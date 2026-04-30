@@ -18,9 +18,9 @@ public class ButtonEditor extends javax.swing.DefaultCellEditor {
         super(checkBox);
         button = new javax.swing.JButton();
         button.setOpaque(true);
-        button.setBackground(new java.awt.Color(230, 160, 60));
+        button.setBackground(EstiloUI.COLOR_SECUNDARIO);
         button.setForeground(java.awt.Color.WHITE);
-        button.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        button.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
 

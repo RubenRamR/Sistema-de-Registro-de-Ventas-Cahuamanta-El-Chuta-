@@ -10,11 +10,12 @@ package utils;
  */
 public class ButtonRenderer extends javax.swing.JButton implements javax.swing.table.TableCellRenderer {
 
+
     public ButtonRenderer() {
         setOpaque(true);
-        setBackground(new java.awt.Color(230, 160, 60));
+        setBackground(EstiloUI.COLOR_SECUNDARIO);
         setForeground(java.awt.Color.WHITE);
-        setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        setFont(EstiloUI.FUENTE_TABLA_HEADER);
         setFocusPainted(false);
         setBorderPainted(false);
     }

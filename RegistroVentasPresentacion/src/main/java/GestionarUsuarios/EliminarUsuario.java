@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import utils.EstiloUI;
 
 /**
  *
@@ -29,11 +30,11 @@ import javax.swing.border.LineBorder;
  */
 public class EliminarUsuario extends JFrame {
 
-    private final Color COLOR_HEADER_FOOTER = new Color(65, 114, 159);
-    private final Color COLOR_OSCURO = new Color(11, 19, 84);
-    private final Color COLOR_BEIGE = new Color(248, 246, 240);
-    private final Color COLOR_BORDE = new Color(220, 220, 215);
-    private final Color COLOR_ROJO = new Color(190, 50, 50);
+    private final Color COLOR_HEADER_FOOTER = EstiloUI.COLOR_BARRA;
+    private final Color COLOR_OSCURO = EstiloUI.COLOR_TEXTO;
+    private final Color COLOR_BEIGE = EstiloUI.COLOR_TARJETA_BEIGE;
+    private final Color COLOR_BORDE = EstiloUI.COLOR_BORDE;
+    private final Color COLOR_ROJO = EstiloUI.COLOR_DANGER;
 
     private final UsuarioDTO usuario;
 
@@ -50,19 +51,16 @@ public class EliminarUsuario extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(COLOR_HEADER_FOOTER);
-        headerPanel.setPreferredSize(new Dimension(800, 50));
-        add(headerPanel, BorderLayout.NORTH);
+        add(EstiloUI.crearBarraSuperior("Eliminar usuario"), BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(EstiloUI.COLOR_FONDO);
         GridBagConstraints gbcMain = new GridBagConstraints();
         gbcMain.gridx = 0;
         gbcMain.anchor = GridBagConstraints.CENTER;
 
-        JLabel lblTitulo = new JLabel("Eliminar Usuario");
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 42));
+        JLabel lblTitulo = new JLabel("Eliminar usuario");
+        lblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(COLOR_OSCURO);
 
         gbcMain.gridy = 0;
@@ -77,23 +75,7 @@ public class EliminarUsuario extends JFrame {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        JPanel footerPanel = new JPanel();
-        footerPanel.setBackground(COLOR_HEADER_FOOTER);
-        footerPanel.setPreferredSize(new Dimension(800, 60));
-        footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("SansSerif", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(COLOR_OSCURO);
-        btnRegresar.setPreferredSize(new Dimension(60, 60));
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setOpaque(true);
-        btnRegresar.addActionListener(e -> onBack.run());
-        footerPanel.add(btnRegresar);
-
-        add(footerPanel, BorderLayout.SOUTH);
+        add(EstiloUI.crearBarraInferior(EstiloUI.crearBotonRegresar(onBack)), BorderLayout.SOUTH);
     }
 
     private JPanel crearTarjetaInformacion(UsuarioOperacion onEliminar) {
@@ -109,35 +91,35 @@ public class EliminarUsuario extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel lblNombreLabel = new JLabel("Nombre de Usuario:");
-        lblNombreLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblNombreLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         panel.add(lblNombreLabel, gbc);
 
         JLabel lblNombreValor = new JLabel(usuario.getNombre());
-        lblNombreValor.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        lblNombreValor.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         lblNombreValor.setForeground(Color.DARK_GRAY);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(lblNombreValor, gbc);
 
         JLabel lblRolLabel = new JLabel("Rol:");
-        lblRolLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        lblRolLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
         panel.add(lblRolLabel, gbc);
 
         JLabel lblRolValor = new JLabel("ADMIN".equalsIgnoreCase(usuario.getRol()) ? "Dueno" : "Cajero");
-        lblRolValor.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        lblRolValor.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         lblRolValor.setForeground(Color.DARK_GRAY);
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(lblRolValor, gbc);
 
         JButton btnEliminar = new JButton("Eliminar");
-        btnEliminar.setFont(new Font("SansSerif", Font.BOLD, 16));
+        btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setBackground(COLOR_ROJO);
         btnEliminar.setFocusPainted(false);

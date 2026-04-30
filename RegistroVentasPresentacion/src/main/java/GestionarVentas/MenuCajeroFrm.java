@@ -4,6 +4,8 @@
  */
 package GestionarVentas;
 
+import utils.EstiloUI;
+
 /**
  *
  * @author rramirez
@@ -12,7 +14,7 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
 
     private Runnable onGestionarVentas;
     private Runnable onBack;
-    
+
     /**
      * Creates new form MenuFrm
      */
@@ -23,9 +25,35 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
         initComponents();
         setExtendedState(MenuCajeroFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        
+        aplicarEstilo();
+
         this.onGestionarVentas = onGestionarVentas;
         this.onBack = onBack;
+    }
+
+    private void aplicarEstilo() {
+        getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+
+        BtnBack.setText("Regresar");
+        BtnBack.setFont(EstiloUI.FUENTE_BOTON);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setForeground(java.awt.Color.WHITE);
+        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
+        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
+        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+
+        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 44));
+        LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+
+        BtnGestionarVentas.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 24));
+        BtnGestionarVentas.setBackground(EstiloUI.COLOR_ACCION);
+        BtnGestionarVentas.setForeground(java.awt.Color.WHITE);
+        BtnGestionarVentas.setFocusPainted(false);
+        BtnGestionarVentas.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 40, 14, 40));
+        BtnGestionarVentas.setPreferredSize(new java.awt.Dimension(360, 96));
     }
 
     /**
