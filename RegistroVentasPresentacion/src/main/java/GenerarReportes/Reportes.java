@@ -60,6 +60,7 @@ public class Reportes extends JFrame {
     private final JLabel lblCantidadValor = new JLabel("0");
     private final JLabel lblTotalValor = new JLabel("$0.00");
     private final JLabel lblPromedioValor = new JLabel("$0.00");
+    private JButton btnPdf;
 
     public Reportes(
             Runnable onBack,
@@ -253,13 +254,15 @@ public class Reportes extends JFrame {
         panel.setBackground(COLOR_TARJETA);
         panel.setAlignmentX(LEFT_ALIGNMENT);
 
-        JButton btnPdf = crearBoton("Descargar PDF", COLOR_DANGER);
+        btnPdf = crearBoton("Descargar PDF", COLOR_DANGER);
         btnPdf.setPreferredSize(new Dimension(190, 46));
         btnPdf.addActionListener(e -> exportarPdf());
+        
+        btnPdf.setEnabled(false); 
+        
         panel.add(btnPdf);
         return panel;
     }
-
     private JPanel crearBarraInferior(Runnable onBack) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
         panel.setBackground(COLOR_BARRA);
@@ -316,7 +319,7 @@ public class Reportes extends JFrame {
         }
     }
 
-    private void renderizarReporte(ReporteVentasDTO reporte) {
+private void renderizarReporte(ReporteVentasDTO reporte) {
         modeloTabla.setRowCount(0);
 
         LocalDate inicio = reporte.getFechaInicio();
@@ -326,8 +329,16 @@ public class Reportes extends JFrame {
         lblTotalValor.setText("$" + formatearMonto(reporte.getMontoTotal()));
         lblPromedioValor.setText("$" + formatearMonto(reporte.getPromedioVenta()));
 
-        if (reporte.getVentas() == null) {
+        // --- LÓGICA DEL BOTÓN ---
+        if (reporte.getVentas() == null || reporte.getVentas().isEmpty()) {
+            if (btnPdf != null) {
+                btnPdf.setEnabled(false);
+            }
             return;
+        }
+
+        if (btnPdf != null) {
+            btnPdf.setEnabled(true);
         }
 
         for (VentaDTO venta : reporte.getVentas()) {

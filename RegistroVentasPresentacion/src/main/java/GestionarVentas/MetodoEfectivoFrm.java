@@ -91,58 +91,59 @@ public class MetodoEfectivoFrm extends JFrame {
         return panel;
     }
 
-    private JPanel crearContenido() {
-        JPanel fondo = new JPanel(new GridBagLayout());
-        fondo.setBackground(COLOR_FONDO);
+        private JPanel crearContenido() {
+            JPanel fondo = new JPanel(new GridBagLayout());
+            fondo.setBackground(COLOR_FONDO);
 
-        JPanel tarjeta = new JPanel();
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
-        tarjeta.setBackground(COLOR_TARJETA);
-        tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
-                BorderFactory.createEmptyBorder(36, 42, 36, 42)
-        ));
-        tarjeta.setPreferredSize(new Dimension(700, 540));
+            JPanel tarjeta = new JPanel();
+            tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+            tarjeta.setBackground(COLOR_TARJETA);
+            tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
+                    BorderFactory.createEmptyBorder(36, 42, 36, 42)
+            ));
 
-        JLabel lblTitulo = new JLabel("Efectivo");
-        lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
-        lblTitulo.setFont(FUENTE_TITULO);
-        lblTitulo.setForeground(COLOR_TEXTO);
+            JLabel lblTitulo = new JLabel("Efectivo");
+            lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
+            lblTitulo.setFont(FUENTE_TITULO);
+            lblTitulo.setForeground(COLOR_TEXTO);
 
-        JLabel lblSubtitulo = new JLabel("Confirma el cobro antes de registrar la venta");
-        lblSubtitulo.setAlignmentX(CENTER_ALIGNMENT);
-        lblSubtitulo.setFont(FUENTE_SUBTITULO);
-        lblSubtitulo.setForeground(new Color(97, 109, 122));
+            JLabel lblSubtitulo = new JLabel("Confirma el cobro antes de registrar la venta");
+            lblSubtitulo.setAlignmentX(CENTER_ALIGNMENT);
+            lblSubtitulo.setFont(FUENTE_SUBTITULO);
+            lblSubtitulo.setForeground(new Color(97, 109, 122));
 
-        tarjeta.add(lblTitulo);
-        tarjeta.add(Box.createVerticalStrut(8));
-        tarjeta.add(lblSubtitulo);
-        tarjeta.add(Box.createVerticalStrut(28));
-        tarjeta.add(crearFilaResumen("Total a cobrar", "$" + formatearMonto(total), false));
-        tarjeta.add(Box.createVerticalStrut(12));
-        tarjeta.add(crearPanelPago());
-        tarjeta.add(Box.createVerticalStrut(12));
-        tarjeta.add(crearFilaResumen("Cambio", "$0.00", true));
-        tarjeta.add(Box.createVerticalStrut(12));
+            tarjeta.add(lblTitulo);
+            tarjeta.add(Box.createVerticalStrut(8));
+            tarjeta.add(lblSubtitulo);
+            tarjeta.add(Box.createVerticalStrut(28));
+            tarjeta.add(crearFilaResumen("Total a cobrar", "$" + formatearMonto(total), false));
+            tarjeta.add(Box.createVerticalStrut(12));
+            tarjeta.add(crearPanelPago());
+            tarjeta.add(Box.createVerticalStrut(12));
+            tarjeta.add(crearFilaResumen("Cambio", "$0.00", true));
+            tarjeta.add(Box.createVerticalStrut(12));
 
-        lblEstado = new JLabel("Ingresa el monto recibido para continuar");
-        lblEstado.setAlignmentX(CENTER_ALIGNMENT);
-        lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        tarjeta.add(lblEstado);
+            lblEstado = new JLabel("Ingresa el monto recibido para continuar");
+            lblEstado.setAlignmentX(CENTER_ALIGNMENT);
+            lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            tarjeta.add(lblEstado);
 
-        tarjeta.add(Box.createVerticalStrut(12));
-        lblPagoSugerido = new JLabel("Monto minimo sugerido: $" + formatearMonto(total));
-        lblPagoSugerido.setAlignmentX(CENTER_ALIGNMENT);
-        lblPagoSugerido.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        lblPagoSugerido.setForeground(new Color(101, 115, 126));
-        tarjeta.add(lblPagoSugerido);
+            tarjeta.add(Box.createVerticalStrut(12));
+            lblPagoSugerido = new JLabel("Monto minimo sugerido: $" + formatearMonto(total));
+            lblPagoSugerido.setAlignmentX(CENTER_ALIGNMENT);
+            lblPagoSugerido.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+            lblPagoSugerido.setForeground(new Color(101, 115, 126));
+            tarjeta.add(lblPagoSugerido);
 
-        tarjeta.add(Box.createVerticalStrut(24));
-        tarjeta.add(crearPanelAcciones());
+            tarjeta.add(Box.createVerticalStrut(24));
+            tarjeta.add(crearPanelAcciones());
 
-        fondo.add(tarjeta);
-        return fondo;
-    }
+            tarjeta.setPreferredSize(new Dimension(700, tarjeta.getPreferredSize().height));
+
+            fondo.add(tarjeta);
+            return fondo;
+        }
 
     private JPanel crearFilaResumen(String etiqueta, String valorInicial, boolean filaCambio) {
         JPanel panel = new JPanel(new BorderLayout(18, 0));
@@ -164,7 +165,8 @@ public class MetodoEfectivoFrm extends JFrame {
         panel.add(lblEtiqueta, BorderLayout.WEST);
         panel.add(lblValor, BorderLayout.EAST);
 
-        if (filaCambio) {
+        if (filaCambio)
+        {
             lblCambioMonto = lblValor;
         }
 
@@ -257,7 +259,8 @@ public class MetodoEfectivoFrm extends JFrame {
 
     private void actualizarEstadoPago() {
         BigDecimal pago = obtenerPagoIngresado();
-        if (pago == null) {
+        if (pago == null)
+        {
             lblCambioMonto.setText("$0.00");
             lblEstado.setText("Ingresa un monto valido para continuar");
             lblEstado.setForeground(COLOR_PELIGRO);
@@ -266,7 +269,8 @@ public class MetodoEfectivoFrm extends JFrame {
         }
 
         BigDecimal cambio = pago.subtract(total).setScale(2, RoundingMode.HALF_UP);
-        if (cambio.signum() < 0) {
+        if (cambio.signum() < 0)
+        {
             BigDecimal faltante = cambio.abs();
             lblCambioMonto.setText("$0.00");
             lblEstado.setText("Faltan $" + formatearMonto(faltante) + " para completar la venta");
@@ -283,25 +287,31 @@ public class MetodoEfectivoFrm extends JFrame {
 
     private void confirmarPago() {
         BigDecimal pago = obtenerPagoIngresado();
-        if (pago == null) {
+        if (pago == null)
+        {
             JOptionPane.showMessageDialog(this, "Ingresa un monto valido.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        try {
+        try
+        {
             onAceptar.ejecutar(pago);
-        } catch (NegocioException e) {
+        } catch (NegocioException e)
+        {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private BigDecimal obtenerPagoIngresado() {
         String texto = txtPago.getText();
-        if (texto == null || texto.isBlank()) {
+        if (texto == null || texto.isBlank())
+        {
             return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         }
-        try {
+        try
+        {
             return new BigDecimal(texto.replace(',', '.')).setScale(2, RoundingMode.HALF_UP);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e)
+        {
             return null;
         }
     }
@@ -322,7 +332,8 @@ public class MetodoEfectivoFrm extends JFrame {
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
             String actual = fb.getDocument().getText(0, fb.getDocument().getLength());
             String siguiente = new StringBuilder(actual).replace(offset, offset + length, text == null ? "" : text).toString();
-            if (siguiente.isBlank() || siguiente.matches("\\d{0,7}([\\.,]\\d{0,2})?")) {
+            if (siguiente.isBlank() || siguiente.matches("\\d{0,7}([\\.,]\\d{0,2})?"))
+            {
                 super.replace(fb, offset, length, text, attrs);
             }
         }
