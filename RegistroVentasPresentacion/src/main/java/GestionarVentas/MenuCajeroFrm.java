@@ -25,35 +25,100 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
         initComponents();
         setExtendedState(MenuCajeroFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-        aplicarEstilo();
+        setTitle("El Chuta — Caja");
 
         this.onGestionarVentas = onGestionarVentas;
         this.onBack = onBack;
+
+        aplicarEstilo();
     }
 
     private void aplicarEstilo() {
         getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+
+        // Reemplazar el header NetBeans por el header con wordmark
+        PnlHeader.removeAll();
+        PnlHeader.setLayout(new java.awt.BorderLayout());
         PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
-        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
-        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setPreferredSize(new java.awt.Dimension(0, 78));
+        PnlHeader.add(EstiloUI.crearHeader("Punto de venta", "Sesión: Cajero"),
+                java.awt.BorderLayout.CENTER);
 
-        BtnBack.setText("Regresar");
+        // Footer con botón regresar usando el helper estandar
+        PnlFooter.removeAll();
+        PnlFooter.setLayout(new java.awt.BorderLayout());
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setText("←  Regresar");
         BtnBack.setFont(EstiloUI.FUENTE_BOTON);
-        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA);
         BtnBack.setForeground(java.awt.Color.WHITE);
-        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
-        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
-        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+        BtnBack.setOpaque(true);
+        BtnBack.setBorderPainted(false);
+        BtnBack.setFocusPainted(false);
+        BtnBack.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        BtnBack.setPreferredSize(new java.awt.Dimension(160, 42));
+        javax.swing.JPanel wrap = new javax.swing.JPanel(
+                new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 14, 12));
+        wrap.setOpaque(false);
+        wrap.add(BtnBack);
+        PnlFooter.add(wrap, java.awt.BorderLayout.WEST);
+        PnlFooter.setBorder(javax.swing.BorderFactory.createMatteBorder(
+                2, 0, 0, 0, EstiloUI.COLOR_BARRA_ACENTO));
+        PnlFooter.setPreferredSize(new java.awt.Dimension(0, 64));
 
-        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 44));
+        // Contenido editorial: kicker + título serif + subtítulo + CTA único
+        PnlContenido.removeAll();
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlContenido.setLayout(new java.awt.GridBagLayout());
+
+        javax.swing.JPanel tarjeta = new javax.swing.JPanel();
+        tarjeta.setLayout(new javax.swing.BoxLayout(tarjeta, javax.swing.BoxLayout.Y_AXIS));
+        tarjeta.setBackground(EstiloUI.COLOR_TARJETA);
+        tarjeta.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, EstiloUI.COLOR_ACCION),
+                javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createMatteBorder(1, 0, 1, 1, EstiloUI.COLOR_BORDE),
+                        new javax.swing.border.EmptyBorder(36, 40, 36, 40))));
+        tarjeta.setPreferredSize(new java.awt.Dimension(640, 360));
+        tarjeta.setMaximumSize(new java.awt.Dimension(640, 360));
+
+        javax.swing.JLabel kicker = EstiloUI.crearKicker("Turno abierto");
+        kicker.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        LblTitulo.setText("Buen turno");
+        LblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LblTitulo.setFont(new java.awt.Font(
+                EstiloUI.FUENTE_TITULO_PANTALLA.getFamily(),
+                java.awt.Font.BOLD, 44));
         LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+        LblTitulo.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 
-        BtnGestionarVentas.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 24));
+        javax.swing.JLabel sub = EstiloUI.crearSubtitulo(
+                "Inicia una nueva venta cuando el cliente esté listo para ordenar.");
+        sub.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        BtnGestionarVentas.setText("Abrir nueva venta  →");
+        BtnGestionarVentas.setFont(EstiloUI.FUENTE_BOTON_GRANDE);
         BtnGestionarVentas.setBackground(EstiloUI.COLOR_ACCION);
         BtnGestionarVentas.setForeground(java.awt.Color.WHITE);
+        BtnGestionarVentas.setOpaque(true);
         BtnGestionarVentas.setFocusPainted(false);
-        BtnGestionarVentas.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 40, 14, 40));
-        BtnGestionarVentas.setPreferredSize(new java.awt.Dimension(360, 96));
+        BtnGestionarVentas.setBorderPainted(false);
+        BtnGestionarVentas.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 32, 16, 32));
+        BtnGestionarVentas.setPreferredSize(new java.awt.Dimension(280, 56));
+        BtnGestionarVentas.setMaximumSize(new java.awt.Dimension(280, 56));
+        BtnGestionarVentas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        BtnGestionarVentas.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        tarjeta.add(kicker);
+        tarjeta.add(javax.swing.Box.createVerticalStrut(10));
+        tarjeta.add(LblTitulo);
+        tarjeta.add(javax.swing.Box.createVerticalStrut(10));
+        tarjeta.add(sub);
+        tarjeta.add(javax.swing.Box.createVerticalStrut(28));
+        tarjeta.add(BtnGestionarVentas);
+
+        PnlContenido.add(tarjeta);
     }
 
     /**

@@ -36,39 +36,74 @@ public class GestionarVentaFrm extends javax.swing.JFrame {
 
     private void aplicarEstilo() {
         getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+        setTitle("El Chuta — Ventas");
+
+        // Header con wordmark
+        PnlHeader.removeAll();
+        PnlHeader.setLayout(new java.awt.BorderLayout());
         PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
-        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
-        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setPreferredSize(new java.awt.Dimension(0, 78));
+        PnlHeader.add(EstiloUI.crearHeader("Ventas del día", null), java.awt.BorderLayout.CENTER);
 
-        BtnBack.setText("Regresar");
+        // Footer
+        PnlFooter.removeAll();
+        PnlFooter.setLayout(new java.awt.BorderLayout());
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        PnlFooter.setBorder(javax.swing.BorderFactory.createMatteBorder(
+                2, 0, 0, 0, EstiloUI.COLOR_BARRA_ACENTO));
+        PnlFooter.setPreferredSize(new java.awt.Dimension(0, 64));
+
+        BtnBack.setText("←  Regresar");
         BtnBack.setFont(EstiloUI.FUENTE_BOTON);
-        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA);
         BtnBack.setForeground(java.awt.Color.WHITE);
-        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
-        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
-        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+        BtnBack.setOpaque(true);
+        BtnBack.setBorderPainted(false);
+        BtnBack.setFocusPainted(false);
+        BtnBack.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        BtnBack.setPreferredSize(new java.awt.Dimension(160, 42));
+        javax.swing.JPanel wrap = new javax.swing.JPanel(
+                new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 14, 12));
+        wrap.setOpaque(false);
+        wrap.add(BtnBack);
+        PnlFooter.add(wrap, java.awt.BorderLayout.WEST);
 
-        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 40));
+        // Título y botones
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        LblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
 
-        BtnAgregar.setText("Agregar venta");
-        BtnAgregar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
+        BtnAgregar.setText("Abrir nueva venta  →");
+        BtnAgregar.setFont(EstiloUI.FUENTE_BOTON_GRANDE);
         BtnAgregar.setBackground(EstiloUI.COLOR_ACCION);
         BtnAgregar.setForeground(java.awt.Color.WHITE);
-        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 24, 12, 24));
-        BtnAgregar.setPreferredSize(new java.awt.Dimension(280, 56));
+        BtnAgregar.setOpaque(true);
+        BtnAgregar.setBorderPainted(false);
+        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 28, 14, 28));
+        BtnAgregar.setPreferredSize(new java.awt.Dimension(280, 52));
         BtnAgregar.setFocusPainted(false);
     }
 
     public void configurarTabla() {
-        SPVentas.getViewport().setBackground(java.awt.Color.WHITE);
+        SPVentas.getViewport().setBackground(EstiloUI.COLOR_TARJETA);
+        SPVentas.setBorder(javax.swing.BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true));
+
+        TblVentas.setRowHeight(38);
+        TblVentas.setFont(EstiloUI.FUENTE_TABLA);
+        TblVentas.setForeground(EstiloUI.COLOR_TEXTO);
+        TblVentas.setShowVerticalLines(false);
+        TblVentas.setGridColor(EstiloUI.COLOR_BORDE);
+        TblVentas.setSelectionBackground(EstiloUI.COLOR_AUXILIAR);
+        TblVentas.setSelectionForeground(EstiloUI.COLOR_TEXTO);
 
         javax.swing.table.JTableHeader header = TblVentas.getTableHeader();
-        header.setBackground(java.awt.Color.decode("#D2D2D2"));
-        header.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 16));
+        header.setBackground(EstiloUI.COLOR_BARRA);
+        header.setForeground(java.awt.Color.WHITE);
+        header.setFont(EstiloUI.FUENTE_TABLA_HEADER);
+        header.setPreferredSize(new java.awt.Dimension(0, 38));
         ((javax.swing.table.DefaultTableCellRenderer) header.getDefaultRenderer())
                 .setHorizontalAlignment(javax.swing.JLabel.CENTER);
-        header.setOpaque(false);
+        header.setOpaque(true);
 
         javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);

@@ -39,15 +39,15 @@ import javax.swing.table.TableCellRenderer;
 public class GestionarVenta extends JFrame {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final Color COLOR_BARRA = new Color(18, 63, 94);
-    private static final Color COLOR_FONDO = new Color(244, 247, 243);
-    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
-    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
-    private static final Color COLOR_MUTED = new Color(92, 105, 117);
-    private static final Color COLOR_BORDE = new Color(214, 222, 230);
-    private static final Color COLOR_AGREGAR = new Color(28, 143, 124);
-    private static final Color COLOR_DETALLE = new Color(214, 124, 37);
-    private static final Color COLOR_BLOQUE = new Color(223, 235, 229);
+    private static final Color COLOR_BARRA    = utils.EstiloUI.COLOR_BARRA;
+    private static final Color COLOR_FONDO    = utils.EstiloUI.COLOR_FONDO;
+    private static final Color COLOR_TARJETA  = utils.EstiloUI.COLOR_TARJETA;
+    private static final Color COLOR_TEXTO    = utils.EstiloUI.COLOR_TEXTO;
+    private static final Color COLOR_MUTED    = utils.EstiloUI.COLOR_MUTED;
+    private static final Color COLOR_BORDE    = utils.EstiloUI.COLOR_BORDE;
+    private static final Color COLOR_AGREGAR  = utils.EstiloUI.COLOR_ACCION;
+    private static final Color COLOR_DETALLE  = utils.EstiloUI.COLOR_SECUNDARIO;
+    private static final Color COLOR_BLOQUE   = utils.EstiloUI.COLOR_AUXILIAR;
 
     private final Runnable onAgregarVenta;
     private final Runnable onBack;
@@ -100,16 +100,9 @@ public class GestionarVenta extends JFrame {
     }
 
     private JPanel crearBarraSuperior() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 74));
-
-        JLabel lbl = new JLabel(mostrarBotonAgregar ? "Ventas activas" : "Consulta de ventas");
-        lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
-        panel.add(lbl, BorderLayout.WEST);
-        return panel;
+        return utils.EstiloUI.crearHeader(
+                mostrarBotonAgregar ? "Ventas activas" : "Consulta de ventas",
+                null);
     }
 
     private JPanel crearContenido(List<VentaDTO> ventasIniciales) {
@@ -125,17 +118,24 @@ public class GestionarVenta extends JFrame {
                 new EmptyBorder(30, 32, 30, 32)
         ));
 
+        JLabel lblKicker = utils.EstiloUI.crearKicker(
+                mostrarBotonAgregar ? "Operación del día" : "Historial");
+        lblKicker.setAlignmentX(LEFT_ALIGNMENT);
+
         JLabel lblTitulo = new JLabel(tituloPantalla);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setFont(utils.EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(COLOR_TEXTO);
         lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
         JLabel lblSubtitulo = new JLabel(mostrarBotonAgregar
-                ? "Consulta ventas del dia o registra una nueva desde el mismo flujo"
-                : "Revisa el historial del dia seleccionado y abre el detalle cuando lo necesites");
-        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+                ? "Consulta las ventas del día o registra una nueva desde el mismo flujo."
+                : "Revisa el historial del día seleccionado y abre el detalle cuando lo necesites.");
+        lblSubtitulo.setFont(utils.EstiloUI.FUENTE_SUBTITULO);
         lblSubtitulo.setForeground(COLOR_MUTED);
         lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
+
+        tarjeta.add(lblKicker);
+        tarjeta.add(Box.createVerticalStrut(8));
 
         tarjeta.add(lblTitulo);
         tarjeta.add(Box.createVerticalStrut(6));
@@ -245,8 +245,8 @@ public class GestionarVenta extends JFrame {
         tablaVentas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         tablaVentas.setForeground(COLOR_TEXTO);
         tablaVentas.setShowHorizontalLines(true);
-        tablaVentas.setGridColor(new Color(234, 238, 242));
-        tablaVentas.setSelectionBackground(new Color(236, 243, 248));
+        tablaVentas.setGridColor(utils.EstiloUI.COLOR_BORDE);
+        tablaVentas.setSelectionBackground(utils.EstiloUI.COLOR_AUXILIAR);
         tablaVentas.setSelectionForeground(COLOR_TEXTO);
         tablaVentas.getTableHeader().setBackground(COLOR_BARRA);
         tablaVentas.getTableHeader().setForeground(Color.WHITE);
@@ -263,27 +263,14 @@ public class GestionarVenta extends JFrame {
     }
 
     private JPanel crearBarraInferior() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 72));
-
-        JButton btn = crearBoton("Regresar", new Color(12, 38, 57));
-        btn.setPreferredSize(new Dimension(150, 46));
+        JButton btn = utils.EstiloUI.crearBoton("←  Regresar", utils.EstiloUI.COLOR_BARRA);
+        btn.setPreferredSize(new Dimension(160, 42));
         btn.addActionListener(e -> onBack.run());
-        panel.add(btn);
-        return panel;
+        return utils.EstiloUI.crearBarraInferior(btn);
     }
 
     private JButton crearBoton(String texto, Color color) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(color);
-        boton.setOpaque(true);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
+        return utils.EstiloUI.crearBoton(texto, color);
     }
 
     private void cargarVentasFiltradas(LocalDate fecha, boolean mostrarMensajeSinDatos) {

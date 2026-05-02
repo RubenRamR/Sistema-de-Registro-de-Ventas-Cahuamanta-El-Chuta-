@@ -48,84 +48,95 @@ public class PantallaGestionarUsuarios extends JFrame {
         tarjeta.setBackground(EstiloUI.COLOR_TARJETA);
         tarjeta.setBorder(EstiloUI.bordeTarjeta());
 
+        JLabel lblKicker = EstiloUI.crearKicker("Personal del local");
+        lblKicker.setAlignmentX(LEFT_ALIGNMENT);
+
         JLabel lblTitulo = new JLabel("Gestionar usuarios");
         lblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
         lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        JLabel lblSubtitulo = new JLabel("Administra el personal del negocio");
+        JLabel lblSubtitulo = new JLabel("Administra el personal del negocio: cajeros y dueños.");
         lblSubtitulo.setFont(EstiloUI.FUENTE_SUBTITULO);
         lblSubtitulo.setForeground(EstiloUI.COLOR_MUTED);
         lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
 
+        tarjeta.add(lblKicker);
+        tarjeta.add(Box.createVerticalStrut(8));
         tarjeta.add(lblTitulo);
         tarjeta.add(Box.createVerticalStrut(8));
         tarjeta.add(lblSubtitulo);
         tarjeta.add(Box.createVerticalStrut(28));
 
-        JPanel grid = new JPanel(new GridLayout(1, 3, 18, 0));
+        JPanel grid = new JPanel(new GridLayout(1, 3, 22, 0));
         grid.setBackground(EstiloUI.COLOR_TARJETA);
         grid.add(crearTarjetaOpcion(
+                "01",
                 "Agregar usuario",
-                "Da de alta un nuevo cajero o dueno.",
+                "Da de alta un nuevo cajero o dueño.",
+                "Crear usuario",
                 EstiloUI.COLOR_ACCION,
-                () -> onOpcion.accept("AGREGAR")
-        ));
+                () -> onOpcion.accept("AGREGAR")));
         grid.add(crearTarjetaOpcion(
+                "02",
                 "Editar usuario",
                 "Actualiza los datos de un usuario existente.",
+                "Editar datos",
                 EstiloUI.COLOR_SECUNDARIO,
-                () -> onOpcion.accept("EDITAR")
-        ));
+                () -> onOpcion.accept("EDITAR")));
         grid.add(crearTarjetaOpcion(
+                "03",
                 "Eliminar usuario",
                 "Da de baja un usuario del sistema.",
+                "Dar de baja",
                 EstiloUI.COLOR_DANGER,
-                () -> onOpcion.accept("ELIMINAR")
-        ));
+                () -> onOpcion.accept("ELIMINAR")));
 
         tarjeta.add(grid);
         fondo.add(tarjeta, BorderLayout.CENTER);
         return fondo;
     }
 
-    private JPanel crearTarjetaOpcion(String titulo, String descripcion, Color colorBoton, Runnable accion) {
+    private JPanel crearTarjetaOpcion(String numero, String titulo, String descripcion,
+                                      String etiquetaBoton, Color colorBoton, Runnable accion) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(249, 250, 248));
+        panel.setBackground(EstiloUI.COLOR_TARJETA);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true),
-                new EmptyBorder(22, 20, 22, 20)
-        ));
+                BorderFactory.createMatteBorder(0, 4, 0, 0, colorBoton),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(1, 0, 1, 1, EstiloUI.COLOR_BORDE),
+                        new EmptyBorder(26, 24, 24, 24))));
+
+        JLabel lblNum = new JLabel(numero);
+        lblNum.setFont(new java.awt.Font(EstiloUI.FUENTE_PRECIO.getFamily(), java.awt.Font.BOLD, 32));
+        lblNum.setForeground(colorBoton);
+        lblNum.setAlignmentX(LEFT_ALIGNMENT);
 
         JLabel lblTitulo = new JLabel(titulo);
-        lblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22));
+        lblTitulo.setFont(new java.awt.Font(EstiloUI.FUENTE_SECCION.getFamily(), java.awt.Font.BOLD, 22));
         lblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
         lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        JLabel lblDescripcion = new JLabel("<html><div style='width:220px'>" + descripcion + "</div></html>");
-        lblDescripcion.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 15));
+        JLabel lblDescripcion = new JLabel(
+                "<html><div style='width:240px; line-height:140%;'>" + descripcion + "</div></html>");
+        lblDescripcion.setFont(EstiloUI.FUENTE_SUBTITULO);
         lblDescripcion.setForeground(EstiloUI.COLOR_MUTED);
         lblDescripcion.setAlignmentX(LEFT_ALIGNMENT);
 
-        JButton boton = new JButton("Abrir");
-        boton.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(colorBoton);
-        boton.setOpaque(true);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        boton.setPreferredSize(new Dimension(140, 42));
-        boton.setMaximumSize(new Dimension(140, 42));
+        JButton boton = EstiloUI.crearBoton(etiquetaBoton, colorBoton);
+        boton.setPreferredSize(new Dimension(180, 42));
+        boton.setMaximumSize(new Dimension(220, 42));
         boton.setAlignmentX(LEFT_ALIGNMENT);
         boton.addActionListener(e -> accion.run());
 
+        panel.add(lblNum);
+        panel.add(Box.createVerticalStrut(6));
         panel.add(lblTitulo);
-        panel.add(Box.createVerticalStrut(12));
+        panel.add(Box.createVerticalStrut(10));
         panel.add(lblDescripcion);
         panel.add(Box.createVerticalGlue());
-        panel.add(Box.createVerticalStrut(18));
+        panel.add(Box.createVerticalStrut(20));
         panel.add(boton);
         return panel;
     }

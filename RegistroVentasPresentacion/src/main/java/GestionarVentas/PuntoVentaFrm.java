@@ -20,6 +20,7 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
     public PuntoVentaFrm() {
         initComponents();
         setExtendedState(PuntoVentaFrm.MAXIMIZED_BOTH);
+        setTitle("El Chuta — Punto de venta");
         aplicarEstilo();
         configurarCategorias();
         configurarCatalogo();
@@ -28,20 +29,77 @@ public class PuntoVentaFrm extends javax.swing.JFrame {
     private void aplicarEstilo() {
         getContentPane().setBackground(EstiloUI.COLOR_FONDO);
         PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+
+        // Reemplazar el panel de resumen con una versión editorial:
+        // kicker + nombre en serif, separador, fila de cantidad + botón.
+        PnlResumen.removeAll();
+        PnlResumen.setLayout(new java.awt.BorderLayout());
         PnlResumen.setBackground(EstiloUI.COLOR_TARJETA);
         PnlResumen.setBorder(javax.swing.BorderFactory.createCompoundBorder(
                 javax.swing.BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE, 1, true),
-                javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)
-        ));
-        LblnombreProducto.setForeground(EstiloUI.COLOR_TEXTO);
-        LblCantidad.setForeground(EstiloUI.COLOR_TEXTO);
+                javax.swing.BorderFactory.createEmptyBorder(20, 22, 20, 22)));
 
+        javax.swing.JPanel cabecera = new javax.swing.JPanel();
+        cabecera.setOpaque(false);
+        cabecera.setLayout(new javax.swing.BoxLayout(cabecera, javax.swing.BoxLayout.Y_AXIS));
+
+        javax.swing.JLabel kicker = EstiloUI.crearKicker("Producto seleccionado");
+        kicker.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        LblnombreProducto.setFont(new java.awt.Font(
+                EstiloUI.FUENTE_SECCION.getFamily(), java.awt.Font.BOLD, 24));
+        LblnombreProducto.setForeground(EstiloUI.COLOR_TEXTO);
+        LblnombreProducto.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        cabecera.add(kicker);
+        cabecera.add(javax.swing.Box.createVerticalStrut(6));
+        cabecera.add(LblnombreProducto);
+
+        javax.swing.JPanel filaInferior = new javax.swing.JPanel(
+                new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 0));
+        filaInferior.setOpaque(false);
+
+        LblCantidad.setText("Cantidad");
+        LblCantidad.setFont(EstiloUI.FUENTE_ETIQUETA);
+        LblCantidad.setForeground(EstiloUI.COLOR_MUTED);
+
+        BoxCantidad.setFont(EstiloUI.FUENTE_CAMPO);
+        BoxCantidad.setPreferredSize(new java.awt.Dimension(80, 36));
+        BoxCantidad.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(EstiloUI.COLOR_BORDE_INPUT, 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(2, 6, 2, 4)));
+
+        BtnAgregar.setText("Agregar al ticket");
         BtnAgregar.setBackground(EstiloUI.COLOR_ACCION);
         BtnAgregar.setForeground(java.awt.Color.WHITE);
         BtnAgregar.setFont(EstiloUI.FUENTE_BOTON);
         BtnAgregar.setFocusPainted(false);
-        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 24, 10, 24));
-        BtnAgregar.setPreferredSize(new java.awt.Dimension(120, 44));
+        BtnAgregar.setBorderPainted(false);
+        BtnAgregar.setOpaque(true);
+        BtnAgregar.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 22, 10, 22));
+        BtnAgregar.setPreferredSize(new java.awt.Dimension(190, 42));
+        BtnAgregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        filaInferior.add(LblCantidad);
+        filaInferior.add(BoxCantidad);
+        filaInferior.add(javax.swing.Box.createHorizontalStrut(8));
+        filaInferior.add(BtnAgregar);
+
+        javax.swing.JPanel separador = new javax.swing.JPanel();
+        separador.setBackground(EstiloUI.COLOR_BORDE);
+        separador.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 1));
+        separador.setPreferredSize(new java.awt.Dimension(0, 1));
+
+        javax.swing.JPanel cuerpo = new javax.swing.JPanel();
+        cuerpo.setOpaque(false);
+        cuerpo.setLayout(new javax.swing.BoxLayout(cuerpo, javax.swing.BoxLayout.Y_AXIS));
+        cuerpo.add(cabecera);
+        cuerpo.add(javax.swing.Box.createVerticalStrut(14));
+        cuerpo.add(separador);
+        cuerpo.add(javax.swing.Box.createVerticalStrut(14));
+        cuerpo.add(filaInferior);
+
+        PnlResumen.add(cuerpo, java.awt.BorderLayout.NORTH);
     }
 
     public void configurarCategorias() {

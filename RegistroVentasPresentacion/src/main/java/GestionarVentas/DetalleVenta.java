@@ -28,13 +28,13 @@ import javax.swing.table.TableCellRenderer;
 
 public class DetalleVenta extends JFrame {
 
-    private final Color COLOR_BANNER = new Color(43, 90, 140);
-    private final Color COLOR_FONDO_APP = new Color(235, 240, 245); 
-    private final Color COLOR_TEXTO_OSCURO = new Color(50, 50, 50);
-    private final Color COLOR_BTN_ROJO = new Color(220, 53, 69);
-    
-    private final Font FUENTE_TITULOS = new Font("Segoe UI", Font.BOLD, 15);
-    private final Font FUENTE_NORMAL = new Font("Segoe UI", Font.PLAIN, 15);
+    private final Color COLOR_BANNER       = utils.EstiloUI.COLOR_BARRA;
+    private final Color COLOR_FONDO_APP    = utils.EstiloUI.COLOR_FONDO;
+    private final Color COLOR_TEXTO_OSCURO = utils.EstiloUI.COLOR_TEXTO;
+    private final Color COLOR_BTN_ROJO     = utils.EstiloUI.COLOR_DANGER;
+
+    private final Font FUENTE_TITULOS = utils.EstiloUI.FUENTE_KICKER;
+    private final Font FUENTE_NORMAL  = utils.EstiloUI.FUENTE_TABLA;
 
     // NUEVO: Constructor recibe el DTO
     public DetalleVenta(
@@ -48,38 +48,12 @@ public class DetalleVenta extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // ==========================================
-        // 1. BANNERS
-        // ==========================================
-        JPanel panelNorte = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
-        panelNorte.setBackground(COLOR_BANNER);
-        panelNorte.setPreferredSize(new Dimension(0, 60));
-        
-        JLabel lblTituloNorte = new JLabel("Consulta de Venta");
-        lblTituloNorte.setForeground(Color.WHITE);
-        lblTituloNorte.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        panelNorte.add(lblTituloNorte);
-        add(panelNorte, BorderLayout.NORTH);
+        add(utils.EstiloUI.crearHeader("Detalle de venta", null), BorderLayout.NORTH);
 
-        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        panelSur.setBackground(COLOR_BANNER);
-        panelSur.setPreferredSize(new Dimension(0, 60));
-
-        JButton btnRegresar = new JButton("<");
-        btnRegresar.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(new Color(25, 60, 100)); 
-        btnRegresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnRegresar.setOpaque(true);
-        btnRegresar.setContentAreaFilled(true);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setPreferredSize(new Dimension(70, 60));
-        btnRegresar.addActionListener(e -> {
-            onBack.run();
-        });
-        panelSur.add(btnRegresar);
-        add(panelSur, BorderLayout.SOUTH);
+        JButton btnRegresar = utils.EstiloUI.crearBoton("←  Regresar", utils.EstiloUI.COLOR_BARRA);
+        btnRegresar.setPreferredSize(new Dimension(160, 42));
+        btnRegresar.addActionListener(e -> onBack.run());
+        add(utils.EstiloUI.crearBarraInferior(btnRegresar), BorderLayout.SOUTH);
 
         // ==========================================
         // 2. CONTENIDO CENTRAL
@@ -88,38 +62,35 @@ public class DetalleVenta extends JFrame {
         panelCentro.setBackground(COLOR_FONDO_APP);
 
         JPanel panelTarjeta = new JPanel();
-        panelTarjeta.setLayout(new BorderLayout(0, 20)); 
-        panelTarjeta.setBackground(Color.WHITE);
-        panelTarjeta.setPreferredSize(new Dimension(800, 600)); 
+        panelTarjeta.setLayout(new BorderLayout(0, 20));
+        panelTarjeta.setBackground(utils.EstiloUI.COLOR_TARJETA);
+        panelTarjeta.setPreferredSize(new Dimension(820, 600));
         panelTarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 205, 210), 1, true),
+                BorderFactory.createLineBorder(utils.EstiloUI.COLOR_BORDE, 1, true),
                 new EmptyBorder(30, 40, 30, 40)
         ));
 
-        // --- CABECERA DE LA TARJETA (Info extraída del DTO) ---
         JPanel panelInfo = new JPanel(new GridLayout(2, 2, 10, 15));
-        panelInfo.setBackground(Color.WHITE);
-        panelInfo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(240, 240, 240))); 
+        panelInfo.setBackground(utils.EstiloUI.COLOR_TARJETA);
+        panelInfo.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, utils.EstiloUI.COLOR_BORDE));
 
-        JLabel lblFechaTxt = new JLabel("Fecha y Hora:");
+        JLabel lblFechaTxt = new JLabel("FECHA Y HORA");
         lblFechaTxt.setFont(FUENTE_TITULOS);
-        lblFechaTxt.setForeground(Color.GRAY);
-        
-        // EXTRACCIÓN DE DATOS: Fecha
+        lblFechaTxt.setForeground(utils.EstiloUI.COLOR_MUTED);
+
         String fechaStr = (venta != null) ? venta.getFechaHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")) : "N/A";
         JLabel lblFechaVal = new JLabel(fechaStr);
-        lblFechaVal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblFechaVal.setFont(new Font(utils.EstiloUI.FUENTE_SECCION.getFamily(), Font.BOLD, 18));
         lblFechaVal.setForeground(COLOR_TEXTO_OSCURO);
 
-        JLabel lblMetodoTxt = new JLabel("Método de Pago:");
+        JLabel lblMetodoTxt = new JLabel("MÉTODO DE PAGO");
         lblMetodoTxt.setFont(FUENTE_TITULOS);
-        lblMetodoTxt.setForeground(Color.GRAY);
-        
-        // EXTRACCIÓN DE DATOS: Método de Pago
+        lblMetodoTxt.setForeground(utils.EstiloUI.COLOR_MUTED);
+
         String metodoStr = (venta != null) ? venta.getMetodoPago() : "N/A";
         JLabel lblMetodoVal = new JLabel(metodoStr);
-        lblMetodoVal.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblMetodoVal.setForeground(new Color(40, 167, 69)); 
+        lblMetodoVal.setFont(new Font(utils.EstiloUI.FUENTE_SECCION.getFamily(), Font.BOLD, 18));
+        lblMetodoVal.setForeground(utils.EstiloUI.COLOR_ACCION);
 
         panelInfo.add(lblFechaTxt);
         panelInfo.add(lblMetodoTxt);
@@ -159,23 +130,23 @@ public class DetalleVenta extends JFrame {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 if (!isRowSelected(row)) {
-                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(249, 250, 252));
+                    c.setBackground(row % 2 == 0 ? utils.EstiloUI.COLOR_TARJETA : utils.EstiloUI.COLOR_TARJETA_BEIGE);
                 }
                 return c;
             }
         };
 
-        tablaDetalles.setRowHeight(45);
+        tablaDetalles.setRowHeight(42);
         tablaDetalles.setFont(FUENTE_NORMAL);
         tablaDetalles.setShowVerticalLines(false);
-        tablaDetalles.setGridColor(new Color(230, 230, 230));
+        tablaDetalles.setGridColor(utils.EstiloUI.COLOR_BORDE);
 
         JTableHeader header = tablaDetalles.getTableHeader();
-        header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        header.setBackground(Color.WHITE);
-        header.setForeground(Color.GRAY);
-        header.setPreferredSize(new Dimension(0, 40));
-        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(220, 220, 220)));
+        header.setFont(utils.EstiloUI.FUENTE_TABLA_HEADER);
+        header.setBackground(utils.EstiloUI.COLOR_BARRA);
+        header.setForeground(Color.WHITE);
+        header.setPreferredSize(new Dimension(0, 38));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, utils.EstiloUI.COLOR_BORDE));
         header.setReorderingAllowed(false);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -185,49 +156,37 @@ public class DetalleVenta extends JFrame {
         tablaDetalles.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 
         JScrollPane scrollTabla = new JScrollPane(tablaDetalles);
-        scrollTabla.setBorder(BorderFactory.createLineBorder(new Color(230, 235, 240)));
-        scrollTabla.getViewport().setBackground(Color.WHITE);
+        scrollTabla.setBorder(BorderFactory.createLineBorder(utils.EstiloUI.COLOR_BORDE));
+        scrollTabla.getViewport().setBackground(utils.EstiloUI.COLOR_TARJETA);
 
         // --- PIE DE TARJETA ---
         JPanel panelPie = new JPanel(new BorderLayout());
-        panelPie.setBackground(Color.WHITE);
+        panelPie.setBackground(utils.EstiloUI.COLOR_TARJETA);
 
         JPanel panelTotal = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
-        panelTotal.setBackground(Color.WHITE);
-        JLabel lblTotalTxt = new JLabel("Total Cobrado:");
-        lblTotalTxt.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        
-        // EXTRACCIÓN DE DATOS: Total
+        panelTotal.setBackground(utils.EstiloUI.COLOR_AUXILIAR);
+        panelTotal.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(utils.EstiloUI.COLOR_BORDE, 1, true),
+                new EmptyBorder(8, 18, 8, 18)));
+        JLabel lblTotalTxt = new JLabel("TOTAL COBRADO");
+        lblTotalTxt.setFont(utils.EstiloUI.FUENTE_KICKER);
+        lblTotalTxt.setForeground(utils.EstiloUI.COLOR_MUTED);
+
         String totalStr = (venta != null && venta.getTotal() != null) ? "$" + venta.getTotal().toString() : "$0.00";
         JLabel lblTotalMonto = new JLabel(totalStr);
-        lblTotalMonto.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblTotalMonto.setFont(utils.EstiloUI.FUENTE_TOTAL);
         lblTotalMonto.setForeground(COLOR_TEXTO_OSCURO);
-        
+
         panelTotal.add(lblTotalTxt);
         panelTotal.add(lblTotalMonto);
 
         JPanel wrapBoton = new JPanel();
-        wrapBoton.setBackground(Color.WHITE);
-        wrapBoton.setBorder(new EmptyBorder(20, 0, 0, 0)); 
-        
-        JButton btnCerrar = new JButton("Cerrar Detalle") {
-            @Override
-            protected void paintComponent(java.awt.Graphics g) {
-                g.setColor(COLOR_BTN_ROJO);
-                g.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12); 
-                super.paintComponent(g);
-            }
-        };
-        btnCerrar.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        btnCerrar.setForeground(Color.WHITE);
-        btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnCerrar.setContentAreaFilled(false);
-        btnCerrar.setBorderPainted(false);
-        btnCerrar.setFocusPainted(false);
-        btnCerrar.setPreferredSize(new Dimension(250, 45));
-        btnCerrar.addActionListener(e -> {
-            onCerrarDetalle.run();
-        });
+        wrapBoton.setBackground(utils.EstiloUI.COLOR_TARJETA);
+        wrapBoton.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        JButton btnCerrar = utils.EstiloUI.crearBoton("Cerrar detalle", COLOR_BTN_ROJO);
+        btnCerrar.setPreferredSize(new Dimension(220, 44));
+        btnCerrar.addActionListener(e -> onCerrarDetalle.run());
         
         wrapBoton.add(btnCerrar);
 

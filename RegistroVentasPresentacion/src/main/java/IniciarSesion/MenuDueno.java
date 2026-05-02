@@ -2,10 +2,9 @@ package IniciarSesion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,17 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import utils.EstiloUI;
 
 public class MenuDueno extends JFrame {
-
-    private static final Color COLOR_BARRA = new Color(18, 63, 94);
-    private static final Color COLOR_FONDO = new Color(244, 247, 243);
-    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
-    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
-    private static final Color COLOR_MUTED = new Color(92, 105, 117);
-    private static final Color COLOR_BORDE = new Color(214, 222, 230);
-    private static final Color COLOR_ACCION = new Color(28, 143, 124);
-    private static final Color COLOR_SECUNDARIO = new Color(214, 124, 37);
 
     public MenuDueno(
             Runnable onBack,
@@ -35,28 +26,15 @@ public class MenuDueno extends JFrame {
             Runnable onHistorialVentas,
             Runnable onGenerarReportes
     ) {
-        setTitle("Menu Dueno");
+        setTitle("El Chuta — Panel del dueño");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        add(crearBarraSuperior(), BorderLayout.NORTH);
+        add(EstiloUI.crearHeader("Panel del dueño", "Sesión: Dueño"), BorderLayout.NORTH);
         add(crearContenido(onGestionarUsuarios, onHistorialVentas, onGenerarReportes), BorderLayout.CENTER);
         add(crearBarraInferior(onBack), BorderLayout.SOUTH);
-    }
-
-    private JPanel crearBarraSuperior() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 74));
-
-        JLabel lbl = new JLabel("Panel del dueno");
-        lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
-        panel.add(lbl, BorderLayout.WEST);
-        return panel;
     }
 
     private JPanel crearContenido(
@@ -65,116 +43,111 @@ public class MenuDueno extends JFrame {
             Runnable onGenerarReportes
     ) {
         JPanel fondo = new JPanel(new BorderLayout());
-        fondo.setBackground(COLOR_FONDO);
-        fondo.setBorder(new EmptyBorder(32, 40, 32, 40));
+        fondo.setBackground(EstiloUI.COLOR_FONDO);
+        fondo.setBorder(new EmptyBorder(36, 56, 36, 56));
 
-        JPanel tarjeta = new JPanel();
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
-        tarjeta.setBackground(COLOR_TARJETA);
-        tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(34, 36, 34, 36)
-        ));
+        // Encabezado de sección (kicker + título + subtítulo)
+        JPanel encabezado = new JPanel();
+        encabezado.setOpaque(false);
+        encabezado.setLayout(new BoxLayout(encabezado, BoxLayout.Y_AXIS));
 
-        JLabel lblTitulo = new JLabel("Menu de opciones");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
-        lblTitulo.setForeground(COLOR_TEXTO);
-        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel kicker = EstiloUI.crearKicker("Centro de control");
+        kicker.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblSubtitulo = new JLabel("Accede rapido a las operaciones mas importantes del sistema");
-        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
-        lblSubtitulo.setForeground(COLOR_MUTED);
-        lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel lblTitulo = EstiloUI.crearTituloPantalla("Buenas tardes");
+        lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        tarjeta.add(lblTitulo);
-        tarjeta.add(Box.createVerticalStrut(8));
-        tarjeta.add(lblSubtitulo);
-        tarjeta.add(Box.createVerticalStrut(26));
+        JLabel lblSubtitulo = EstiloUI.crearSubtitulo(
+                "Gestiona al personal, revisa el historial de ventas y genera reportes del negocio.");
+        lblSubtitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JPanel grid = new JPanel(new GridLayout(1, 3, 18, 0));
-        grid.setBackground(COLOR_TARJETA);
+        encabezado.add(kicker);
+        encabezado.add(Box.createVerticalStrut(8));
+        encabezado.add(lblTitulo);
+        encabezado.add(Box.createVerticalStrut(8));
+        encabezado.add(lblSubtitulo);
+
+        // Grid 1x3 con 3 tarjetas de acceso
+        JPanel grid = new JPanel(new GridLayout(1, 3, 22, 0));
+        grid.setOpaque(false);
+        grid.setBorder(new EmptyBorder(28, 0, 0, 0));
+
         grid.add(crearTarjetaAcceso(
+                "01",
                 "Gestionar usuarios",
-                "Altas, ediciones y bajas del personal.",
-                COLOR_ACCION,
-                onGestionarUsuarios
-        ));
+                "Altas, ediciones y bajas del personal del local.",
+                "Abrir gestión",
+                EstiloUI.COLOR_ACCION,
+                onGestionarUsuarios));
         grid.add(crearTarjetaAcceso(
+                "02",
                 "Historial de ventas",
-                "Consulta ventas registradas y revisa sus detalles.",
-                COLOR_SECUNDARIO,
-                onHistorialVentas
-        ));
+                "Consulta las ventas registradas y revisa cada detalle.",
+                "Ver historial",
+                EstiloUI.COLOR_SECUNDARIO,
+                onHistorialVentas));
         grid.add(crearTarjetaAcceso(
+                "03",
                 "Generar reportes",
-                "Resumenes por periodo y exportacion en PDF.",
-                COLOR_BARRA,
-                onGenerarReportes
-        ));
+                "Resúmenes por periodo y exportación en PDF para el negocio.",
+                "Generar reporte",
+                EstiloUI.COLOR_BARRA,
+                onGenerarReportes));
 
-        tarjeta.add(grid);
-        fondo.add(tarjeta, BorderLayout.CENTER);
+        fondo.add(encabezado, BorderLayout.NORTH);
+        fondo.add(grid, BorderLayout.CENTER);
         return fondo;
     }
 
-    private JPanel crearTarjetaAcceso(String titulo, String descripcion, Color colorBoton, Runnable accion) {
+    private JPanel crearTarjetaAcceso(String numero, String titulo, String descripcion,
+                                      String etiquetaBoton, Color colorBoton, Runnable accion) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(249, 250, 248));
+        panel.setBackground(EstiloUI.COLOR_TARJETA);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(22, 20, 22, 20)
-        ));
+                BorderFactory.createMatteBorder(0, 4, 0, 0, colorBoton),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(1, 0, 1, 1, EstiloUI.COLOR_BORDE),
+                        new EmptyBorder(28, 26, 26, 26))));
+
+        JLabel lblNum = new JLabel(numero);
+        lblNum.setFont(new Font(EstiloUI.FUENTE_PRECIO.getFamily(), Font.BOLD, 32));
+        lblNum.setForeground(colorBoton);
+        lblNum.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblTitulo = new JLabel(titulo);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(COLOR_TEXTO);
-        lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
+        lblTitulo.setFont(new Font(EstiloUI.FUENTE_SECCION.getFamily(), Font.BOLD, 22));
+        lblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+        lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblDescripcion = new JLabel("<html><div style='width:220px'>" + descripcion + "</div></html>");
-        lblDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        lblDescripcion.setForeground(COLOR_MUTED);
-        lblDescripcion.setAlignmentX(LEFT_ALIGNMENT);
+        JLabel lblDescripcion = new JLabel(
+                "<html><div style='width:240px; line-height:140%;'>" + descripcion + "</div></html>");
+        lblDescripcion.setFont(EstiloUI.FUENTE_SUBTITULO);
+        lblDescripcion.setForeground(EstiloUI.COLOR_MUTED);
+        lblDescripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JButton boton = new JButton("Abrir");
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(colorBoton);
-        boton.setOpaque(true);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        boton.setPreferredSize(new Dimension(140, 42));
-        boton.setMaximumSize(new Dimension(140, 42));
-        boton.setAlignmentX(LEFT_ALIGNMENT);
+        JButton boton = EstiloUI.crearBoton(etiquetaBoton, colorBoton);
+        boton.setPreferredSize(new Dimension(170, 42));
+        boton.setMaximumSize(new Dimension(200, 42));
+        boton.setAlignmentX(Component.LEFT_ALIGNMENT);
         boton.addActionListener(e -> accion.run());
 
+        panel.add(lblNum);
+        panel.add(Box.createVerticalStrut(6));
         panel.add(lblTitulo);
-        panel.add(Box.createVerticalStrut(12));
+        panel.add(Box.createVerticalStrut(10));
         panel.add(lblDescripcion);
         panel.add(Box.createVerticalGlue());
-        panel.add(Box.createVerticalStrut(18));
+        panel.add(Box.createVerticalStrut(20));
         panel.add(boton);
         return panel;
     }
 
     private JPanel crearBarraInferior(Runnable onBack) {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 72));
-
-        JButton btnRegresar = new JButton("Cerrar sesion");
-        btnRegresar.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        btnRegresar.setForeground(Color.WHITE);
-        btnRegresar.setBackground(new Color(12, 38, 57));
-        btnRegresar.setOpaque(true);
-        btnRegresar.setBorderPainted(false);
-        btnRegresar.setFocusPainted(false);
-        btnRegresar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnRegresar.setPreferredSize(new Dimension(150, 46));
-        btnRegresar.addActionListener(e -> onBack.run());
-        panel.add(btnRegresar);
-        return panel;
+        JButton btn = EstiloUI.crearBoton("Cerrar sesión", EstiloUI.COLOR_BARRA);
+        btn.setPreferredSize(new Dimension(170, 42));
+        btn.addActionListener(e -> onBack.run());
+        return EstiloUI.crearBarraInferior(btn);
     }
 
     public static void main(String[] args) {
@@ -184,16 +157,7 @@ public class MenuDueno extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            new MenuDueno(
-                    () -> {
-                    },
-                    () -> {
-                    },
-                    () -> {
-                    },
-                    () -> {
-                    }
-            ).setVisible(true);
+            new MenuDueno(() -> {}, () -> {}, () -> {}, () -> {}).setVisible(true);
         });
     }
 }

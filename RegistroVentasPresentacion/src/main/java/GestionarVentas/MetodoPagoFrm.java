@@ -5,8 +5,6 @@
 package GestionarVentas;
 
 import Componentes.TarjetaPago;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import utils.EstiloUI;
 
 /**
@@ -37,61 +35,91 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
         initComponents();
         setExtendedState(MetodoPagoFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
+        setTitle("El Chuta — Método de pago");
         aplicarEstilo();
         configurarTarjetas();
     }
 
     private void aplicarEstilo() {
         getContentPane().setBackground(EstiloUI.COLOR_FONDO);
+
+        // Header con wordmark
+        PnlHeader.removeAll();
+        PnlHeader.setLayout(new java.awt.BorderLayout());
         PnlHeader.setBackground(EstiloUI.COLOR_BARRA);
-        PnlFooter.setBackground(EstiloUI.COLOR_BARRA);
-        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlHeader.setPreferredSize(new java.awt.Dimension(0, 78));
+        PnlHeader.add(EstiloUI.crearHeader("Cobro", "Paso 2 de 3"),
+                java.awt.BorderLayout.CENTER);
 
-        BtnBack.setText("Regresar");
+        // Footer con regla de acento
+        PnlFooter.removeAll();
+        PnlFooter.setLayout(new java.awt.BorderLayout());
+        PnlFooter.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        PnlFooter.setBorder(javax.swing.BorderFactory.createMatteBorder(
+                2, 0, 0, 0, EstiloUI.COLOR_BARRA_ACENTO));
+        PnlFooter.setPreferredSize(new java.awt.Dimension(0, 64));
+
+        BtnBack.setText("←  Regresar");
         BtnBack.setFont(EstiloUI.FUENTE_BOTON);
-        BtnBack.setBackground(EstiloUI.COLOR_BARRA_OSCURA);
+        BtnBack.setBackground(EstiloUI.COLOR_BARRA);
         BtnBack.setForeground(java.awt.Color.WHITE);
-        BtnBack.setMargin(new java.awt.Insets(8, 18, 8, 18));
-        BtnBack.setMaximumSize(new java.awt.Dimension(160, 46));
-        BtnBack.setPreferredSize(new java.awt.Dimension(150, 46));
+        BtnBack.setOpaque(true);
+        BtnBack.setBorderPainted(false);
+        BtnBack.setFocusPainted(false);
+        BtnBack.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        BtnBack.setPreferredSize(new java.awt.Dimension(160, 42));
+        javax.swing.JPanel wrap = new javax.swing.JPanel(
+                new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 14, 12));
+        wrap.setOpaque(false);
+        wrap.add(BtnBack);
+        PnlFooter.add(wrap, java.awt.BorderLayout.WEST);
 
-        LblTitulo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 44));
+        // Contenido: encabezado editorial + tarjetas
+        PnlContenido.removeAll();
+        PnlContenido.setBackground(EstiloUI.COLOR_FONDO);
+        PnlContenido.setLayout(new java.awt.BorderLayout());
+        PnlContenido.setBorder(new javax.swing.border.EmptyBorder(36, 56, 36, 56));
+
+        javax.swing.JPanel encabezado = new javax.swing.JPanel();
+        encabezado.setOpaque(false);
+        encabezado.setLayout(new javax.swing.BoxLayout(encabezado, javax.swing.BoxLayout.Y_AXIS));
+
+        javax.swing.JLabel kicker = EstiloUI.crearKicker("Selecciona método");
+        kicker.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        LblTitulo.setText("¿Cómo va a pagar?");
+        LblTitulo.setFont(EstiloUI.FUENTE_TITULO_PANTALLA);
         LblTitulo.setForeground(EstiloUI.COLOR_TEXTO);
+        LblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LblTitulo.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        javax.swing.JLabel sub = EstiloUI.crearSubtitulo(
+                "Toca el método para registrar el cobro de la venta.");
+        sub.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        encabezado.add(kicker);
+        encabezado.add(javax.swing.Box.createVerticalStrut(8));
+        encabezado.add(LblTitulo);
+        encabezado.add(javax.swing.Box.createVerticalStrut(6));
+        encabezado.add(sub);
+
+        PnlContenido.add(encabezado, java.awt.BorderLayout.NORTH);
     }
 
     private void configurarTarjetas() {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new java.awt.Insets(20, 20, 20, 20);
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
+        // Grid 1x3 horizontal con un acento de color por método
+        javax.swing.JPanel grid = new javax.swing.JPanel(new java.awt.GridLayout(1, 3, 24, 0));
+        grid.setOpaque(false);
+        grid.setBorder(new javax.swing.border.EmptyBorder(28, 0, 0, 0));
 
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
+        grid.add(new TarjetaPago("Efectivo", "efectivo.png", onPagoEfectivo,
+                EstiloUI.COLOR_CATEGORIA_NARANJA));
+        grid.add(new TarjetaPago("Tarjeta", "tarjeta.png", onPagoTarjeta,
+                EstiloUI.COLOR_SECUNDARIO));
+        grid.add(new TarjetaPago("Transferencia", "transferencia.png", onPagoTransferencia,
+                EstiloUI.COLOR_CATEGORIA_MORADO));
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        PnlContenido.add(new TarjetaPago("Efectivo", "efectivo.png", onPagoEfectivo), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        PnlContenido.add(new TarjetaPago("Tarjeta", "tarjeta.png", onPagoTarjeta), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.insets = new java.awt.Insets(10, 20, 40, 20);
-        PnlContenido.add(new TarjetaPago("Transferencia", "transferencia.png", onPagoTransferencia), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-
-        javax.swing.JPanel spacer = new javax.swing.JPanel();
-        spacer.setOpaque(false);
-        PnlContenido.add(spacer, gbc);
-
+        PnlContenido.add(grid, java.awt.BorderLayout.CENTER);
         PnlContenido.revalidate();
         PnlContenido.repaint();
     }

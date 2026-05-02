@@ -41,15 +41,15 @@ public class Reportes extends JFrame {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final Color COLOR_BARRA = new Color(18, 63, 94);
-    private static final Color COLOR_FONDO = new Color(244, 247, 243);
-    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
-    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
-    private static final Color COLOR_MUTED = new Color(92, 105, 117);
-    private static final Color COLOR_BORDE = new Color(214, 222, 230);
-    private static final Color COLOR_ACCION = new Color(28, 143, 124);
-    private static final Color COLOR_DANGER = new Color(182, 60, 54);
-    private static final Color COLOR_AUXILIAR = new Color(223, 235, 229);
+    private static final Color COLOR_BARRA    = utils.EstiloUI.COLOR_BARRA;
+    private static final Color COLOR_FONDO    = utils.EstiloUI.COLOR_FONDO;
+    private static final Color COLOR_TARJETA  = utils.EstiloUI.COLOR_TARJETA;
+    private static final Color COLOR_TEXTO    = utils.EstiloUI.COLOR_TEXTO;
+    private static final Color COLOR_MUTED    = utils.EstiloUI.COLOR_MUTED;
+    private static final Color COLOR_BORDE    = utils.EstiloUI.COLOR_BORDE;
+    private static final Color COLOR_ACCION   = utils.EstiloUI.COLOR_ACCION;
+    private static final Color COLOR_DANGER   = utils.EstiloUI.COLOR_DANGER;
+    private static final Color COLOR_AUXILIAR = utils.EstiloUI.COLOR_AUXILIAR;
 
     private final ReporteConsultaOperacion onConsultar;
     private final ReporteExportacionOperacion onExportar;
@@ -89,16 +89,7 @@ public class Reportes extends JFrame {
     }
 
     private JPanel crearBarraSuperior() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 74));
-
-        JLabel lbl = new JLabel("Panel de reportes");
-        lbl.setForeground(Color.WHITE);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lbl.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
-        panel.add(lbl, BorderLayout.WEST);
-        return panel;
+        return utils.EstiloUI.crearHeader("Panel de reportes", "Sesión: Dueño");
     }
 
     private JPanel crearContenido() {
@@ -114,16 +105,21 @@ public class Reportes extends JFrame {
                 new EmptyBorder(30, 32, 30, 32)
         ));
 
+        JLabel lblKicker = utils.EstiloUI.crearKicker("Reporte de ventas");
+        lblKicker.setAlignmentX(LEFT_ALIGNMENT);
+
         JLabel lblTitulo = new JLabel("Reportes");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setFont(utils.EstiloUI.FUENTE_TITULO_PANTALLA);
         lblTitulo.setForeground(COLOR_TEXTO);
         lblTitulo.setAlignmentX(LEFT_ALIGNMENT);
 
-        JLabel lblSubtitulo = new JLabel("Consulta, resume y exporta las ventas reales del periodo seleccionado");
-        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 17));
+        JLabel lblSubtitulo = new JLabel("Consulta, resume y exporta las ventas reales del periodo seleccionado.");
+        lblSubtitulo.setFont(utils.EstiloUI.FUENTE_SUBTITULO);
         lblSubtitulo.setForeground(COLOR_MUTED);
         lblSubtitulo.setAlignmentX(LEFT_ALIGNMENT);
 
+        tarjeta.add(lblKicker);
+        tarjeta.add(Box.createVerticalStrut(8));
         tarjeta.add(lblTitulo);
         tarjeta.add(Box.createVerticalStrut(6));
         tarjeta.add(lblSubtitulo);
@@ -194,17 +190,18 @@ public class Reportes extends JFrame {
 
     private JPanel crearTarjetaResumen(String titulo, JLabel valor) {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
-        panel.setBackground(new Color(249, 250, 248));
+        panel.setBackground(utils.EstiloUI.COLOR_TARJETA);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(16, 16, 16, 16)
-        ));
+                BorderFactory.createMatteBorder(0, 3, 0, 0, utils.EstiloUI.COLOR_ACCION),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(1, 0, 1, 1, COLOR_BORDE),
+                        new EmptyBorder(16, 16, 16, 16))));
 
-        JLabel lblTitulo = new JLabel(titulo);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        JLabel lblTitulo = new JLabel(titulo.toUpperCase());
+        lblTitulo.setFont(utils.EstiloUI.FUENTE_KICKER);
         lblTitulo.setForeground(COLOR_MUTED);
 
-        valor.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        valor.setFont(new Font(utils.EstiloUI.FUENTE_PRECIO.getFamily(), Font.BOLD, 24));
         valor.setForeground(COLOR_TEXTO);
 
         panel.add(lblTitulo, BorderLayout.NORTH);
@@ -223,15 +220,15 @@ public class Reportes extends JFrame {
 
         JTable tabla = new JTable(modeloTabla);
         tabla.setRowHeight(34);
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        tabla.setFont(utils.EstiloUI.FUENTE_TABLA);
         tabla.setForeground(COLOR_TEXTO);
         tabla.setShowHorizontalLines(true);
-        tabla.setGridColor(new Color(234, 238, 242));
-        tabla.setSelectionBackground(new Color(223, 235, 229));
+        tabla.setGridColor(COLOR_BORDE);
+        tabla.setSelectionBackground(COLOR_AUXILIAR);
         tabla.setSelectionForeground(COLOR_TEXTO);
         tabla.getTableHeader().setBackground(COLOR_BARRA);
         tabla.getTableHeader().setForeground(Color.WHITE);
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tabla.getTableHeader().setFont(utils.EstiloUI.FUENTE_TABLA_HEADER);
         tabla.getTableHeader().setReorderingAllowed(false);
 
         DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
@@ -264,32 +261,19 @@ public class Reportes extends JFrame {
         return panel;
     }
     private JPanel crearBarraInferior(Runnable onBack) {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 72));
-
-        JButton btnRegresar = crearBoton("Regresar", new Color(12, 38, 57));
-        btnRegresar.setPreferredSize(new Dimension(150, 46));
+        JButton btnRegresar = utils.EstiloUI.crearBoton("←  Regresar", COLOR_BARRA);
+        btnRegresar.setPreferredSize(new Dimension(160, 42));
         btnRegresar.addActionListener(e -> onBack.run());
-        panel.add(btnRegresar);
-        return panel;
+        return utils.EstiloUI.crearBarraInferior(btnRegresar);
     }
 
     private JButton crearBoton(String texto, Color color) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(color);
-        boton.setFocusPainted(false);
-        boton.setOpaque(true);
-        boton.setBorderPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
+        return utils.EstiloUI.crearBoton(texto, color);
     }
 
     private JLabel crearEtiquetaSecundaria(String texto) {
         JLabel label = new JLabel(texto);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        label.setFont(utils.EstiloUI.FUENTE_ETIQUETA);
         label.setForeground(COLOR_TEXTO);
         return label;
     }

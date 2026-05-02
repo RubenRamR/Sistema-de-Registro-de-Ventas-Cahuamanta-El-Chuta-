@@ -30,7 +30,7 @@ import utils.EstiloUI;
 
 /**
  *
- * @author MiCuenta
+ * @author Chris/Luis
  */
 public class AgregarUsuario extends JFrame {
 
@@ -42,7 +42,7 @@ public class AgregarUsuario extends JFrame {
 
     private final JTextField txtNombre = new JTextField(15);
     private final JPasswordField txtPass = new JPasswordField(15);
-    private final JComboBox<String> cmbRol = new JComboBox<>(new String[]{"Cajero", "Dueno"});
+    private final JComboBox<String> cmbRol = new JComboBox<>(new String[]{"Cajero", "Dueño"});
 
     public AgregarUsuario(
             Runnable onBack,
@@ -83,7 +83,7 @@ public class AgregarUsuario extends JFrame {
 
     private JPanel crearFormulario(UsuarioOperacion onGuardar) {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(COLOR_BEIGE);
+        panel.setBackground(EstiloUI.COLOR_TARJETA);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(COLOR_BORDE, 1, true),
                 new EmptyBorder(40, 60, 40, 60)
@@ -94,8 +94,9 @@ public class AgregarUsuario extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JLabel lblNombre = new JLabel("Nombre de Usuario:");
-        lblNombre.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        JLabel lblNombre = new JLabel("Nombre de usuario");
+        lblNombre.setFont(EstiloUI.FUENTE_ETIQUETA);
+        lblNombre.setForeground(EstiloUI.COLOR_TEXTO);
         lblNombre.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -105,8 +106,9 @@ public class AgregarUsuario extends JFrame {
         gbc.gridx = 1;
         panel.add(txtNombre, gbc);
 
-        JLabel lblPass = new JLabel("Contrasena:");
-        lblPass.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        JLabel lblPass = new JLabel("Contraseña");
+        lblPass.setFont(EstiloUI.FUENTE_ETIQUETA);
+        lblPass.setForeground(EstiloUI.COLOR_TEXTO);
         lblPass.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -116,34 +118,26 @@ public class AgregarUsuario extends JFrame {
         gbc.gridx = 1;
         panel.add(txtPass, gbc);
 
-        JLabel lblRol = new JLabel("Rol:");
-        lblRol.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        JLabel lblRol = new JLabel("Rol");
+        lblRol.setFont(EstiloUI.FUENTE_ETIQUETA);
+        lblRol.setForeground(EstiloUI.COLOR_TEXTO);
         lblRol.setHorizontalAlignment(SwingConstants.RIGHT);
         gbc.gridx = 0;
         gbc.gridy = 2;
         panel.add(lblRol, gbc);
 
-        cmbRol.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        cmbRol.setFont(EstiloUI.FUENTE_CAMPO);
         cmbRol.setBackground(Color.WHITE);
-        cmbRol.setPreferredSize(new Dimension(200, 35));
+        cmbRol.setPreferredSize(new Dimension(220, 36));
         cmbRol.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
+                new LineBorder(EstiloUI.COLOR_BORDE_INPUT, 1, true),
                 new EmptyBorder(2, 5, 2, 5)
         ));
         gbc.gridx = 1;
         panel.add(cmbRol, gbc);
 
-        JButton btnAgregar = new JButton("Agregar");
-        btnAgregar.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        btnAgregar.setForeground(Color.WHITE);
-        btnAgregar.setBackground(COLOR_VERDE);
-        btnAgregar.setFocusPainted(false);
-        btnAgregar.setOpaque(true);
-        btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAgregar.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(60, 180, 70), 1, true),
-                new EmptyBorder(10, 40, 10, 40)
-        ));
+        JButton btnAgregar = EstiloUI.crearBoton("Crear usuario", COLOR_VERDE);
+        btnAgregar.setPreferredSize(new Dimension(200, 44));
         btnAgregar.addActionListener(e -> guardarUsuario(onGuardar));
 
         gbc.gridx = 0;
@@ -161,7 +155,7 @@ public class AgregarUsuario extends JFrame {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setNombre(txtNombre.getText().trim());
         usuarioDTO.setContrasenia(new String(txtPass.getPassword()));
-        usuarioDTO.setRol("Dueno".equals(cmbRol.getSelectedItem()) ? "ADMIN" : "CAJERO");
+        usuarioDTO.setRol("Dueño".equals(cmbRol.getSelectedItem()) ? "ADMIN" : "CAJERO");
 
         try {
             onGuardar.ejecutar(usuarioDTO);
@@ -171,12 +165,9 @@ public class AgregarUsuario extends JFrame {
     }
 
     private void estilizarInput(JTextField campo) {
-        campo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        campo.setPreferredSize(new Dimension(200, 35));
-        campo.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(COLOR_BORDE, 1, true),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
+        campo.setFont(EstiloUI.FUENTE_CAMPO);
+        campo.setPreferredSize(new Dimension(220, 36));
+        campo.setBorder(EstiloUI.bordeInput());
     }
 
     public static void main(String[] args) {

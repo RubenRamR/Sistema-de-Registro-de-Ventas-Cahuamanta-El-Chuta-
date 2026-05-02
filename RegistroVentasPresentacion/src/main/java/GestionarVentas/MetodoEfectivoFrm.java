@@ -32,26 +32,26 @@ import javax.swing.text.DocumentFilter;
 
 public class MetodoEfectivoFrm extends JFrame {
 
-    private static final Color COLOR_BARRA = new Color(18, 63, 94);
-    private static final Color COLOR_FONDO = new Color(245, 247, 243);
-    private static final Color COLOR_TEXTO = new Color(25, 41, 56);
-    private static final Color COLOR_TARJETA = new Color(255, 255, 255);
-    private static final Color COLOR_BORDE = new Color(214, 222, 230);
-    private static final Color COLOR_PRIMARIO = new Color(28, 143, 124);
-    private static final Color COLOR_PELIGRO = new Color(182, 60, 54);
-    private static final Color COLOR_SUAVE = new Color(233, 240, 235);
-    private static final Font FUENTE_TITULO = new Font("Segoe UI", Font.BOLD, 44);
-    private static final Font FUENTE_SUBTITULO = new Font("Segoe UI", Font.PLAIN, 18);
-    private static final Font FUENTE_ETIQUETA = new Font("Segoe UI", Font.BOLD, 20);
-    private static final Font FUENTE_MONTO = new Font("Segoe UI", Font.BOLD, 30);
-    private static final Font FUENTE_CAMPO = new Font("Segoe UI", Font.PLAIN, 24);
+    private static final Color COLOR_BARRA = utils.EstiloUI.COLOR_BARRA;
+    private static final Color COLOR_FONDO = utils.EstiloUI.COLOR_FONDO;
+    private static final Color COLOR_TEXTO = utils.EstiloUI.COLOR_TEXTO;
+    private static final Color COLOR_TARJETA = utils.EstiloUI.COLOR_TARJETA;
+    private static final Color COLOR_BORDE = utils.EstiloUI.COLOR_BORDE;
+    private static final Color COLOR_PRIMARIO = utils.EstiloUI.COLOR_ACCION;
+    private static final Color COLOR_PELIGRO = utils.EstiloUI.COLOR_DANGER;
+    private static final Color COLOR_SUAVE = utils.EstiloUI.COLOR_AUXILIAR;
+    private static final Font FUENTE_TITULO = utils.EstiloUI.FUENTE_TITULO_PANTALLA;
+    private static final Font FUENTE_SUBTITULO = new Font(utils.EstiloUI.FUENTE_SUBTITULO.getFamily(), Font.PLAIN, 16);
+    private static final Font FUENTE_ETIQUETA = new Font(utils.EstiloUI.FUENTE_ETIQUETA.getFamily(), Font.BOLD, 17);
+    private static final Font FUENTE_MONTO = utils.EstiloUI.FUENTE_TOTAL;
+    private static final Font FUENTE_CAMPO = new Font(utils.EstiloUI.FUENTE_CAMPO.getFamily(), Font.PLAIN, 22);
 
     private final BigDecimal total;
     private final PagoEfectivoOperacion onAceptar;
     private final Runnable onBack;
 
     private static final String PLACEHOLDER_PAGO = "0.00";
-    private static final Color COLOR_PLACEHOLDER = new Color(160, 170, 180);
+    private static final Color COLOR_PLACEHOLDER = utils.EstiloUI.COLOR_MUTED;
 
     private JLabel lblCambioMonto;
     private JLabel lblEstado;
@@ -83,16 +83,7 @@ public class MetodoEfectivoFrm extends JFrame {
     }
 
     private JPanel crearBarraSuperior() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 72));
-
-        JLabel lblMarca = new JLabel("Cobro en efectivo");
-        lblMarca.setForeground(Color.WHITE);
-        lblMarca.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblMarca.setBorder(BorderFactory.createEmptyBorder(0, 28, 0, 0));
-        panel.add(lblMarca, BorderLayout.WEST);
-        return panel;
+        return utils.EstiloUI.crearHeader("Cobro en efectivo", "Paso 3 de 3");
     }
 
         private JPanel crearContenido() {
@@ -115,7 +106,7 @@ public class MetodoEfectivoFrm extends JFrame {
             JLabel lblSubtitulo = new JLabel("Confirma el cobro antes de registrar la venta");
             lblSubtitulo.setAlignmentX(CENTER_ALIGNMENT);
             lblSubtitulo.setFont(FUENTE_SUBTITULO);
-            lblSubtitulo.setForeground(new Color(97, 109, 122));
+            lblSubtitulo.setForeground(utils.EstiloUI.COLOR_MUTED);
 
             tarjeta.add(lblTitulo);
             tarjeta.add(Box.createVerticalStrut(8));
@@ -134,10 +125,10 @@ public class MetodoEfectivoFrm extends JFrame {
             tarjeta.add(lblEstado);
 
             tarjeta.add(Box.createVerticalStrut(12));
-            lblPagoSugerido = new JLabel("Monto minimo sugerido: $" + formatearMonto(total));
+            lblPagoSugerido = new JLabel("Monto mínimo sugerido: $" + formatearMonto(total));
             lblPagoSugerido.setAlignmentX(CENTER_ALIGNMENT);
-            lblPagoSugerido.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-            lblPagoSugerido.setForeground(new Color(101, 115, 126));
+            lblPagoSugerido.setFont(utils.EstiloUI.FUENTE_SUBTITULO);
+            lblPagoSugerido.setForeground(utils.EstiloUI.COLOR_MUTED);
             tarjeta.add(lblPagoSugerido);
 
             tarjeta.add(Box.createVerticalStrut(24));
@@ -194,7 +185,7 @@ public class MetodoEfectivoFrm extends JFrame {
         txtPago.setFont(FUENTE_CAMPO);
         txtPago.setHorizontalAlignment(SwingConstants.RIGHT);
         txtPago.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(187, 199, 210), 1, true),
+                BorderFactory.createLineBorder(utils.EstiloUI.COLOR_BORDE_INPUT, 1, true),
                 BorderFactory.createEmptyBorder(8, 14, 8, 14)
         ));
         mostrarPlaceholder();
@@ -255,27 +246,14 @@ public class MetodoEfectivoFrm extends JFrame {
     }
 
     private JPanel crearBarraInferior() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 10));
-        panel.setBackground(COLOR_BARRA);
-        panel.setPreferredSize(new Dimension(0, 72));
-
-        JButton btnBack = crearBoton("Regresar", new Color(12, 38, 57));
-        btnBack.setPreferredSize(new Dimension(150, 46));
+        JButton btnBack = utils.EstiloUI.crearBoton("←  Regresar", utils.EstiloUI.COLOR_BARRA);
+        btnBack.setPreferredSize(new Dimension(160, 42));
         btnBack.addActionListener(e -> onBack.run());
-        panel.add(btnBack);
-        return panel;
+        return utils.EstiloUI.crearBarraInferior(btnBack);
     }
 
     private JButton crearBoton(String texto, Color color) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(color);
-        boton.setOpaque(true);
-        boton.setBorderPainted(false);
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
+        return utils.EstiloUI.crearBoton(texto, color);
     }
 
     private void actualizarEstadoPago() {
@@ -283,7 +261,7 @@ public class MetodoEfectivoFrm extends JFrame {
         {
             lblCambioMonto.setText("$0.00");
             lblEstado.setText("Ingresa el monto recibido para continuar");
-            lblEstado.setForeground(new Color(101, 115, 126));
+            lblEstado.setForeground(utils.EstiloUI.COLOR_MUTED);
             btnAceptar.setEnabled(false);
             return;
         }
@@ -292,7 +270,7 @@ public class MetodoEfectivoFrm extends JFrame {
         if (pago == null)
         {
             lblCambioMonto.setText("$0.00");
-            lblEstado.setText("Ingresa un monto valido para continuar");
+            lblEstado.setText("Ingresa un monto válido para continuar");
             lblEstado.setForeground(COLOR_PELIGRO);
             btnAceptar.setEnabled(false);
             return;
