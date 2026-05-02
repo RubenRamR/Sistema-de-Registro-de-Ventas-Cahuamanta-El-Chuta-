@@ -7,6 +7,7 @@ import entidades.DetalleVenta;
 import entidades.Usuario;
 import entidades.Venta;
 import excepciones.NegocioException;
+import interfaces.IVentaBO;
 import interfaces.IVentaDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
  *
  * @author luise
  */
-public class VentaBO {
+public class VentaBO implements IVentaBO {
 
     private static final DateTimeFormatter FORMATO_FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final IVentaDAO ventaDAO;

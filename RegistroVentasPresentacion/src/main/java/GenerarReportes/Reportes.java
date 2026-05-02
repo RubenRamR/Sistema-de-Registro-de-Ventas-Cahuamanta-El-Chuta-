@@ -1,4 +1,4 @@
-package GenerarReportes;
+package generarreportes;
 
 import aplicacion.ReporteConsultaOperacion;
 import aplicacion.ReporteExportacionOperacion;

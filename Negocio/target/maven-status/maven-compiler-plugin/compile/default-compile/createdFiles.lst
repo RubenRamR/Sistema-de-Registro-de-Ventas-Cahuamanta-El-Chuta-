@@ -2,7 +2,6 @@ interfaces\IUsuarioBO.class
 dtos\ReporteVentasDTO.class
 interfaces\IProductoBO.class
 dtos\VentaDTO.class
-prueba\Test.class
 bos\UsuarioBO.class
 mappers\ProductoMapper.class
 dtos\UsuarioDTO.class

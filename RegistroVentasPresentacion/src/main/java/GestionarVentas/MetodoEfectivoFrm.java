@@ -1,4 +1,4 @@
-package GestionarVentas;
+package gestionarventas;
 
 import aplicacion.PagoEfectivoOperacion;
 import excepciones.NegocioException;

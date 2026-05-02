@@ -1,4 +1,4 @@
-package GestionarVentas;
+package gestionarventas;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import dtos.UsuarioDTO;
@@ -36,7 +36,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-public class GestionarVenta extends JFrame {
+public class PantallaGestionarVentas extends JFrame {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Color COLOR_BARRA    = utils.EstiloUI.COLOR_BARRA;
@@ -62,7 +62,7 @@ public class GestionarVenta extends JFrame {
     private DatePicker datePickerFiltro;
     private JLabel lblResumen;
 
-    public GestionarVenta(
+    public PantallaGestionarVentas(
             Runnable onAgregarVenta,
             Consumer<VentaDTO> onVerDetalles,
             Runnable onBack,
@@ -71,7 +71,7 @@ public class GestionarVenta extends JFrame {
         this("Gestionar Venta", true, onAgregarVenta, onVerDetalles, onBack, ventasDelDia, null, LocalDate.now());
     }
 
-    public GestionarVenta(
+    public PantallaGestionarVentas(
             String tituloPantalla,
             boolean mostrarBotonAgregar,
             Runnable onAgregarVenta,
@@ -391,7 +391,7 @@ public class GestionarVenta extends JFrame {
         }
 
         SwingUtilities.invokeLater(() -> {
-            new GestionarVenta(
+            new PantallaGestionarVentas(
                     "Historial de Ventas",
                     false,
                     null,

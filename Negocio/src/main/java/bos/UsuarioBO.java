@@ -6,6 +6,7 @@ import entidades.Usuario;
 import excepciones.NegocioException;
 import excepciones.PersistenciaException;
 import interfaces.ITipoDAO;
+import interfaces.IUsuarioBO;
 import interfaces.IUsuarioDAO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ import mappers.UsuarioMapper;
  *
  * @author luise
  */
-public class UsuarioBO {
+public class UsuarioBO implements IUsuarioBO {
 
     private static final String ROL_ADMIN = "ADMIN";
     private static final String ROL_CAJERO = "CAJERO";

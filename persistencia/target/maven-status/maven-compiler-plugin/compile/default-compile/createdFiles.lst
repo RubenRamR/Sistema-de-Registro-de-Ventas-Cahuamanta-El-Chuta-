@@ -6,7 +6,6 @@ interfaces\IProductoDAO.class
 entidades\DetalleVenta.class
 daos\VentaDAO.class
 entidades\Tipo.class
-repositorios\PruebaPersistencia.class
 interfaces\IVentaDAO.class
 entidades\Producto.class
 interfaces\ITipoDAO.class

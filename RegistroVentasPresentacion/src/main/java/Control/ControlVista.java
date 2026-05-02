@@ -1,20 +1,20 @@
-package Control;
+package control;
 
-import GenerarReportes.Reportes;
-import GestionarUsuarios.AgregarUsuario;
-import GestionarUsuarios.BuscarUsuarios;
-import GestionarUsuarios.EditarUsuario;
-import GestionarUsuarios.EliminarUsuario;
-import GestionarUsuarios.PantallaGestionarUsuarios;
-import GestionarVentas.DetalleVenta;
-import GestionarVentas.GestionarVenta;
-import GestionarVentas.MenuCajeroFrm;
-import GestionarVentas.MetodoEfectivoFrm;
-import GestionarVentas.MetodoPagoFrm;
-import GestionarVentas.PantallaResumen;
-import GestionarVentas.PuntoVenta;
-import IniciarSesion.MenuDueno;
-import IniciarSesion.PantallaLogin;
+import generarreportes.Reportes;
+import gestionarusuarios.AgregarUsuario;
+import gestionarusuarios.BuscarUsuarios;
+import gestionarusuarios.EditarUsuario;
+import gestionarusuarios.EliminarUsuario;
+import gestionarusuarios.PantallaGestionarUsuarios;
+import gestionarventas.PantallaDetalleVenta;
+import gestionarventas.PantallaGestionarVentas;
+import gestionarventas.MenuCajeroFrm;
+import gestionarventas.MetodoEfectivoFrm;
+import gestionarventas.MetodoPagoFrm;
+import gestionarventas.PantallaResumen;
+import gestionarventas.PantallaPuntoVenta;
+import iniciarsesion.MenuDueno;
+import iniciarsesion.PantallaLogin;
 import dtos.DetalleVentaDTO;
 import dtos.ReporteVentasDTO;
 import dtos.UsuarioDTO;
@@ -274,7 +274,7 @@ public class ControlVista {
     }
 
     private void mostrarGestionarVentaFrm() {
-        frameActual = new GestionarVenta(
+        frameActual = new PantallaGestionarVentas(
                 "Gestionar Venta",
                 true,
                 () -> {
@@ -300,7 +300,7 @@ public class ControlVista {
     }
 
     private void mostrarHistorialVentasFrm() {
-        frameActual = new GestionarVenta(
+        frameActual = new PantallaGestionarVentas(
                 "Historial de Ventas",
                 false,
                 null,
@@ -330,7 +330,7 @@ public class ControlVista {
             onCerrarDetalle.run();
         };
 
-        frameActual = new DetalleVenta(
+        frameActual = new PantallaDetalleVenta(
                 ventaDTO,
                 cerrarPantalla,
                 cerrarPantalla
@@ -344,7 +344,7 @@ public class ControlVista {
             detallesVenta = negocio.getVentaActual().getDetallesVenta();
         }
 
-        frameActual = new PuntoVenta(
+        frameActual = new PantallaPuntoVenta(
                 detalles -> {
                     try {
                         negocio.addProductosVenta(detalles);

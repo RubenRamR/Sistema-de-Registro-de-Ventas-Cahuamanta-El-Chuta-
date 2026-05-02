@@ -1,6 +1,6 @@
-package GestionarVentas;
+package gestionarventas;
 
-import Componentes.TarjetaProducto;
+import componentes.TarjetaProducto;
 import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;
 import java.awt.BorderLayout;
@@ -45,7 +45,7 @@ import utils.EstiloUI;
  *
  * @author MiCuenta
  */
-public class PuntoVenta extends JFrame {
+public class PantallaPuntoVenta extends JFrame {
 
     private List<ProductoDTO> inventario;
     private final List<ProductoDTO> inventarioCompleto;
@@ -65,7 +65,7 @@ public class PuntoVenta extends JFrame {
     private final Function<String, List<ProductoDTO>> onCategoriaSeleccionada;
     private final Runnable onBack;
 
-    public PuntoVenta(
+    public PantallaPuntoVenta(
             Consumer<List<DetalleVentaDTO>> onRegistrarVenta,
             Function<String, List<ProductoDTO>> onCategoriaSeleccionada,
             List<ProductoDTO> inventario,
@@ -441,7 +441,7 @@ public class PuntoVenta extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PuntoVenta(
+        SwingUtilities.invokeLater(() -> new PantallaPuntoVenta(
                 a -> {
                 },
                 e -> new ArrayList<>(),

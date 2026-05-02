@@ -1,4 +1,4 @@
-package IniciarSesion;
+package iniciarsesion;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

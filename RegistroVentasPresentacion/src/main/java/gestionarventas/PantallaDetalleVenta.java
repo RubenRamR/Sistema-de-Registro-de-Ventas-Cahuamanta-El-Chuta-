@@ -1,4 +1,4 @@
-package GestionarVentas;
+package gestionarventas;
 
 import dtos.DetalleVentaDTO; // Asegúrate de importar tus DTOs
 import dtos.VentaDTO;
@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
-public class DetalleVenta extends JFrame {
+public class PantallaDetalleVenta extends JFrame {
 
     private final Color COLOR_BANNER       = utils.EstiloUI.COLOR_BARRA;
     private final Color COLOR_FONDO_APP    = utils.EstiloUI.COLOR_FONDO;
@@ -37,7 +37,7 @@ public class DetalleVenta extends JFrame {
     private final Font FUENTE_NORMAL  = utils.EstiloUI.FUENTE_TABLA;
 
     // NUEVO: Constructor recibe el DTO
-    public DetalleVenta(
+    public PantallaDetalleVenta(
             VentaDTO venta,
             Runnable onBack,
             Runnable onCerrarDetalle

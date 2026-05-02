@@ -1,4 +1,4 @@
-package GestionarUsuarios;
+package gestionarusuarios;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

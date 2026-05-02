@@ -1,4 +1,4 @@
-package GestionarUsuarios;
+package gestionarusuarios;
 
 import aplicacion.UsuarioOperacion;
 import dtos.UsuarioDTO;

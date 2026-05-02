@@ -1,4 +1,4 @@
-package GestionarVentas;
+package gestionarventas;
 
 import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;

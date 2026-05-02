@@ -8,6 +8,7 @@ import dtos.DetalleVentaDTO;
 import dtos.ProductoDTO;
 import entidades.Producto;
 import interfaces.IDetalleVentaDAO;
+import interfaces.IProductoBO;
 import interfaces.IProductoDAO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import mappers.ProductoMapper;
  *
  * @author luise
  */
-public class ProductoBO {
+public class ProductoBO implements IProductoBO {
 
     private IProductoDAO productoDAO;
     private IDetalleVentaDAO detalleVentaDAO;

@@ -1,4 +1,4 @@
-package GestionarUsuarios;
+package gestionarusuarios;
 
 import dtos.UsuarioDTO;
 import java.awt.BasicStroke;

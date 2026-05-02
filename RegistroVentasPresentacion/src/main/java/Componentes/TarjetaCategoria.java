@@ -1,4 +1,4 @@
-package Componentes;
+package componentes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

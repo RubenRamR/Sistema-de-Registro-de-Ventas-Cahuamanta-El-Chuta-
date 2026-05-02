@@ -1,6 +1,6 @@
 package inicio;
 
-import Control.ControlVista;
+import control.ControlVista;
 import javax.swing.SwingUtilities;
 
 /**
