@@ -49,6 +49,7 @@ public class AgregarUsuario extends JFrame {
             UsuarioOperacion onGuardar
     ) {
         setTitle("Agregar Usuario");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

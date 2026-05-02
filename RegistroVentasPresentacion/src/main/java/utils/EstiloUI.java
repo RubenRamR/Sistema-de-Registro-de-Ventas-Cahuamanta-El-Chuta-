@@ -282,4 +282,13 @@ public final class EstiloUI {
                 Math.round(a.getGreen() * (1 - t) + b.getGreen() * t),
                 Math.round(a.getBlue()  * (1 - t) + b.getBlue()  * t));
     }
+
+    public static final Dimension TAMANIO_MINIMO_VENTANA = new Dimension(1100, 700);
+    public static final Dimension TAMANIO_PREFERIDO_VENTANA = new Dimension(1280, 800);
+
+    public static void aplicarTamanioMinimo(javax.swing.JFrame frame) {
+        frame.setMinimumSize(TAMANIO_MINIMO_VENTANA);
+        frame.setSize(TAMANIO_PREFERIDO_VENTANA);
+        frame.setLocationRelativeTo(null);
+    }
 }

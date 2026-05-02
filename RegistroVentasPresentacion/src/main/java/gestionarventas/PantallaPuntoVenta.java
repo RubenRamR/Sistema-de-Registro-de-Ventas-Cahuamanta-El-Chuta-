@@ -43,7 +43,7 @@ import utils.EstiloUI;
 
 /**
  *
- * @author MiCuenta
+ * @author Chris/luise
  */
 public class PantallaPuntoVenta extends JFrame {
 
@@ -81,6 +81,7 @@ public class PantallaPuntoVenta extends JFrame {
 
         setTitle("Punto de venta");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

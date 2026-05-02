@@ -59,6 +59,7 @@ public class BuscarUsuarios extends JFrame {
         this.onSeleccionar = onSeleccionar;
 
         setTitle(titulo + " Usuarios");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

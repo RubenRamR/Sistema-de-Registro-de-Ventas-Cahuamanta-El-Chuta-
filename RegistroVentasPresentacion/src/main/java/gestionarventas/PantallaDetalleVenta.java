@@ -1,6 +1,6 @@
 package gestionarventas;
 
-import dtos.DetalleVentaDTO; // Asegúrate de importar tus DTOs
+import dtos.DetalleVentaDTO;
 import dtos.VentaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -44,6 +44,7 @@ public class PantallaDetalleVenta extends JFrame {
     ) {
         setTitle("Detalle de Venta");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -55,9 +56,7 @@ public class PantallaDetalleVenta extends JFrame {
         btnRegresar.addActionListener(e -> onBack.run());
         add(utils.EstiloUI.crearBarraInferior(btnRegresar), BorderLayout.SOUTH);
 
-        // ==========================================
-        // 2. CONTENIDO CENTRAL
-        // ==========================================
+   
         JPanel panelCentro = new JPanel(new GridBagLayout()); 
         panelCentro.setBackground(COLOR_FONDO_APP);
 

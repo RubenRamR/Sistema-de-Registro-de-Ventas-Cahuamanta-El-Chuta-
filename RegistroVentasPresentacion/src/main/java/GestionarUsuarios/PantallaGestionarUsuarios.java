@@ -28,6 +28,7 @@ public class PantallaGestionarUsuarios extends JFrame {
             Consumer<String> onOpcion
     ) {
         setTitle("Gestionar usuarios");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

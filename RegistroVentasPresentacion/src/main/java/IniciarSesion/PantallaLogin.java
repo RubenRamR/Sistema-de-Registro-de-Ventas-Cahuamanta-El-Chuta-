@@ -29,6 +29,7 @@ public class PantallaLogin extends JFrame {
 
     public PantallaLogin(BiConsumer<String, String> onIniciarSesion) {
         setTitle("El Chuta — Iniciar sesión");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

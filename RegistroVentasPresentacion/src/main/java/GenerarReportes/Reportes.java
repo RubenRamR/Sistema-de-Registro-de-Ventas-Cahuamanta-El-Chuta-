@@ -72,6 +72,7 @@ public class Reportes extends JFrame {
         this.onExportar = onExportar;
 
         setTitle("Reportes de ventas");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

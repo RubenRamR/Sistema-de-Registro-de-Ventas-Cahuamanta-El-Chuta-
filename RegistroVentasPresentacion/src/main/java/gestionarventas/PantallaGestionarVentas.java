@@ -91,6 +91,7 @@ public class PantallaGestionarVentas extends JFrame {
 
         setTitle(tituloPantalla);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
 

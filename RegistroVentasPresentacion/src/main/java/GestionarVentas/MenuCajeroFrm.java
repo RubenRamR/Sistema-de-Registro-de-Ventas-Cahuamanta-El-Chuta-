@@ -23,6 +23,7 @@ public class MenuCajeroFrm extends javax.swing.JFrame {
             Runnable onBack
     ) {
         initComponents();
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(MenuCajeroFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setTitle("El Chuta — Caja");

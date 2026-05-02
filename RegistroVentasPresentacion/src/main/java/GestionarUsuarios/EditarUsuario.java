@@ -53,6 +53,7 @@ public class EditarUsuario extends JFrame {
         this.usuario = usuario;
 
         setTitle("Editar Usuario");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

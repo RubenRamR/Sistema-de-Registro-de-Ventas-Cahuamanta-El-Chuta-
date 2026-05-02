@@ -36,6 +36,7 @@ public class PantallaResumen extends JFrame {
     ) {
         setTitle("Resumen de venta");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

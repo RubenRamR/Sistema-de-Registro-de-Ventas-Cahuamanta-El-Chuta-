@@ -27,6 +27,7 @@ public class MenuDueno extends JFrame {
             Runnable onGenerarReportes
     ) {
         setTitle("El Chuta — Panel del dueño");
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -33,6 +33,7 @@ public class MetodoPagoFrm extends javax.swing.JFrame {
         this.onBack = onBack;
 
         initComponents();
+        utils.EstiloUI.aplicarTamanioMinimo(this);
         setExtendedState(MetodoPagoFrm.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setTitle("El Chuta — Método de pago");
