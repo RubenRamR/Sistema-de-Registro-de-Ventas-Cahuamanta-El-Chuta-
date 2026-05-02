@@ -182,14 +182,14 @@ public class Reportes extends JFrame {
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 118));
 
-        panel.add(crearTarjetaResumen("Periodo", lblPeriodoValor));
-        panel.add(crearTarjetaResumen("Ventas", lblCantidadValor));
-        panel.add(crearTarjetaResumen("Monto total", lblTotalValor));
-        panel.add(crearTarjetaResumen("Promedio", lblPromedioValor));
+        panel.add(crearTarjetaResumen("Periodo", lblPeriodoValor, 15));
+        panel.add(crearTarjetaResumen("Ventas", lblCantidadValor, 24));
+        panel.add(crearTarjetaResumen("Monto total", lblTotalValor, 24));
+        panel.add(crearTarjetaResumen("Promedio", lblPromedioValor, 24));
         return panel;
     }
 
-    private JPanel crearTarjetaResumen(String titulo, JLabel valor) {
+    private JPanel crearTarjetaResumen(String titulo, JLabel valor, int tamanioValor) {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
         panel.setBackground(utils.EstiloUI.COLOR_TARJETA);
         panel.setBorder(BorderFactory.createCompoundBorder(
@@ -202,8 +202,10 @@ public class Reportes extends JFrame {
         lblTitulo.setFont(utils.EstiloUI.FUENTE_KICKER);
         lblTitulo.setForeground(COLOR_MUTED);
 
-        valor.setFont(new Font(utils.EstiloUI.FUENTE_PRECIO.getFamily(), Font.BOLD, 24));
+        valor.setFont(new Font(utils.EstiloUI.FUENTE_PRECIO.getFamily(), Font.BOLD, tamanioValor));
         valor.setForeground(COLOR_TEXTO);
+        valor.setHorizontalAlignment(JLabel.CENTER);
+        valor.setVerticalAlignment(JLabel.CENTER);
 
         panel.add(lblTitulo, BorderLayout.NORTH);
         panel.add(valor, BorderLayout.CENTER);
@@ -309,7 +311,15 @@ private void renderizarReporte(ReporteVentasDTO reporte) {
 
         LocalDate inicio = reporte.getFechaInicio();
         LocalDate fin = reporte.getFechaFin();
-        lblPeriodoValor.setText(inicio == null || fin == null ? "-" : inicio.format(FORMATO_FECHA) + " - " + fin.format(FORMATO_FECHA));
+        if (inicio == null || fin == null) {
+            lblPeriodoValor.setText("-");
+        } else if (inicio.equals(fin)) {
+            lblPeriodoValor.setText(inicio.format(FORMATO_FECHA));
+        } else {
+            lblPeriodoValor.setText("<html><div style='text-align:center;'>"
+                    + inicio.format(FORMATO_FECHA) + "<br>al " + fin.format(FORMATO_FECHA)
+                    + "</div></html>");
+        }
         lblCantidadValor.setText(String.valueOf(reporte.getCantidadVentas()));
         lblTotalValor.setText("$" + formatearMonto(reporte.getMontoTotal()));
         lblPromedioValor.setText("$" + formatearMonto(reporte.getPromedioVenta()));

@@ -231,95 +231,240 @@ public class VentaBO implements IVentaBO {
         }
     }
 
-   private void generarPdfReporte(ReporteVentasDTO reporte, Path destino) throws IOException {
+    private static final int ALINEAR_IZQ = 0;
+    private static final int ALINEAR_DER = 2;
+
+    private static final float MARGEN_PDF = 50f;
+    private static final float ALTO_FILA = 18f;
+    private static final float ALTO_HEADER_TABLA = 22f;
+    private static final float[] ANCHOS_COLUMNAS = {115f, 75f, 130f, 105f, 87f};
+    private static final String[] NOMBRES_COLUMNAS = {"Fecha", "Folio", "Usuario", "Metodo", "Total"};
+    private static final int[] ALINEACIONES_COLUMNAS = {ALINEAR_IZQ, ALINEAR_IZQ, ALINEAR_IZQ, ALINEAR_IZQ, ALINEAR_DER};
+
+    private void generarPdfReporte(ReporteVentasDTO reporte, Path destino) throws IOException {
         try (PDDocument documento = new PDDocument()) {
             PDPage pagina = new PDPage(PDRectangle.LETTER);
             documento.addPage(pagina);
-
-            float margenIzquierdo = 50f;
-            float margenSuperior = pagina.getMediaBox().getHeight() - 50f;
-            float y = margenSuperior;
             PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
 
             try {
-                // --- CABECERA ---
-                y = escribirLinea(contenido, PDType1Font.HELVETICA_BOLD, 18, margenIzquierdo, y, "Reporte de ventas");
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y, "Periodo: "
+                float anchoPagina = pagina.getMediaBox().getWidth();
+                float altoPagina = pagina.getMediaBox().getHeight();
+                float anchoContenido = anchoPagina - 2 * MARGEN_PDF;
+                float y = altoPagina - MARGEN_PDF;
+
+                // ===== ENCABEZADO =====
+                contenido.setNonStrokingColor(0.16f, 0.32f, 0.55f);
+                contenido.addRect(0, y - 4, anchoPagina, 4);
+                contenido.fill();
+                contenido.setNonStrokingColor(0f, 0f, 0f);
+
+                y -= 32f;
+                String titulo = "REPORTE DE VENTAS";
+                float anchoTitulo = anchoTexto(PDType1Font.HELVETICA_BOLD, 22f, titulo);
+                contenido.setNonStrokingColor(0.10f, 0.15f, 0.30f);
+                escribirCelda(contenido, PDType1Font.HELVETICA_BOLD, 22f,
+                        MARGEN_PDF + (anchoContenido - anchoTitulo) / 2f, y, titulo);
+                contenido.setNonStrokingColor(0f, 0f, 0f);
+
+                y -= 22f;
+                String periodo = "Periodo del "
                         + reporte.getFechaInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        + " - " + reporte.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
-                        "Cantidad de ventas: " + reporte.getCantidadVentas());
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
-                        "Monto total: $" + reporte.getMontoTotal().setScale(2, RoundingMode.HALF_UP));
-                y = escribirLinea(contenido, PDType1Font.HELVETICA, 12, margenIzquierdo, y,
-                        "Promedio por venta: $" + reporte.getPromedioVenta().setScale(2, RoundingMode.HALF_UP));
-                y -= 20f; // Espacio extra antes de la tabla
+                        + " al " + reporte.getFechaFin().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                float anchoPeriodo = anchoTexto(PDType1Font.HELVETICA, 11f, periodo);
+                contenido.setNonStrokingColor(0.40f, 0.40f, 0.40f);
+                escribirCelda(contenido, PDType1Font.HELVETICA, 11f,
+                        MARGEN_PDF + (anchoContenido - anchoPeriodo) / 2f, y, periodo);
+                contenido.setNonStrokingColor(0f, 0f, 0f);
 
-                // --- DEFINICIÓN DE COLUMNAS
-                float xFecha = margenIzquierdo;
-                float xVenta = margenIzquierdo + 120f;
-                float xUsuario = margenIzquierdo + 180f;
-                float xMetodo = margenIzquierdo + 300f;
-                float xTotal = margenIzquierdo + 430f;
+                y -= 26f;
 
-                // --- ENCABEZADOS DE LA TABLA ---
-                PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
-                float sizeHeader = 10f;
-                
-                // Línea superior
-                contenido.moveTo(margenIzquierdo, y + 12);
-                contenido.lineTo(margenIzquierdo + 500f, y + 12);
+                // ===== PANEL DE RESUMEN =====
+                float altoResumen = 60f;
+                float anchoTarjeta = anchoContenido / 3f;
+
+                contenido.setStrokingColor(0.78f, 0.80f, 0.85f);
+                contenido.addRect(MARGEN_PDF, y - altoResumen, anchoContenido, altoResumen);
                 contenido.stroke();
-                
-                // Imprimir cada encabezado en su posición fija
-                escribirCelda(contenido, fontHeader, sizeHeader, xFecha, y, "Fecha");
-                escribirCelda(contenido, fontHeader, sizeHeader, xVenta, y, "Venta");
-                escribirCelda(contenido, fontHeader, sizeHeader, xUsuario, y, "Usuario");
-                escribirCelda(contenido, fontHeader, sizeHeader, xMetodo, y, "Método");
-                escribirCelda(contenido, fontHeader, sizeHeader, xTotal, y, "Total");
-                
-                y -= 15f;
-                
-                // Linea inferior
-                contenido.moveTo(margenIzquierdo, y + 12);
-                contenido.lineTo(margenIzquierdo + 500f, y + 12);
+                contenido.moveTo(MARGEN_PDF + anchoTarjeta, y - altoResumen);
+                contenido.lineTo(MARGEN_PDF + anchoTarjeta, y);
+                contenido.stroke();
+                contenido.moveTo(MARGEN_PDF + 2 * anchoTarjeta, y - altoResumen);
+                contenido.lineTo(MARGEN_PDF + 2 * anchoTarjeta, y);
                 contenido.stroke();
 
-                // --- DATOS DE LA TABLA ---
-                PDType1Font fontData = PDType1Font.HELVETICA;
-                float sizeData = 9f;
+                dibujarTarjetaResumen(contenido, MARGEN_PDF, y, anchoTarjeta,
+                        "VENTAS", String.valueOf(reporte.getCantidadVentas()));
+                dibujarTarjetaResumen(contenido, MARGEN_PDF + anchoTarjeta, y, anchoTarjeta,
+                        "MONTO TOTAL", "$" + formatearMonto(reporte.getMontoTotal()));
+                dibujarTarjetaResumen(contenido, MARGEN_PDF + 2 * anchoTarjeta, y, anchoTarjeta,
+                        "PROMEDIO", "$" + formatearMonto(reporte.getPromedioVenta()));
 
+                y -= altoResumen + 28f;
+
+                // ===== TABLA =====
+                y = dibujarHeaderTabla(contenido, MARGEN_PDF, y);
+
+                boolean alterno = false;
                 for (VentaDTO ventaDTO : reporte.getVentas()) {
-                    if (y < 50f) {
+                    if (y - ALTO_FILA < MARGEN_PDF + 30f) {
                         contenido.close();
                         pagina = new PDPage(PDRectangle.LETTER);
                         documento.addPage(pagina);
                         contenido = new PDPageContentStream(documento, pagina);
-                        y = margenSuperior;
-                        
-                        // Repetir encabezados en nueva página
-                        escribirCelda(contenido, fontHeader, sizeHeader, xFecha, y, "Fecha");
-                        escribirCelda(contenido, fontHeader, sizeHeader, xVenta, y, "Venta");
-                        escribirCelda(contenido, fontHeader, sizeHeader, xUsuario, y, "Usuario");
-                        escribirCelda(contenido, fontHeader, sizeHeader, xMetodo, y, "Método");
-                        escribirCelda(contenido, fontHeader, sizeHeader, xTotal, y, "Total");
-                        y -= 15f;
+                        y = altoPagina - MARGEN_PDF;
+                        y = dibujarHeaderTabla(contenido, MARGEN_PDF, y);
                     }
 
-                    // Imprimir datos en las mismas posiciones X fijas
-                    escribirCelda(contenido, fontData, sizeData, xFecha, y, formatearFecha(ventaDTO));
-                    escribirCelda(contenido, fontData, sizeData, xVenta, y, obtenerFolio(ventaDTO));
-                    escribirCelda(contenido, fontData, sizeData, xUsuario, y, truncar(obtenerUsuario(ventaDTO), 15));
-                    escribirCelda(contenido, fontData, sizeData, xMetodo, y, obtenerMetodoPago(ventaDTO));
-                    escribirCelda(contenido, fontData, sizeData, xTotal, y, "$" + formatearMonto(ventaDTO.getTotal()));
-                    
-                    y -= 15f;
+                    String[] valores = {
+                        formatearFecha(ventaDTO),
+                        obtenerFolio(ventaDTO),
+                        obtenerUsuario(ventaDTO),
+                        obtenerMetodoPago(ventaDTO),
+                        "$" + formatearMonto(ventaDTO.getTotal())
+                    };
+                    y = dibujarFilaTabla(contenido, MARGEN_PDF, y, valores, alterno);
+                    alterno = !alterno;
                 }
+
+                // Borde inferior + bordes laterales de la tabla
+                contenido.setStrokingColor(0.78f, 0.80f, 0.85f);
+                contenido.moveTo(MARGEN_PDF, y);
+                contenido.lineTo(MARGEN_PDF + anchoContenido, y);
+                contenido.stroke();
+
+                // Total general bajo la tabla
+                y -= 22f;
+                String pieMonto = "Total general:  $" + formatearMonto(reporte.getMontoTotal());
+                float anchoPie = anchoTexto(PDType1Font.HELVETICA_BOLD, 11f, pieMonto);
+                contenido.setNonStrokingColor(0.10f, 0.15f, 0.30f);
+                escribirCelda(contenido, PDType1Font.HELVETICA_BOLD, 11f,
+                        MARGEN_PDF + anchoContenido - anchoPie, y, pieMonto);
+                contenido.setNonStrokingColor(0f, 0f, 0f);
             } finally {
                 contenido.close();
             }
 
+            agregarPiesDePagina(documento);
             documento.save(destino.toFile());
+        }
+    }
+
+    private float anchoTexto(PDType1Font fuente, float tamanio, String texto) throws IOException {
+        return fuente.getStringWidth(limpiarTextoPdf(texto)) / 1000f * tamanio;
+    }
+
+    private void dibujarTarjetaResumen(PDPageContentStream contenido, float x, float yTop,
+            float ancho, String etiqueta, String valor) throws IOException {
+        float yEtiqueta = yTop - 20f;
+        float yValor = yTop - 44f;
+
+        float anchoEtiqueta = anchoTexto(PDType1Font.HELVETICA_BOLD, 9f, etiqueta);
+        contenido.setNonStrokingColor(0.45f, 0.45f, 0.45f);
+        escribirCelda(contenido, PDType1Font.HELVETICA_BOLD, 9f,
+                x + (ancho - anchoEtiqueta) / 2f, yEtiqueta, etiqueta);
+
+        float anchoValor = anchoTexto(PDType1Font.HELVETICA_BOLD, 16f, valor);
+        contenido.setNonStrokingColor(0.10f, 0.15f, 0.30f);
+        escribirCelda(contenido, PDType1Font.HELVETICA_BOLD, 16f,
+                x + (ancho - anchoValor) / 2f, yValor, valor);
+
+        contenido.setNonStrokingColor(0f, 0f, 0f);
+    }
+
+    private float dibujarHeaderTabla(PDPageContentStream contenido, float xInicio, float yTop) throws IOException {
+        float yFondoInferior = yTop - ALTO_HEADER_TABLA;
+        float anchoTotal = 0f;
+        for (float a : ANCHOS_COLUMNAS) {
+            anchoTotal += a;
+        }
+
+        contenido.setNonStrokingColor(0.16f, 0.32f, 0.55f);
+        contenido.addRect(xInicio, yFondoInferior, anchoTotal, ALTO_HEADER_TABLA);
+        contenido.fill();
+
+        contenido.setNonStrokingColor(1f, 1f, 1f);
+        float x = xInicio;
+        float yTexto = yFondoInferior + 7f;
+        for (int i = 0; i < NOMBRES_COLUMNAS.length; i++) {
+            String nombre = NOMBRES_COLUMNAS[i];
+            float anchoT = anchoTexto(PDType1Font.HELVETICA_BOLD, 10f, nombre);
+            float xT = ALINEACIONES_COLUMNAS[i] == ALINEAR_DER
+                    ? x + ANCHOS_COLUMNAS[i] - anchoT - 8f
+                    : x + 8f;
+            escribirCelda(contenido, PDType1Font.HELVETICA_BOLD, 10f, xT, yTexto, nombre);
+            x += ANCHOS_COLUMNAS[i];
+        }
+        contenido.setNonStrokingColor(0f, 0f, 0f);
+        return yFondoInferior;
+    }
+
+    private float dibujarFilaTabla(PDPageContentStream contenido, float xInicio, float yTop,
+            String[] valores, boolean alterno) throws IOException {
+        float yFondoInferior = yTop - ALTO_FILA;
+        float anchoTotal = 0f;
+        for (float a : ANCHOS_COLUMNAS) {
+            anchoTotal += a;
+        }
+
+        if (alterno) {
+            contenido.setNonStrokingColor(0.96f, 0.97f, 0.99f);
+            contenido.addRect(xInicio, yFondoInferior, anchoTotal, ALTO_FILA);
+            contenido.fill();
+            contenido.setNonStrokingColor(0f, 0f, 0f);
+        }
+
+        float x = xInicio;
+        float yTexto = yFondoInferior + 5f;
+        contenido.setNonStrokingColor(0.20f, 0.20f, 0.20f);
+        for (int i = 0; i < valores.length; i++) {
+            String valor = ajustarPorAncho(PDType1Font.HELVETICA, 9f,
+                    limpiarTextoPdf(valores[i]), ANCHOS_COLUMNAS[i] - 16f);
+            float anchoT = anchoTexto(PDType1Font.HELVETICA, 9f, valor);
+            float xT = ALINEACIONES_COLUMNAS[i] == ALINEAR_DER
+                    ? x + ANCHOS_COLUMNAS[i] - anchoT - 8f
+                    : x + 8f;
+            escribirCelda(contenido, PDType1Font.HELVETICA, 9f, xT, yTexto, valor);
+            x += ANCHOS_COLUMNAS[i];
+        }
+        contenido.setNonStrokingColor(0f, 0f, 0f);
+        return yFondoInferior;
+    }
+
+    private String ajustarPorAncho(PDType1Font fuente, float tamanio, String texto, float anchoMax) throws IOException {
+        if (texto == null) {
+            return "";
+        }
+        if (anchoTexto(fuente, tamanio, texto) <= anchoMax) {
+            return texto;
+        }
+        String t = texto;
+        while (t.length() > 1 && anchoTexto(fuente, tamanio, t + "...") > anchoMax) {
+            t = t.substring(0, t.length() - 1);
+        }
+        return t + "...";
+    }
+
+    private void agregarPiesDePagina(PDDocument documento) throws IOException {
+        int total = documento.getNumberOfPages();
+        for (int i = 0; i < total; i++) {
+            PDPage pagina = documento.getPage(i);
+            try (PDPageContentStream c = new PDPageContentStream(documento, pagina,
+                    PDPageContentStream.AppendMode.APPEND, true, true)) {
+                float anchoPagina = pagina.getMediaBox().getWidth();
+
+                String pie = "Pagina " + (i + 1) + " de " + total;
+                float ancho = anchoTexto(PDType1Font.HELVETICA, 9f, pie);
+                c.setNonStrokingColor(0.45f, 0.45f, 0.45f);
+                escribirCelda(c, PDType1Font.HELVETICA, 9f,
+                        (anchoPagina - ancho) / 2f, 30f, pie);
+
+                String fecha = "Generado: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                float anchoFecha = anchoTexto(PDType1Font.HELVETICA, 9f, fecha);
+                escribirCelda(c, PDType1Font.HELVETICA, 9f,
+                        anchoPagina - MARGEN_PDF - anchoFecha, 30f, fecha);
+                c.setNonStrokingColor(0f, 0f, 0f);
+            }
         }
     }
 
@@ -331,23 +476,6 @@ public class VentaBO implements IVentaBO {
         contenido.endText();
     }
     
-    private String truncar(String texto, int maxLongitud) {
-        if (texto == null) return "";
-        if (texto.length() > maxLongitud) {
-            return texto.substring(0, maxLongitud - 3) + "...";
-        }
-        return texto;
-    }
-
-    private float escribirLinea(PDPageContentStream contenido, PDType1Font fuente, float tamanio, float x, float y, String texto) throws IOException {
-        contenido.beginText();
-        contenido.setFont(fuente, tamanio);
-        contenido.newLineAtOffset(x, y);
-        contenido.showText(limpiarTextoPdf(texto));
-        contenido.endText();
-        return y - (tamanio + 6f);
-    }
-
     private String limpiarTextoPdf(String texto) {
         if (texto == null)
         {
@@ -356,15 +484,6 @@ public class VentaBO implements IVentaBO {
         String normalizado = Normalizer.normalize(texto, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "");
         return normalizado.replaceAll("[^\\x20-\\x7E]", "?");
-    }
-
-    private String ajustarColumna(String valor, int longitud) {
-        String limpio = limpiarTextoPdf(valor == null ? "" : valor);
-        if (limpio.length() > longitud)
-        {
-            limpio = limpio.substring(0, Math.max(0, longitud - 1)) + "~";
-        }
-        return String.format("%-" + longitud + "s", limpio);
     }
 
     private String formatearFecha(VentaDTO ventaDTO) {
